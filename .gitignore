@@ -1,0 +1,5 @@
+node_modules/
+soleil.db
+soleil.db-wal
+soleil.db-shm
+*.log

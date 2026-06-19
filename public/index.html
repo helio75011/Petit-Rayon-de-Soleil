@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <!-- Responsive : utilisable sur mobile, tablette et ordinateur -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Petit Rayon de Soleil</title>
+  <meta name="description" content="Des messages bienveillants pour illuminer ta journée.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- En-tête + navigation (HTML sémantique pour l'accessibilité) -->
+  <header>
+    <div class="logo" aria-hidden="true">🌞</div>
+    <h1>Petit Rayon de Soleil</h1>
+    <nav aria-label="Navigation principale">
+      <button id="nav-accueil" class="nav-btn" aria-current="page">Accueil</button>
+      <button id="nav-favoris" class="nav-btn" hidden>Favoris</button>
+      <button id="nav-proposer" class="nav-btn" hidden>Proposer</button>
+      <button id="nav-admin" class="nav-btn" hidden>Admin</button>
+      <button id="nav-profil" class="nav-btn" hidden>Profil</button>
+      <button id="nav-connexion" class="nav-btn">Connexion</button>
+      <button id="nav-logout" class="nav-btn" hidden>Déconnexion</button>
+    </nav>
+  </header>
+
+  <!-- Zone de notification accessible (lue par les lecteurs d'écran) -->
+  <p id="flash" role="status" aria-live="polite" class="flash" hidden></p>
+
+  <main>
+    <!-- ACCUEIL : message bienveillant aléatoire -->
+    <section id="vue-accueil" aria-labelledby="titre-accueil">
+      <h2 id="titre-accueil" class="sr-only">Message du moment</h2>
+      <button id="btn-nouveau-message" class="btn-primary">Nouveau message ✨</button>
+      <blockquote id="message-affiche" class="message-box">
+        Clique sur le bouton pour recevoir un message bienveillant.
+      </blockquote>
+      <button id="btn-favori" class="btn-secondary" hidden>♥ Ajouter aux favoris</button>
+    </section>
+
+    <!-- CONNEXION / INSCRIPTION -->
+    <section id="vue-connexion" aria-labelledby="titre-connexion" hidden>
+      <h2 id="titre-connexion">Connexion</h2>
+      <form id="form-login" class="form">
+        <label for="login-email">Email</label>
+        <input type="email" id="login-email" autocomplete="email" required>
+        <label for="login-password">Mot de passe</label>
+        <input type="password" id="login-password" autocomplete="current-password" required>
+        <button type="submit" class="btn-primary">Se connecter</button>
+      </form>
+
+      <h2>Pas encore inscrit ?</h2>
+      <form id="form-register" class="form">
+        <label for="reg-name">Nom</label>
+        <input type="text" id="reg-name" autocomplete="name" required>
+        <label for="reg-email">Email</label>
+        <input type="email" id="reg-email" autocomplete="email" required>
+        <label for="reg-password">Mot de passe (6 caractères min.)</label>
+        <input type="password" id="reg-password" autocomplete="new-password" minlength="6" required>
+        <button type="submit" class="btn-primary">Créer mon compte</button>
+      </form>
+    </section>
+
+    <!-- FAVORIS -->
+    <section id="vue-favoris" aria-labelledby="titre-favoris" hidden>
+      <h2 id="titre-favoris">Mes favoris</h2>
+      <ul id="liste-favoris" class="liste"></ul>
+    </section>
+
+    <!-- PROPOSER UN MESSAGE -->
+    <section id="vue-proposer" aria-labelledby="titre-proposer" hidden>
+      <h2 id="titre-proposer">Proposer un message bienveillant</h2>
+      <form id="form-proposer" class="form">
+        <label for="prop-content">Ton message</label>
+        <textarea id="prop-content" rows="3" minlength="5" required></textarea>
+        <button type="submit" class="btn-primary">Envoyer pour validation</button>
+      </form>
+    </section>
+
+    <!-- ADMIN : approbation -->
+    <section id="vue-admin" aria-labelledby="titre-admin" hidden>
+      <h2 id="titre-admin">Messages en attente d'approbation</h2>
+      <ul id="liste-pending" class="liste"></ul>
+    </section>
+
+    <!-- PROFIL : gestion des données personnelles -->
+    <section id="vue-profil" aria-labelledby="titre-profil" hidden>
+      <h2 id="titre-profil">Mon profil</h2>
+      <form id="form-profil" class="form">
+        <label for="profil-name">Nom</label>
+        <input type="text" id="profil-name" required>
+        <button type="submit" class="btn-primary">Mettre à jour</button>
+      </form>
+      <p class="rgpd">
+        Conformément au RGPD, tu peux supprimer ton compte et toutes tes données :
+      </p>
+      <button id="btn-supprimer-compte" class="btn-danger">Supprimer mon compte</button>
+    </section>
+  </main>
+
+  <footer>
+    <p>Contact : <a href="mailto:petitrayondesoleil@gmail.com">petitrayondesoleil@gmail.com</a></p>
+    <p><a href="#">Politique de confidentialité</a></p>
+    <p>© Landa Damien — 2024, tous droits réservés</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

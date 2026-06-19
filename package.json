@@ -1,0 +1,18 @@
+{
+  "name": "petit-rayon-de-soleil",
+  "version": "1.0.0",
+  "description": "Mini-projet CDA - Petit Rayon de Soleil. Application web de messages bienveillants.",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "init-db": "node db.js --init",
+    "test": "node --test"
+  },
+  "author": "Damien Landa",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.21.0"
+  }
+}
