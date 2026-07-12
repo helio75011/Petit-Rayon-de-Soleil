@@ -1,8 +1,8 @@
 /**
  * db.js — Couche d'accès à la base de données (SQLite).
  *
- * On utilise better-sqlite3 : une base de données dans un simple fichier
- * (soleil.db), aucune installation de serveur SQL nécessaire.
+ * On utilise node:sqlite (module natif de Node.js) : une base de données dans
+ * un simple fichier (soleil.db), aucune installation de serveur SQL nécessaire.
  *
  * SÉCURITÉ : toutes les requêtes utilisent des paramètres préparés (?),
  * ce qui protège contre les injections SQL (exigence non fonctionnelle).
@@ -80,7 +80,7 @@ function seed() {
   );
   // Mots de passe hachés (jamais stockés en clair).
   insertUser.run('Admin', 'admin@soleil.fr', bcrypt.hashSync('admin123', 10), 'admin');
-  insertUser.run('Damien', 'damien@soleil.fr', bcrypt.hashSync('damien123', 10), 'user');
+  insertUser.run('Utilisateur Démo', 'user@soleil.fr', bcrypt.hashSync('user1234', 10), 'user');
 
   const insertMsg = db.prepare(
     'INSERT INTO messages (content, approved, propose_par) VALUES (?, 1, NULL)'
@@ -96,7 +96,7 @@ function seed() {
 
   console.log('Base initialisée avec un admin, un utilisateur et 5 messages.');
   console.log('  Admin : admin@soleil.fr / admin123');
-  console.log('  User  : damien@soleil.fr / damien123');
+  console.log('  User  : user@soleil.fr / user1234');
 }
 
 // Permet de lancer `node db.js --init` pour créer + remplir la base.

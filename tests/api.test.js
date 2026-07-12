@@ -86,18 +86,18 @@ test('proposer un message sans être connecté est refusé (401)', async () => {
 
 test('un utilisateur normal ne peut pas accéder à l’admin (403)', async () => {
   const login = await call('POST', '/api/login', {
-    email: 'damien@soleil.fr',
-    password: 'damien123',
+    email: 'user@soleil.fr',
+    password: 'user1234',
   });
   const { status } = await call('GET', '/api/admin/pending', null, login.data.token);
   assert.strictEqual(status, 403);
 });
 
 test('parcours complet : proposition -> approbation admin', async () => {
-  // 1. Damien (user) propose un message
+  // 1. L'utilisateur de démo propose un message
   const user = await call('POST', '/api/login', {
-    email: 'damien@soleil.fr',
-    password: 'damien123',
+    email: 'user@soleil.fr',
+    password: 'user1234',
   });
   const prop = await call(
     'POST',

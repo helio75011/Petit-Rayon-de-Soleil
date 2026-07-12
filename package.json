@@ -9,7 +9,7 @@
     "init-db": "node db.js --init",
     "test": "node --test"
   },
-  "author": "Damien Landa",
+  "author": "de Breyne Hélio",
   "license": "MIT",
   "dependencies": {
     "bcryptjs": "^2.4.3",

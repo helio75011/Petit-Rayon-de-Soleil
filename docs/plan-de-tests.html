@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plan de tests — Petit Rayon de Soleil</title>
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  img { max-width: 100%; }
+  :root {
+    --ground: #FBFCFB;
+    --panel: #FFFFFF;
+    --ink: #1B211D;
+    --muted: #5A635C;
+    --hair: #E2E8E3;
+    --accent: #2E9E52;
+    --accent-deep: #1F7A3D;
+    --pass-bg: #E9F6EC;
+    --pass-ink: #1F7A3D;
+    --fail-ink: #C0392B;
+    --fail-bg: #FBEBE9;
+    --code-bg: #F1F5F2;
+    --shadow: 0 1px 2px rgba(27,33,29,.05), 0 8px 28px rgba(27,33,29,.06);
+    --serif: Georgia, 'Times New Roman', serif;
+    --sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --mono: ui-monospace, 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground: #12160F;
+      --panel: #191E17;
+      --ink: #E7EDE7;
+      --muted: #9AA79C;
+      --hair: #2A3228;
+      --accent: #56C878;
+      --accent-deep: #7BD996;
+      --pass-bg: #14251A;
+      --pass-ink: #7BD996;
+      --fail-ink: #E88C82;
+      --fail-bg: #2A1815;
+      --code-bg: #10160F;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="light"] {
+    --ground: #FBFCFB; --panel: #FFFFFF; --ink: #1B211D; --muted: #5A635C;
+    --hair: #E2E8E3; --accent: #2E9E52; --accent-deep: #1F7A3D;
+    --pass-bg: #E9F6EC; --pass-ink: #1F7A3D; --fail-ink: #C0392B; --fail-bg: #FBEBE9;
+    --code-bg: #F1F5F2; --shadow: 0 1px 2px rgba(27,33,29,.05), 0 8px 28px rgba(27,33,29,.06);
+  }
+  :root[data-theme="dark"] {
+    --ground: #12160F; --panel: #191E17; --ink: #E7EDE7; --muted: #9AA79C;
+    --hair: #2A3228; --accent: #56C878; --accent-deep: #7BD996;
+    --pass-bg: #14251A; --pass-ink: #7BD996; --fail-ink: #E88C82; --fail-bg: #2A1815;
+    --code-bg: #10160F; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap {
+    max-width: 54rem;
+    margin: 0 auto;
+    padding: clamp(1.5rem, 4vw, 4rem) clamp(1.1rem, 4vw, 2.5rem) 5rem;
+  }
+
+  /* Masthead */
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: .72rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+    margin: 0 0 .9rem;
+  }
+  h1 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(1.9rem, 5vw, 2.9rem);
+    line-height: 1.1;
+    letter-spacing: -.01em;
+    text-wrap: balance;
+    margin: 0 0 .5rem;
+  }
+  .sub {
+    color: var(--muted);
+    font-size: 1.05rem;
+    max-width: 46rem;
+    margin: 0 0 2rem;
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem 1.4rem;
+    padding: 1rem 0 0;
+    border-top: 1px solid var(--hair);
+    font-size: .85rem;
+    color: var(--muted);
+  }
+  .meta b { color: var(--ink); font-weight: 600; }
+  .meta code { font-family: var(--mono); font-size: .82rem; }
+
+  /* Verdict banner */
+  .verdict {
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+    margin: 2.2rem 0 0;
+    padding: 1.15rem 1.35rem;
+    background: var(--pass-bg);
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    border-radius: 12px;
+  }
+  .verdict .score {
+    font-family: var(--serif);
+    font-size: 2.1rem;
+    font-weight: 700;
+    color: var(--pass-ink);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .verdict .vtext { font-size: .95rem; }
+  .verdict .vtext strong { color: var(--pass-ink); }
+  .verdict .vtext span { color: var(--muted); display: block; font-size: .85rem; }
+
+  /* Sections */
+  section { margin-top: 3.2rem; }
+  .sec-head {
+    display: flex;
+    align-items: baseline;
+    gap: .8rem;
+    margin: 0 0 1.1rem;
+    padding-bottom: .6rem;
+    border-bottom: 2px solid var(--ink);
+  }
+  .sec-num {
+    font-family: var(--mono);
+    font-size: .95rem;
+    font-weight: 600;
+    color: var(--accent-deep);
+  }
+  h2 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 1.5rem;
+    margin: 0;
+    letter-spacing: -.005em;
+  }
+  h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 1.8rem 0 .6rem;
+  }
+  p { margin: 0 0 1rem; }
+  a { color: var(--accent-deep); }
+
+  code { font-family: var(--mono); font-size: .86em; }
+  p code, li code, td code {
+    background: var(--code-bg);
+    padding: .1em .4em;
+    border-radius: 5px;
+  }
+
+  /* Definition grid (environment) */
+  .env {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: .1rem 1.4rem;
+    background: var(--panel);
+    border: 1px solid var(--hair);
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    box-shadow: var(--shadow);
+  }
+  .env dt {
+    font-weight: 600;
+    color: var(--muted);
+    padding: .45rem 0;
+    font-size: .9rem;
+    border-bottom: 1px solid var(--hair);
+  }
+  .env dd {
+    margin: 0;
+    padding: .45rem 0;
+    font-family: var(--mono);
+    font-size: .88rem;
+    border-bottom: 1px solid var(--hair);
+  }
+  .env dt:last-of-type, .env dd:last-of-type { border-bottom: none; }
+
+  /* Steps list */
+  ol.steps { margin: 0; padding: 0; counter-reset: step; list-style: none; }
+  ol.steps li {
+    position: relative;
+    padding: .3rem 0 .3rem 2.2rem;
+    margin-bottom: .5rem;
+  }
+  ol.steps li::before {
+    counter-increment: step;
+    content: counter(step);
+    position: absolute;
+    left: 0; top: .2rem;
+    width: 1.5rem; height: 1.5rem;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-family: var(--mono);
+    font-size: .8rem;
+    font-weight: 600;
+  }
+
+  /* Table */
+  .tbl-scroll { overflow-x: auto; border: 1px solid var(--hair); border-radius: 12px; box-shadow: var(--shadow); }
+  table { border-collapse: collapse; width: 100%; font-size: .88rem; background: var(--panel); }
+  caption { text-align: left; color: var(--muted); font-size: .82rem; padding: 0 0 .7rem; }
+  thead th {
+    background: var(--accent);
+    color: #fff;
+    text-align: left;
+    font-weight: 600;
+    padding: .7rem .85rem;
+    white-space: nowrap;
+    font-size: .82rem;
+  }
+  tbody td {
+    padding: .65rem .85rem;
+    border-top: 1px solid var(--hair);
+    vertical-align: top;
+  }
+  tbody tr:nth-child(even) td { background: color-mix(in srgb, var(--code-bg) 55%, transparent); }
+  td .ep { font-family: var(--mono); font-size: .82rem; white-space: nowrap; }
+  .verb {
+    font-family: var(--mono);
+    font-size: .72rem;
+    font-weight: 700;
+    padding: .12em .5em;
+    border-radius: 5px;
+    background: color-mix(in srgb, var(--accent) 16%, transparent);
+    color: var(--accent-deep);
+  }
+  .status-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  .ok {
+    display: inline-flex; align-items: center; gap: .35rem;
+    color: var(--pass-ink); font-weight: 600; white-space: nowrap;
+  }
+  .ok::before {
+    content: "\2713"; font-weight: 700;
+    display: inline-grid; place-items: center;
+    width: 1.1rem; height: 1.1rem;
+    background: var(--pass-bg); border-radius: 50%;
+    font-size: .75rem;
+  }
+
+  /* Terminal capture */
+  .terminal {
+    background: #0E140F;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    border: 1px solid #223022;
+  }
+  .term-bar {
+    display: flex; align-items: center; gap: .5rem;
+    padding: .6rem .9rem;
+    background: #161E17;
+    border-bottom: 1px solid #223022;
+  }
+  .term-bar i { width: .72rem; height: .72rem; border-radius: 50%; display: block; }
+  .term-bar .r { background: #E5534B; }
+  .term-bar .y { background: #E5B14B; }
+  .term-bar .g { background: #5FB96A; }
+  .term-bar .path { margin-left: .6rem; font-family: var(--mono); font-size: .74rem; color: #7C8A7E; }
+  pre.term {
+    margin: 0;
+    padding: 1rem 1.2rem;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: .8rem;
+    line-height: 1.55;
+    color: #C7D4C8;
+  }
+  pre.term .cmd { color: #EAF2EA; }
+  pre.term .pass { color: #6FD37F; }
+  pre.term .dim { color: #6E7C70; }
+  pre.term .info { color: #9FB0A1; }
+  pre.term b { color: #EAF2EA; font-weight: 600; }
+
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: color-mix(in srgb, var(--accent) 7%, transparent);
+    padding: .9rem 1.1rem;
+    border-radius: 0 8px 8px 0;
+    font-size: .92rem;
+    margin: 1.2rem 0;
+  }
+  .callout strong { color: var(--accent-deep); }
+
+  ul.plain { margin: 0 0 1rem; padding-left: 1.2rem; }
+  ul.plain li { margin-bottom: .35rem; }
+
+  footer {
+    margin-top: 4rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--hair);
+    color: var(--muted);
+    font-size: .82rem;
+  }
+
+  @media (max-width: 33rem) {
+    .env { grid-template-columns: 1fr; gap: 0; }
+    .env dt { border-bottom: none; padding-bottom: 0; }
+    .env dd { padding-top: .1rem; }
+  }
+
+  /* Impression / export PDF */
+  @media print {
+    :root {
+      --ground: #FFFFFF; --panel: #FFFFFF; --ink: #000000; --muted: #444;
+      --hair: #CCC; --accent: #1F7A3D; --accent-deep: #1F7A3D;
+      --pass-bg: #EAF6EC; --pass-ink: #1F7A3D; --code-bg: #F2F2F2;
+      --shadow: none;
+    }
+    body { background: #fff; }
+    .wrap { max-width: none; padding: 0 1rem; }
+    section { break-inside: avoid; }
+    .tbl-scroll, .terminal, .env, .verdict { break-inside: avoid; box-shadow: none; }
+    .terminal { border: 1px solid #999; }
+    pre.term { color: #111; }
+    pre.term .cmd, pre.term b { color: #000; }
+    pre.term .pass { color: #1F7A3D; }
+    pre.term .dim, pre.term .info { color: #555; }
+    .terminal { background: #F4F4F4; }
+    .term-bar { background: #E8E8E8; border-bottom: 1px solid #CCC; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <p class="eyebrow">Dossier CDA &middot; Compétence &laquo; Préparer et exécuter les plans de tests &raquo;</p>
+  <h1>Plan de tests &amp; jeu d'essai</h1>
+  <p class="sub">Application web &laquo; Petit Rayon de Soleil &raquo;. Tests automatisés de l'API REST couvrant les parcours critiques du cahier des charges : authentification, contrôle d'accès, modération et conformité RGPD.</p>
+
+  <div class="meta">
+    <span><b>Projet</b> petit-rayon-de-soleil v1.0.0</span>
+    <span><b>Suite</b> <code>tests/api.test.js</code></span>
+    <span><b>Commande</b> <code>npm test</code></span>
+    <span><b>Date d'exécution</b> 12/07/2026</span>
+  </div>
+
+  <div class="verdict" role="status">
+    <div class="score">7 / 7</div>
+    <div class="vtext">
+      <strong>Tous les tests passent.</strong>
+      <span>0 échec &middot; 0 ignoré &middot; durée totale 1 745 ms</span>
+    </div>
+  </div>
+
+  <!-- 1. STRATEGIE -->
+  <section>
+    <div class="sec-head"><span class="sec-num">01</span><h2>Stratégie de test</h2></div>
+    <p>La stratégie repose sur des <strong>tests d'intégration automatisés</strong> exécutés de bout en bout contre le serveur réel : chaque test démarre l'application Express, envoie de vraies requêtes HTTP via <code>fetch</code>, et vérifie le code de statut et le corps de la réponse. Cette approche valide simultanément le routage, la logique métier, l'accès aux données SQLite et la sécurité — au plus près de l'usage réel.</p>
+    <p>Le choix a été fait de couvrir en priorité les exigences <strong>Must</strong> du MoSCoW et les exigences non fonctionnelles de sécurité, plutôt que de viser une couverture exhaustive de chaque route :</p>
+    <ul class="plain">
+      <li><strong>Cas nominal</strong> — un message aléatoire est bien renvoyé (page d'accueil).</li>
+      <li><strong>Authentification</strong> — inscription puis connexion valides ; connexion refusée avec un mauvais mot de passe.</li>
+      <li><strong>Contrôle d'accès</strong> — une route protégée refuse l'anonyme (401) ; une route admin refuse un utilisateur normal (403).</li>
+      <li><strong>Parcours métier complet</strong> — proposition d'un message → invisible tant qu'il n'est pas approuvé → approbation admin → visible.</li>
+      <li><strong>Conformité RGPD</strong> — la suppression de compte efface l'utilisateur, qui ne peut plus se connecter.</li>
+    </ul>
+    <div class="callout">
+      <strong>Outil retenu :</strong> le module natif <code>node:test</code> (assertions <code>node:assert</code>), sans aucune dépendance de test à installer. Cohérent avec la philosophie minimale du projet et exécutable partout où Node est présent.
+    </div>
+  </section>
+
+  <!-- 2. ENVIRONNEMENT -->
+  <section>
+    <div class="sec-head"><span class="sec-num">02</span><h2>Environnement de test</h2></div>
+    <p>Les tests s'exécutent en local, sur une <strong>base de données isolée</strong>. Le hook <code>before()</code> supprime l'éventuel fichier <code>soleil.db</code> puis le recrée et le remplit (seed) avant la première assertion ; le serveur écoute sur un port dédié <code>3999</code> pour ne pas entrer en conflit avec une instance de développement.</p>
+    <dl class="env">
+      <dt>Système</dt><dd>Windows 10 (win32 x64)</dd>
+      <dt>Runtime</dt><dd>Node.js v24.12.0</dd>
+      <dt>Gestionnaire</dt><dd>npm 11.6.2</dd>
+      <dt>Base de données</dt><dd>SQLite via node:sqlite (natif)</dd>
+      <dt>Port de test</dt><dd>3999 (isolé du port applicatif 3000)</dd>
+      <dt>Framework de test</dt><dd>node:test + node:assert</dd>
+      <dt>Jeu de données</dt><dd>seed : 1 admin, 1 utilisateur, 5 messages</dd>
+    </dl>
+    <h3>Procédure d'exécution</h3>
+    <ol class="steps">
+      <li>Installer les dépendances applicatives : <code>npm install</code>.</li>
+      <li>S'assurer qu'aucune instance du serveur ne tient <code>soleil.db</code> ouverte (sinon le verrou de fichier empêche la réinitialisation de la base sous Windows).</li>
+      <li>Lancer la suite : <code>npm test</code> (raccourci de <code>node --test</code>).</li>
+    </ol>
+  </section>
+
+  <!-- 3. RESULTATS -->
+  <section>
+    <div class="sec-head"><span class="sec-num">03</span><h2>Résultats : attendu vs obtenu</h2></div>
+    <p>Chaque ligne correspond à un test de <code>tests/api.test.js</code>. La colonne &laquo; Obtenu &raquo; reporte le résultat réel de l'exécution du 12/07/2026.</p>
+    <div class="tbl-scroll">
+      <table>
+        <caption>Tableau de synthèse des 7 tests — entrée, résultat attendu, résultat obtenu.</caption>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Scénario</th>
+            <th>Requête</th>
+            <th>Attendu</th>
+            <th>Obtenu</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>Message aléatoire (accueil)</td>
+            <td><span class="verb">GET</span> <span class="ep">/api/messages/random</span></td>
+            <td class="status-cell">200 + contenu non vide</td>
+            <td><span class="ok">200</span></td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Inscription puis connexion</td>
+            <td><span class="verb">POST</span> <span class="ep">/api/register</span> → <span class="verb">POST</span> <span class="ep">/api/login</span></td>
+            <td class="status-cell">201 puis 200, jeton émis</td>
+            <td><span class="ok">201 / 200</span></td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>Connexion, mauvais mot de passe</td>
+            <td><span class="verb">POST</span> <span class="ep">/api/login</span></td>
+            <td class="status-cell">401 (refus)</td>
+            <td><span class="ok">401</span></td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>Proposition sans authentification</td>
+            <td><span class="verb">POST</span> <span class="ep">/api/messages</span></td>
+            <td class="status-cell">401 (non authentifié)</td>
+            <td><span class="ok">401</span></td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td>Accès admin par un utilisateur normal</td>
+            <td><span class="verb">GET</span> <span class="ep">/api/admin/pending</span></td>
+            <td class="status-cell">403 (interdit)</td>
+            <td><span class="ok">403</span></td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td>Parcours proposition → approbation</td>
+            <td><span class="verb">POST</span> <span class="ep">/api/messages</span> → <span class="verb">POST</span> <span class="ep">/api/admin/approve/:id</span></td>
+            <td class="status-cell">invisible avant, 200, visible après</td>
+            <td><span class="ok">Conforme</span></td>
+          </tr>
+          <tr>
+            <td>7</td>
+            <td>Suppression de compte (RGPD)</td>
+            <td><span class="verb">DELETE</span> <span class="ep">/api/me</span></td>
+            <td class="status-cell">200, reconnexion impossible (401)</td>
+            <td><span class="ok">200 / 401</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Capture de la sortie du terminal</h3>
+    <div class="terminal">
+      <div class="term-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="path">petit-rayon-de-soleil — npm test</span></div>
+<pre class="term"><span class="cmd">$ npm test</span>
+
+<span class="dim">&gt; petit-rayon-de-soleil@1.0.0 test</span>
+<span class="dim">&gt; node --test</span>
+
+<span class="info">Base initialisée avec un admin, un utilisateur et 5 messages.</span>
+<span class="pass">&#10004;</span> GET /api/messages/random renvoie un message <span class="dim">(144.66ms)</span>
+<span class="pass">&#10004;</span> inscription puis connexion fonctionnent <span class="dim">(293.67ms)</span>
+<span class="pass">&#10004;</span> connexion avec mauvais mot de passe est refusée <span class="dim">(119.81ms)</span>
+<span class="pass">&#10004;</span> proposer un message sans être connecté est refusé (401) <span class="dim">(4.42ms)</span>
+<span class="pass">&#10004;</span> un utilisateur normal ne peut pas accéder à l'admin (403) <span class="dim">(120.08ms)</span>
+<span class="pass">&#10004;</span> parcours complet : proposition -&gt; approbation admin <span class="dim">(245.25ms)</span>
+<span class="pass">&#10004;</span> suppression de compte (RGPD) efface l'utilisateur <span class="dim">(125.88ms)</span>
+<span class="info">&#8505; tests 7</span>
+<span class="info">&#8505; suites 0</span>
+<span class="info">&#8505;</span> <b>pass 7</b>
+<span class="info">&#8505; fail 0</span>
+<span class="info">&#8505; skipped 0</span>
+<span class="info">&#8505; duration_ms 1745.69</span></pre>
+    </div>
+  </section>
+
+  <!-- 4. JEU D'ESSAI -->
+  <section>
+    <div class="sec-head"><span class="sec-num">04</span><h2>Jeu d'essai détaillé — fonctionnalité la plus représentative</h2></div>
+    <p>La fonctionnalité retenue est le <strong>parcours proposition → approbation</strong> (test #6). Elle traverse toutes les couches de l'application et implique les deux rôles (utilisateur et administrateur), ce qui en fait le scénario le plus démonstratif du bon fonctionnement du système.</p>
+    <div class="tbl-scroll">
+      <table>
+        <caption>Décomposition étape par étape : entrée → attendu → obtenu → écart.</caption>
+        <thead>
+          <tr><th>Étape</th><th>Entrée</th><th>Attendu</th><th>Obtenu</th><th>Écart</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1 &middot; Proposer</td>
+            <td>Utilisateur de démo <code>user@soleil.fr</code> connecté envoie <span class="ep">POST /api/messages</span> avec <code>{ content: "Tu es capable de grandes choses." }</code></td>
+            <td class="status-cell">201, message créé avec <code>approved = 0</code></td>
+            <td><span class="ok">201</span></td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td>2 &middot; Vérifier l'invisibilité</td>
+            <td><span class="ep">GET /api/messages</span> (liste publique)</td>
+            <td class="status-cell">le message n'apparaît pas</td>
+            <td><span class="ok">absent</span></td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td>3 &middot; Approuver</td>
+            <td>Admin connecté envoie <span class="ep">POST /api/admin/approve/:id</span></td>
+            <td class="status-cell">200, passage à <code>approved = 1</code></td>
+            <td><span class="ok">200</span></td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td>4 &middot; Vérifier la visibilité</td>
+            <td><span class="ep">GET /api/messages</span> à nouveau</td>
+            <td class="status-cell">le message apparaît désormais</td>
+            <td><span class="ok">présent</span></td>
+            <td>—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout">
+      <strong>Aucun écart constaté.</strong> Le comportement observé correspond exactement au comportement attendu à chaque étape. Le cycle de modération fonctionne : un message reste privé tant qu'un administrateur ne l'a pas approuvé.
+    </div>
+
+    <h3>Piste d'amélioration</h3>
+    <p>Pour renforcer le volet sécurité du plan de tests, un test explicite d'anti-injection SQL pourrait être ajouté (envoi d'une charge du type <code>' OR '1'='1</code> dans un champ, et vérification qu'elle est traitée comme une donnée littérale grâce aux requêtes paramétrées, sans effet sur la base).</p>
+  </section>
+
+  <footer>
+    Document généré à partir de l'exécution réelle de la suite <code>tests/api.test.js</code> &middot; Petit Rayon de Soleil &middot; Titre professionnel CDA.
+  </footer>
+
+</div>
+</body>
+</html>

@@ -29,7 +29,7 @@ Puis ouvre **http://localhost:3000** dans ton navigateur.
 | Rôle | Email | Mot de passe |
 |------|-------|--------------|
 | Admin | `admin@soleil.fr` | `admin123` |
-| Utilisateur | `damien@soleil.fr` | `damien123` |
+| Utilisateur | `user@soleil.fr` | `user1234` |
 
 ## Lancer les tests
 

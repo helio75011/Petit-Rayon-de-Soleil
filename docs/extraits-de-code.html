@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Extraits de code — Petit Rayon de Soleil</title>
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  :root {
+    --ground: #FBFCFB;
+    --panel: #FFFFFF;
+    --ink: #1B211D;
+    --muted: #5A635C;
+    --hair: #E2E8E3;
+    --accent: #2E9E52;
+    --accent-deep: #1F7A3D;
+    --chip: #E9F6EC;
+    --code-bg: #0E140F;
+    --shadow: 0 1px 2px rgba(27,33,29,.05), 0 8px 28px rgba(27,33,29,.06);
+    --serif: Georgia, 'Times New Roman', serif;
+    --sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --mono: ui-monospace, 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+    /* Syntaxe (fond sombre) */
+    --c-key: #7BD996;
+    --c-str: #E5C07B;
+    --c-com: #6E7C70;
+    --c-fn: #7FBBE8;
+    --c-num: #D6A0F0;
+    --c-txt: #D3DED4;
+    --c-line: #4A574C;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground: #12160F; --panel: #191E17; --ink: #E7EDE7; --muted: #9AA79C;
+      --hair: #2A3228; --accent: #56C878; --accent-deep: #7BD996; --chip: #14251A;
+      --code-bg: #0C110C;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="light"] {
+    --ground: #FBFCFB; --panel: #FFFFFF; --ink: #1B211D; --muted: #5A635C;
+    --hair: #E2E8E3; --accent: #2E9E52; --accent-deep: #1F7A3D; --chip: #E9F6EC;
+    --code-bg: #0E140F;
+    --shadow: 0 1px 2px rgba(27,33,29,.05), 0 8px 28px rgba(27,33,29,.06);
+  }
+  :root[data-theme="dark"] {
+    --ground: #12160F; --panel: #191E17; --ink: #E7EDE7; --muted: #9AA79C;
+    --hair: #2A3228; --accent: #56C878; --accent-deep: #7BD996; --chip: #14251A;
+    --code-bg: #0C110C;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--ground); color: var(--ink);
+    font-family: var(--sans); line-height: 1.6; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 56rem; margin: 0 auto; padding: clamp(1.5rem,4vw,4rem) clamp(1.1rem,4vw,2.5rem) 5rem; }
+
+  .eyebrow {
+    font-family: var(--mono); font-size: .72rem; letter-spacing: .18em;
+    text-transform: uppercase; color: var(--accent-deep); margin: 0 0 .9rem;
+  }
+  h1 {
+    font-family: var(--serif); font-weight: 600; font-size: clamp(1.9rem,5vw,2.9rem);
+    line-height: 1.1; letter-spacing: -.01em; text-wrap: balance; margin: 0 0 .5rem;
+  }
+  .sub { color: var(--muted); font-size: 1.05rem; max-width: 46rem; margin: 0 0 1.6rem; }
+  .meta {
+    display: flex; flex-wrap: wrap; gap: .5rem 1.4rem; padding: 1rem 0 0;
+    border-top: 1px solid var(--hair); font-size: .85rem; color: var(--muted);
+  }
+  .meta b { color: var(--ink); font-weight: 600; }
+  .meta code { font-family: var(--mono); font-size: .82rem; }
+
+  /* Carte extrait */
+  .snippet { margin-top: 2.6rem; break-inside: avoid; }
+  .snip-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: .5rem .8rem; margin: 0 0 .7rem; }
+  .snip-num {
+    font-family: var(--mono); font-size: .78rem; font-weight: 700; color: #fff;
+    background: var(--accent); border-radius: 6px; padding: .12rem .5rem; line-height: 1.5;
+  }
+  .snip-head h2 { font-family: var(--serif); font-weight: 600; font-size: 1.3rem; margin: 0; }
+  .loc {
+    font-family: var(--mono); font-size: .76rem; color: var(--muted);
+    background: var(--chip); border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+    padding: .1rem .5rem; border-radius: 5px;
+  }
+
+  /* Bloc de code */
+  .code {
+    background: var(--code-bg); border-radius: 12px; overflow: hidden;
+    box-shadow: var(--shadow); border: 1px solid #223022;
+  }
+  .code-bar {
+    display: flex; align-items: center; gap: .5rem; padding: .55rem .9rem;
+    background: #161E17; border-bottom: 1px solid #223022;
+  }
+  .code-bar i { width: .68rem; height: .68rem; border-radius: 50%; display: block; }
+  .code-bar .r { background: #E5534B; } .code-bar .y { background: #E5B14B; } .code-bar .g { background: #5FB96A; }
+  .code-bar .fname { margin-left: .5rem; font-family: var(--mono); font-size: .74rem; color: #8FA091; }
+  pre {
+    margin: 0; padding: 1rem 0; overflow-x: auto;
+    font-family: var(--mono); font-size: .82rem; line-height: 1.7; color: var(--c-txt);
+    counter-reset: ln;
+    tab-size: 2;
+  }
+  pre code { display: block; }
+  .ln {
+    display: block; white-space: pre; padding: 0 1.2rem 0 0;
+  }
+  .ln::before {
+    counter-increment: ln;
+    content: attr(data-l);
+    display: inline-block;
+    width: 2.4rem;
+    padding-right: 1rem;
+    margin-right: .8rem;
+    text-align: right;
+    color: var(--c-line);
+    border-right: 1px solid #223022;
+    -webkit-user-select: none; user-select: none;
+  }
+  .k { color: var(--c-key); }
+  .s { color: var(--c-str); }
+  .c { color: var(--c-com); font-style: italic; }
+  .f { color: var(--c-fn); }
+  .n { color: var(--c-num); }
+
+  .note {
+    display: flex; gap: .7rem; margin-top: .8rem;
+    border-left: 3px solid var(--accent);
+    background: color-mix(in srgb, var(--accent) 7%, transparent);
+    padding: .8rem 1rem; border-radius: 0 8px 8px 0; font-size: .9rem;
+  }
+  .note .tag {
+    font-family: var(--mono); font-size: .66rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent-deep); font-weight: 700; white-space: nowrap; padding-top: .12rem;
+  }
+  .note p { margin: 0; }
+  .note code { font-family: var(--mono); font-size: .84em; background: color-mix(in srgb, var(--accent) 12%, transparent); padding: .05em .35em; border-radius: 4px; }
+
+  footer {
+    margin-top: 3.5rem; padding-top: 1.2rem; border-top: 1px solid var(--hair);
+    color: var(--muted); font-size: .82rem;
+  }
+
+  @media print {
+    :root { --ground:#fff; --panel:#fff; --ink:#000; --muted:#444; --hair:#ccc; }
+    body { background:#fff; }
+    .wrap { max-width:none; padding:0 1rem; }
+    .code { border:1px solid #999; box-shadow:none; }
+    .snippet { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="eyebrow">Dossier CDA &middot; Annexes &middot; Extraits de code significatifs</p>
+  <h1>Extraits de code commentés</h1>
+  <p class="sub">Six extraits représentatifs de l'application &laquo; Petit Rayon de Soleil &raquo;, illustrant l'authentification, le contrôle d'accès par rôle, la sécurité des requêtes et la conformité RGPD. Chaque extrait est reproduit fidèlement depuis le code source, avec son emplacement exact.</p>
+  <div class="meta">
+    <span><b>Fichiers</b> <code>server.js</code>, <code>auth.js</code></span>
+    <span><b>Stack</b> Node.js + Express + SQLite (node:sqlite)</span>
+    <span><b>Sécurité</b> bcrypt &middot; tokens &middot; requêtes paramétrées</span>
+  </div>
+
+  <!-- 1. INSCRIPTION / CONNEXION -->
+  <div class="snippet">
+    <div class="snip-head">
+      <span class="snip-num">01</span>
+      <h2>Inscription &amp; connexion</h2>
+      <span class="loc">server.js : 30–60</span>
+    </div>
+    <div class="code">
+      <div class="code-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="fname">server.js</span></div>
+<pre><code><span class="ln" data-l="30"><span class="c">// POST /api/register — inscription. Body: { name, email, password }</span></span><span class="ln" data-l="31"><span class="f">app</span>.<span class="f">post</span>(<span class="s">'/api/register'</span>, (req, res) =&gt; {</span><span class="ln" data-l="32">  <span class="k">const</span> { name, email, password } = req.body || {};</span><span class="ln" data-l="33">  <span class="k">if</span> (!name || !email || !password) {</span><span class="ln" data-l="34">    <span class="k">return</span> res.<span class="f">status</span>(<span class="n">400</span>).<span class="f">json</span>({ error: <span class="s">'Nom, email et mot de passe sont requis.'</span> });</span><span class="ln" data-l="35">  }</span><span class="ln" data-l="36">  <span class="k">if</span> (password.length &lt; <span class="n">6</span>) {</span><span class="ln" data-l="37">    <span class="k">return</span> res.<span class="f">status</span>(<span class="n">400</span>).<span class="f">json</span>({ error: <span class="s">'Le mot de passe doit faire au moins 6 caractères.'</span> });</span><span class="ln" data-l="38">  }</span><span class="ln" data-l="39">  <span class="k">const</span> existing = db.<span class="f">prepare</span>(<span class="s">'SELECT id FROM users WHERE email = ?'</span>).<span class="f">get</span>(email);</span><span class="ln" data-l="40">  <span class="k">if</span> (existing) <span class="k">return</span> res.<span class="f">status</span>(<span class="n">409</span>).<span class="f">json</span>({ error: <span class="s">'Cet email est déjà utilisé.'</span> });</span><span class="ln" data-l="41"></span><span class="ln" data-l="42">  <span class="k">const</span> info = db</span><span class="ln" data-l="43">    .<span class="f">prepare</span>(<span class="s">'INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)'</span>)</span><span class="ln" data-l="44">    .<span class="f">run</span>(name, email, auth.<span class="f">hashPassword</span>(password));</span><span class="ln" data-l="45"></span><span class="ln" data-l="46">  <span class="k">const</span> token = auth.<span class="f">createSession</span>(info.lastInsertRowid);</span><span class="ln" data-l="47">  res.<span class="f">status</span>(<span class="n">201</span>).<span class="f">json</span>({ token, user: { id: info.lastInsertRowid, name, email, role: <span class="s">'user'</span> } });</span><span class="ln" data-l="48">});</span><span class="ln" data-l="49"></span><span class="ln" data-l="50"><span class="c">// POST /api/login — connexion. Body: { email, password }</span></span><span class="ln" data-l="51"><span class="f">app</span>.<span class="f">post</span>(<span class="s">'/api/login'</span>, (req, res) =&gt; {</span><span class="ln" data-l="52">  <span class="k">const</span> { email, password } = req.body || {};</span><span class="ln" data-l="53">  <span class="k">const</span> user = db.<span class="f">prepare</span>(<span class="s">'SELECT * FROM users WHERE email = ?'</span>).<span class="f">get</span>(email);</span><span class="ln" data-l="54">  <span class="c">// Message volontairement générique pour ne pas révéler si l'email existe.</span></span><span class="ln" data-l="55">  <span class="k">if</span> (!user || !auth.<span class="f">checkPassword</span>(password, user.password_hash)) {</span><span class="ln" data-l="56">    <span class="k">return</span> res.<span class="f">status</span>(<span class="n">401</span>).<span class="f">json</span>({ error: <span class="s">'Email ou mot de passe incorrect.'</span> });</span><span class="ln" data-l="57">  }</span><span class="ln" data-l="58">  <span class="k">const</span> token = auth.<span class="f">createSession</span>(user.id);</span><span class="ln" data-l="59">  res.<span class="f">json</span>({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role } });</span><span class="ln" data-l="60">});</span></code></pre>
+    </div>
+    <div class="note"><span class="tag">À retenir</span><p>Validation des entrées, unicité de l'email (<code>409</code>), mot de passe <strong>jamais stocké en clair</strong> (<code>hashPassword</code>). À la connexion, message d'erreur <strong>générique</strong> : on ne révèle pas si l'email existe, pour ne pas aider un attaquant.</p></div>
+  </div>
+
+  <!-- 2. requireAuth -->
+  <div class="snippet">
+    <div class="snip-head">
+      <span class="snip-num">02</span>
+      <h2>Middleware <code>requireAuth</code></h2>
+      <span class="loc">auth.js : 61–67</span>
+    </div>
+    <div class="code">
+      <div class="code-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="fname">auth.js</span></div>
+<pre><code><span class="ln" data-l="61"><span class="c">/** Middleware : exige un utilisateur connecté. */</span></span><span class="ln" data-l="62"><span class="k">function</span> <span class="f">requireAuth</span>(req, res, next) {</span><span class="ln" data-l="63">  <span class="k">const</span> user = <span class="f">userFromToken</span>(<span class="f">tokenFromReq</span>(req));</span><span class="ln" data-l="64">  <span class="k">if</span> (!user) <span class="k">return</span> res.<span class="f">status</span>(<span class="n">401</span>).<span class="f">json</span>({ error: <span class="s">'Non authentifié'</span> });</span><span class="ln" data-l="65">  req.user = user;</span><span class="ln" data-l="66">  <span class="f">next</span>();</span><span class="ln" data-l="67">}</span></code></pre>
+    </div>
+    <div class="note"><span class="tag">À retenir</span><p>Composant <strong>réutilisable</strong> placé devant chaque route sensible. Il lit le token (<code>Bearer</code>), retrouve l'utilisateur en base, et refuse l'accès (<code>401</code>) si le token est absent ou invalide. En cas de succès, l'utilisateur est attaché à <code>req.user</code> pour la suite.</p></div>
+  </div>
+
+  <!-- 3. requireAdmin -->
+  <div class="snippet">
+    <div class="snip-head">
+      <span class="snip-num">03</span>
+      <h2>Contrôle administrateur <code>requireAdmin</code></h2>
+      <span class="loc">auth.js : 69–76</span>
+    </div>
+    <div class="code">
+      <div class="code-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="fname">auth.js</span></div>
+<pre><code><span class="ln" data-l="69"><span class="c">/** Middleware : exige un utilisateur connecté ET administrateur. */</span></span><span class="ln" data-l="70"><span class="k">function</span> <span class="f">requireAdmin</span>(req, res, next) {</span><span class="ln" data-l="71">  <span class="k">const</span> user = <span class="f">userFromToken</span>(<span class="f">tokenFromReq</span>(req));</span><span class="ln" data-l="72">  <span class="k">if</span> (!user) <span class="k">return</span> res.<span class="f">status</span>(<span class="n">401</span>).<span class="f">json</span>({ error: <span class="s">'Non authentifié'</span> });</span><span class="ln" data-l="73">  <span class="k">if</span> (user.role !== <span class="s">'admin'</span>) <span class="k">return</span> res.<span class="f">status</span>(<span class="n">403</span>).<span class="f">json</span>({ error: <span class="s">'Accès réservé à l’administrateur'</span> });</span><span class="ln" data-l="74">  req.user = user;</span><span class="ln" data-l="75">  <span class="f">next</span>();</span><span class="ln" data-l="76">}</span></code></pre>
+    </div>
+    <div class="note"><span class="tag">À retenir</span><p>Contrôle d'accès <strong>par rôle</strong>. Deux niveaux distincts : non connecté → <code>401</code> ; connecté mais pas administrateur → <code>403</code> (interdit). C'est ce middleware qui protège toutes les routes <code>/api/admin/*</code> de modération.</p></div>
+  </div>
+
+  <!-- 4. Requête SQL paramétrée -->
+  <div class="snippet">
+    <div class="snip-head">
+      <span class="snip-num">04</span>
+      <h2>Requête SQL paramétrée (anti-injection)</h2>
+      <span class="loc">auth.js : 19–33</span>
+    </div>
+    <div class="code">
+      <div class="code-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="fname">auth.js</span></div>
+<pre><code><span class="ln" data-l="19"><span class="c">/** Hache un mot de passe en clair. */</span></span><span class="ln" data-l="20"><span class="k">function</span> <span class="f">hashPassword</span>(plain) {</span><span class="ln" data-l="21">  <span class="k">return</span> bcrypt.<span class="f">hashSync</span>(plain, <span class="n">10</span>);</span><span class="ln" data-l="22">}</span><span class="ln" data-l="23"></span><span class="ln" data-l="24"><span class="c">/** Vérifie un mot de passe en clair contre son hash stocké. */</span></span><span class="ln" data-l="25"><span class="k">function</span> <span class="f">checkPassword</span>(plain, hash) {</span><span class="ln" data-l="26">  <span class="k">return</span> bcrypt.<span class="f">compareSync</span>(plain, hash);</span><span class="ln" data-l="27">}</span><span class="ln" data-l="28"></span><span class="ln" data-l="29"><span class="c">/** Crée une session pour un utilisateur et renvoie le token. */</span></span><span class="ln" data-l="30"><span class="k">function</span> <span class="f">createSession</span>(userId) {</span><span class="ln" data-l="31">  <span class="k">const</span> token = <span class="f">genToken</span>();</span><span class="ln" data-l="32">  db.<span class="f">prepare</span>(<span class="s">'INSERT INTO sessions (token, user_id) VALUES (?, ?)'</span>).<span class="f">run</span>(token, userId);</span><span class="ln" data-l="33">  <span class="k">return</span> token;</span></code></pre>
+    </div>
+    <div class="note"><span class="tag">À retenir</span><p>Toutes les requêtes utilisent des <strong>paramètres préparés</strong> (<code>?</code>) : les valeurs (<code>token</code>, <code>userId</code>…) sont transmises séparément du SQL et ne peuvent pas être interprétées comme du code → <strong>protection contre l'injection SQL</strong>. Le token de session est de plus généré de façon imprévisible (<code>crypto.randomBytes</code>).</p></div>
+  </div>
+
+  <!-- 5. Suppression du compte (RGPD) -->
+  <div class="snippet">
+    <div class="snip-head">
+      <span class="snip-num">05</span>
+      <h2>Suppression du compte (RGPD)</h2>
+      <span class="loc">server.js : 85–90</span>
+    </div>
+    <div class="code">
+      <div class="code-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="fname">server.js</span></div>
+<pre><code><span class="ln" data-l="85"><span class="c">// DELETE /api/me — suppression du compte et de toutes ses données (droit RGPD).</span></span><span class="ln" data-l="86"><span class="c">// Les favoris et sessions sont supprimés en cascade (ON DELETE CASCADE).</span></span><span class="ln" data-l="87"><span class="f">app</span>.<span class="f">delete</span>(<span class="s">'/api/me'</span>, auth.requireAuth, (req, res) =&gt; {</span><span class="ln" data-l="88">  db.<span class="f">prepare</span>(<span class="s">'DELETE FROM users WHERE id = ?'</span>).<span class="f">run</span>(req.user.id);</span><span class="ln" data-l="89">  res.<span class="f">json</span>({ ok: <span class="k">true</span>, message: <span class="s">'Compte et données personnelles supprimés.'</span> });</span><span class="ln" data-l="90">});</span></code></pre>
+    </div>
+    <div class="note"><span class="tag">À retenir</span><p>Droit à l'effacement (RGPD) : la suppression de l'utilisateur entraîne, <strong>en cascade</strong> (<code>ON DELETE CASCADE</code> défini au niveau de la base), la suppression de ses favoris et de ses sessions. Aucune donnée personnelle ne subsiste. Route protégée par <code>requireAuth</code> : on ne peut supprimer que son propre compte (<code>req.user.id</code>).</p></div>
+  </div>
+
+  <!-- 6. Ajout / retrait de favoris -->
+  <div class="snippet">
+    <div class="snip-head">
+      <span class="snip-num">06</span>
+      <h2>Ajout &amp; retrait de favoris</h2>
+      <span class="loc">server.js : 148–168</span>
+    </div>
+    <div class="code">
+      <div class="code-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="fname">server.js</span></div>
+<pre><code><span class="ln" data-l="148"><span class="c">// POST /api/favoris — ajouter un message en favori. Body: { message_id }</span></span><span class="ln" data-l="149"><span class="f">app</span>.<span class="f">post</span>(<span class="s">'/api/favoris'</span>, auth.requireAuth, (req, res) =&gt; {</span><span class="ln" data-l="150">  <span class="k">const</span> { message_id } = req.body || {};</span><span class="ln" data-l="151">  <span class="k">const</span> msg = db.<span class="f">prepare</span>(<span class="s">'SELECT id FROM messages WHERE id = ? AND approved = 1'</span>).<span class="f">get</span>(message_id);</span><span class="ln" data-l="152">  <span class="k">if</span> (!msg) <span class="k">return</span> res.<span class="f">status</span>(<span class="n">404</span>).<span class="f">json</span>({ error: <span class="s">'Message introuvable.'</span> });</span><span class="ln" data-l="153">  <span class="c">// INSERT OR IGNORE : pas d'erreur si le favori existe déjà.</span></span><span class="ln" data-l="154">  db.<span class="f">prepare</span>(<span class="s">'INSERT OR IGNORE INTO favoris (user_id, message_id) VALUES (?, ?)'</span>).<span class="f">run</span>(</span><span class="ln" data-l="155">    req.user.id,</span><span class="ln" data-l="156">    message_id</span><span class="ln" data-l="157">  );</span><span class="ln" data-l="158">  res.<span class="f">status</span>(<span class="n">201</span>).<span class="f">json</span>({ ok: <span class="k">true</span> });</span><span class="ln" data-l="159">});</span><span class="ln" data-l="160"></span><span class="ln" data-l="161"><span class="c">// DELETE /api/favoris/:id — retirer un message des favoris.</span></span><span class="ln" data-l="162"><span class="f">app</span>.<span class="f">delete</span>(<span class="s">'/api/favoris/:id'</span>, auth.requireAuth, (req, res) =&gt; {</span><span class="ln" data-l="163">  db.<span class="f">prepare</span>(<span class="s">'DELETE FROM favoris WHERE user_id = ? AND message_id = ?'</span>).<span class="f">run</span>(</span><span class="ln" data-l="164">    req.user.id,</span><span class="ln" data-l="165">    req.params.id</span><span class="ln" data-l="166">  );</span><span class="ln" data-l="167">  res.<span class="f">json</span>({ ok: <span class="k">true</span> });</span><span class="ln" data-l="168">});</span></code></pre>
+    </div>
+    <div class="note"><span class="tag">À retenir</span><p>Relation <strong>N,N</strong> (table de liaison <code>favoris</code>). L'ajout vérifie que le message existe et est approuvé, et utilise <code>INSERT OR IGNORE</code> pour éviter un doublon. Ajout comme retrait sont <strong>filtrés sur <code>req.user.id</code></strong> : un utilisateur n'agit que sur ses propres favoris.</p></div>
+  </div>
+
+  <footer>
+    Extraits reproduits fidèlement depuis le code source de &laquo; Petit Rayon de Soleil &raquo; &middot; Titre professionnel CDA. Numéros de ligne conformes aux fichiers <code>server.js</code> et <code>auth.js</code>.
+  </footer>
+
+</div>
+</body>
+</html>
