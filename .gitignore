@@ -3,3 +3,8 @@ soleil.db
 soleil.db-wal
 soleil.db-shm
 *.log
+
+# Vercel
+.vercel
+.env
+.env.local

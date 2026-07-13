@@ -27,21 +27,21 @@ function checkPassword(plain, hash) {
 }
 
 /** Crée une session pour un utilisateur et renvoie le token. */
-function createSession(userId) {
+async function createSession(userId) {
   const token = genToken();
-  db.prepare('INSERT INTO sessions (token, user_id) VALUES (?, ?)').run(token, userId);
+  await db.prepare('INSERT INTO sessions (token, user_id) VALUES (?, ?)').run(token, userId);
   return token;
 }
 
 /** Supprime une session (déconnexion). */
-function destroySession(token) {
-  db.prepare('DELETE FROM sessions WHERE token = ?').run(token);
+async function destroySession(token) {
+  await db.prepare('DELETE FROM sessions WHERE token = ?').run(token);
 }
 
 /** Retrouve l'utilisateur associé à un token, ou null. */
-function userFromToken(token) {
+async function userFromToken(token) {
   if (!token) return null;
-  const row = db
+  const row = await db
     .prepare(
       `SELECT u.id, u.name, u.email, u.role
          FROM sessions s
@@ -59,16 +59,16 @@ function tokenFromReq(req) {
 }
 
 /** Middleware : exige un utilisateur connecté. */
-function requireAuth(req, res, next) {
-  const user = userFromToken(tokenFromReq(req));
+async function requireAuth(req, res, next) {
+  const user = await userFromToken(tokenFromReq(req));
   if (!user) return res.status(401).json({ error: 'Non authentifié' });
   req.user = user;
   next();
 }
 
 /** Middleware : exige un utilisateur connecté ET administrateur. */
-function requireAdmin(req, res, next) {
-  const user = userFromToken(tokenFromReq(req));
+async function requireAdmin(req, res, next) {
+  const user = await userFromToken(tokenFromReq(req));
   if (!user) return res.status(401).json({ error: 'Non authentifié' });
   if (user.role !== 'admin') return res.status(403).json({ error: 'Accès réservé à l’administrateur' });
   req.user = user;

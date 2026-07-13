@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jeu d'essai &amp; restauration de la base — Petit Rayon de Soleil</title>
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  :root {
+    --ground:#FBFCFB; --panel:#FFFFFF; --ink:#1B211D; --muted:#5A635C; --hair:#E2E8E3;
+    --accent:#2E9E52; --accent-deep:#1F7A3D; --code-bg:#0E140F;
+    --chip:#E9F6EC; --warn-bg:#FBF1DA; --warn-ink:#9A6B12; --warn-bd:#E4C061;
+    --ok:#2E9E52; --ok-bg:#E9F6EC; --ok-bd:#B9E0C3;
+    --wait:#B4791F; --wait-bg:#FBF1DA; --wait-bd:#E4C061;
+    --rej:#C0392B; --rej-bg:#FBEBE9; --rej-bd:#EDC3BD;
+    --shadow:0 1px 2px rgba(27,33,29,.05),0 8px 26px rgba(27,33,29,.07);
+    --serif:Georgia,'Times New Roman',serif;
+    --sans:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    --mono:ui-monospace,'SF Mono','Cascadia Code','Consolas',monospace;
+    --c-com:#6E7C70; --c-var:#E5C07B; --c-str:#98C379; --c-cmd:#EAF2EA; --c-kw:#C678DD;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground:#12160F; --panel:#191E17; --ink:#E7EDE7; --muted:#9AA79C; --hair:#2A3228;
+      --accent:#56C878; --accent-deep:#7BD996; --code-bg:#0C110C;
+      --chip:#14251A; --warn-bg:#241E0F; --warn-ink:#E4C061; --warn-bd:#5C4A1E;
+      --ok:#56C878; --ok-bg:#12251A; --ok-bd:#2E5238;
+      --wait:#E4C061; --wait-bg:#241E0F; --wait-bd:#5C4A1E;
+      --rej:#E88C82; --rej-bg:#2A1815; --rej-bd:#5C2E28;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.4);
+    }
+  }
+  :root[data-theme="light"] {
+    --ground:#FBFCFB;--panel:#FFFFFF;--ink:#1B211D;--muted:#5A635C;--hair:#E2E8E3;
+    --accent:#2E9E52;--accent-deep:#1F7A3D;--code-bg:#0E140F;--chip:#E9F6EC;
+    --warn-bg:#FBF1DA;--warn-ink:#9A6B12;--warn-bd:#E4C061;
+    --ok:#2E9E52;--ok-bg:#E9F6EC;--ok-bd:#B9E0C3;
+    --wait:#B4791F;--wait-bg:#FBF1DA;--wait-bd:#E4C061;
+    --rej:#C0392B;--rej-bg:#FBEBE9;--rej-bd:#EDC3BD;
+    --shadow:0 1px 2px rgba(27,33,29,.05),0 8px 26px rgba(27,33,29,.07);
+  }
+  :root[data-theme="dark"] {
+    --ground:#12160F;--panel:#191E17;--ink:#E7EDE7;--muted:#9AA79C;--hair:#2A3228;
+    --accent:#56C878;--accent-deep:#7BD996;--code-bg:#0C110C;--chip:#14251A;
+    --warn-bg:#241E0F;--warn-ink:#E4C061;--warn-bd:#5C4A1E;
+    --ok:#56C878;--ok-bg:#12251A;--ok-bd:#2E5238;
+    --wait:#E4C061;--wait-bg:#241E0F;--wait-bd:#5C4A1E;
+    --rej:#E88C82;--rej-bg:#2A1815;--rej-bd:#5C2E28;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.4);
+  }
+
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--ground); color:var(--ink); font-family:var(--sans); line-height:1.6; -webkit-font-smoothing:antialiased; }
+  .wrap { max-width:54rem; margin:0 auto; padding:clamp(1.5rem,4vw,4rem) clamp(1.1rem,4vw,2.5rem) 5rem; }
+
+  .eyebrow { font-family:var(--mono); font-size:.72rem; letter-spacing:.18em; text-transform:uppercase; color:var(--accent-deep); margin:0 0 .9rem; }
+  h1 { font-family:var(--serif); font-weight:600; font-size:clamp(1.9rem,5vw,2.9rem); line-height:1.1; letter-spacing:-.01em; text-wrap:balance; margin:0 0 .5rem; }
+  .sub { color:var(--muted); font-size:1.05rem; max-width:46rem; margin:0 0 1.6rem; }
+  .meta { display:flex; flex-wrap:wrap; gap:.5rem 1.4rem; padding:1rem 0 0; border-top:1px solid var(--hair); font-size:.85rem; color:var(--muted); }
+  .meta b { color:var(--ink); font-weight:600; }
+  .meta code { font-family:var(--mono); font-size:.82rem; }
+
+  section { margin-top:2.8rem; }
+  .sec-head { display:flex; align-items:baseline; gap:.8rem; margin:0 0 .3rem; padding-bottom:.6rem; border-bottom:2px solid var(--ink); }
+  .sec-num { font-family:var(--mono); font-size:.95rem; font-weight:700; color:#fff; background:var(--accent); border-radius:7px; padding:.15rem .55rem; }
+  h2 { font-family:var(--serif); font-weight:600; font-size:1.35rem; margin:0; }
+  .sec-desc { color:var(--muted); font-size:.95rem; margin:.7rem 0 1rem; }
+  h3 { font-size:.95rem; font-weight:700; margin:1.6rem 0 .6rem; display:flex; align-items:center; gap:.5rem; }
+  p { margin:0 0 1rem; }
+  a { color:var(--accent-deep); }
+  strong { font-weight:700; }
+
+  code { font-family:var(--mono); font-size:.86em; }
+  p code, li code, td code, dd code { background:var(--chip); padding:.1em .4em; border-radius:5px; }
+
+  /* Bandeau récap du jeu d'essai */
+  .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(7rem,1fr)); gap:.8rem; margin-top:1.4rem; }
+  .stat { background:var(--panel); border:1px solid var(--hair); border-radius:12px; padding:.9rem 1rem; box-shadow:var(--shadow); text-align:center; }
+  .stat .n { font-family:var(--serif); font-size:1.7rem; font-weight:600; color:var(--accent-deep); line-height:1; }
+  .stat .l { font-size:.76rem; color:var(--muted); margin-top:.35rem; line-height:1.3; }
+
+  .tbl-scroll { overflow-x:auto; border:1px solid var(--hair); border-radius:12px; box-shadow:var(--shadow); }
+  table { border-collapse:collapse; width:100%; font-size:.86rem; background:var(--panel); }
+  thead th { background:var(--accent); color:#fff; text-align:left; font-weight:600; padding:.6rem .8rem; font-size:.8rem; white-space:nowrap; }
+  tbody td { padding:.55rem .8rem; border-top:1px solid var(--hair); vertical-align:top; }
+  tbody tr:nth-child(even) td { background:color-mix(in srgb,var(--chip) 40%,transparent); }
+  td.id { font-family:var(--mono); color:var(--muted); font-variant-numeric:tabular-nums; white-space:nowrap; }
+  td.mono { font-family:var(--mono); font-size:.8rem; }
+
+  .pill { display:inline-block; font-family:var(--mono); font-size:.68rem; font-weight:700; letter-spacing:.03em; padding:.12em .55em; border-radius:20px; white-space:nowrap; }
+  .pill.ok   { color:var(--ok);   background:var(--ok-bg);   border:1px solid var(--ok-bd); }
+  .pill.wait { color:var(--wait); background:var(--wait-bg); border:1px solid var(--wait-bd); }
+  .pill.rej  { color:var(--rej);  background:var(--rej-bg);  border:1px solid var(--rej-bd); }
+  .pill.role { color:var(--accent-deep); background:var(--chip); border:1px solid var(--ok-bd); }
+
+  /* Terminal */
+  .term { background:var(--code-bg); border-radius:12px; overflow:hidden; box-shadow:var(--shadow); border:1px solid #223022; margin:1rem 0; }
+  .term-bar { display:flex; align-items:center; gap:.5rem; padding:.55rem .9rem; background:#161E17; border-bottom:1px solid #223022; }
+  .term-bar i { width:.68rem; height:.68rem; border-radius:50%; display:block; }
+  .term-bar .r{background:#E5534B;} .term-bar .y{background:#E5B14B;} .term-bar .g{background:#5FB96A;}
+  .term-bar .lbl { margin-left:.5rem; font-family:var(--mono); font-size:.72rem; color:#8FA091; }
+  pre { margin:0; padding:.9rem 1.1rem; overflow-x:auto; font-family:var(--mono); font-size:.8rem; line-height:1.7; color:#C7D4C8; }
+  pre .com { color:var(--c-com); } pre .var { color:var(--c-var); } pre .str { color:var(--c-str); } pre .cmd { color:var(--c-cmd); } pre .kw { color:var(--c-kw); } pre .out { color:#8FA091; }
+
+  ol.steps { counter-reset:s; list-style:none; margin:0; padding:0; }
+  ol.steps > li { position:relative; padding:.15rem 0 .15rem 2rem; margin-bottom:.7rem; }
+  ol.steps > li::before { counter-increment:s; content:counter(s); position:absolute; left:0; top:.1rem; width:1.4rem; height:1.4rem; background:var(--accent); color:#fff; border-radius:50%; display:grid; place-items:center; font-family:var(--mono); font-size:.76rem; font-weight:700; }
+
+  .warn { display:flex; gap:.7rem; margin:1.2rem 0; padding:.9rem 1.1rem; background:var(--warn-bg); border:1px solid var(--warn-bd); border-radius:10px; font-size:.9rem; }
+  .warn .tag { font-family:var(--mono); font-size:.66rem; letter-spacing:.08em; text-transform:uppercase; color:var(--warn-ink); font-weight:700; white-space:nowrap; padding-top:.1rem; }
+  .warn p { margin:0; }
+
+  .note { border-left:3px solid var(--accent); background:color-mix(in srgb,var(--accent) 7%,transparent); padding:.85rem 1.1rem; border-radius:0 8px 8px 0; font-size:.92rem; margin:1.2rem 0; }
+  .note strong { color:var(--accent-deep); }
+
+  footer { margin-top:3.5rem; padding-top:1.1rem; border-top:1px solid var(--hair); color:var(--muted); font-size:.82rem; }
+
+  @media print {
+    :root { --ground:#fff; --panel:#fff; --ink:#000; --shadow:none; }
+    body { background:#fff; }
+    .wrap { max-width:none; padding:0 .5rem; }
+    section, .term, .tbl-scroll, .stats { break-inside:avoid; }
+    .term { background:#F4F4F4; border:1px solid #999; } pre { color:#111; }
+    pre .cmd,pre .str,pre .kw { color:#000; } pre .com,pre .var,pre .out { color:#555; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="eyebrow">Dossier CDA · Annexe base de test</p>
+  <h1>Jeu d'essai &amp; restauration de la base</h1>
+  <p class="sub">Base de données de test de <strong>Petit Rayon de Soleil</strong> : un jeu d'essai complet couvrant tous les cas de figure, et une procédure permettant de la <strong>restaurer à l'identique</strong> en une commande en cas d'incident.</p>
+
+  <div class="meta">
+    <span><b>Projet</b> Petit Rayon de Soleil</span>
+    <span><b>Auteur</b> de Breyne Hélio</span>
+    <span><b>Insertion</b> <code>db.js</code> → <code>seed()</code></span>
+    <span><b>Restauration</b> <code>npm run init-db</code></span>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="n">1</div><div class="l">compte admin</div></div>
+    <div class="stat"><div class="n">2</div><div class="l">comptes utilisateurs</div></div>
+    <div class="stat"><div class="n">5</div><div class="l">messages validés</div></div>
+    <div class="stat"><div class="n">2</div><div class="l">messages en attente</div></div>
+    <div class="stat"><div class="n">1</div><div class="l">message rejeté</div></div>
+    <div class="stat"><div class="n">2</div><div class="l">favoris</div></div>
+  </div>
+
+  <!-- 1. COMPTES -->
+  <section>
+    <div class="sec-head"><span class="sec-num">1</span><h2>Comptes utilisateurs</h2></div>
+    <p class="sec-desc">Un administrateur (accès à la modération) et deux utilisateurs standards. Les mots de passe sont hachés en base (bcrypt) ; ils sont rappelés ici en clair uniquement à des fins de test.</p>
+    <div class="tbl-scroll">
+      <table>
+        <thead>
+          <tr><th>ID</th><th>Rôle</th><th>Nom</th><th>Email</th><th>Mot de passe (test)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="id">1</td><td><span class="pill role">admin</span></td><td>Admin</td><td class="mono">admin@soleil.fr</td><td class="mono">admin123</td></tr>
+          <tr><td class="id">2</td><td><span class="pill role">user</span></td><td>Utilisateur Démo</td><td class="mono">user@soleil.fr</td><td class="mono">user1234</td></tr>
+          <tr><td class="id">3</td><td><span class="pill role">user</span></td><td>Camille Martin</td><td class="mono">camille@soleil.fr</td><td class="mono">camille1</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 2. MESSAGES -->
+  <section>
+    <div class="sec-head"><span class="sec-num">2</span><h2>Messages (les trois statuts)</h2></div>
+    <p class="sec-desc">Le champ <code>status</code> peut valoir <code>approved</code>, <code>pending</code> ou <code>rejected</code>. Le jeu d'essai contient les trois, pour couvrir tout le cycle de modération.</p>
+    <div class="tbl-scroll">
+      <table>
+        <thead>
+          <tr><th>ID</th><th>Statut</th><th>Contenu</th><th>Proposé par</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="id">1</td><td><span class="pill ok">approved</span></td><td>Ne sois pas trop dur(e) envers toi-même…</td><td class="mono">seed</td></tr>
+          <tr><td class="id">2</td><td><span class="pill ok">approved</span></td><td>Tu mérites tout l'amour et le respect…</td><td class="mono">seed</td></tr>
+          <tr><td class="id">3</td><td><span class="pill ok">approved</span></td><td>Chaque petit pas compte…</td><td class="mono">seed</td></tr>
+          <tr><td class="id">4</td><td><span class="pill ok">approved</span></td><td>Prends le temps de respirer…</td><td class="mono">seed</td></tr>
+          <tr><td class="id">5</td><td><span class="pill ok">approved</span></td><td>Ta présence rend le monde un peu plus doux…</td><td class="mono">seed</td></tr>
+          <tr><td class="id">6</td><td><span class="pill wait">pending</span></td><td>Tu es capable de bien plus que tu ne l'imagines.</td><td class="mono">user #2</td></tr>
+          <tr><td class="id">7</td><td><span class="pill wait">pending</span></td><td>Ce petit rayon de soleil, c'est toi aujourd'hui.</td><td class="mono">user #3</td></tr>
+          <tr><td class="id">8</td><td><span class="pill rej">rejected</span></td><td>Message hors sujet refusé par la modération.</td><td class="mono">user #3</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note">
+      <strong>Visibilité selon le statut.</strong> Seuls les messages <span class="pill ok">approved</span> sont renvoyés par l'API publique (<code>GET /api/messages</code>). Les <span class="pill wait">pending</span> apparaissent uniquement dans la file de modération de l'admin. Les <span class="pill rej">rejected</span> sont conservés en base pour la traçabilité, mais ne sont ni publiés ni reproposés à la modération.
+    </div>
+  </section>
+
+  <!-- 3. FAVORIS -->
+  <section>
+    <div class="sec-head"><span class="sec-num">3</span><h2>Favoris</h2></div>
+    <p class="sec-desc">La table de liaison <code>favoris</code> relie un utilisateur à des messages validés (relation plusieurs-à-plusieurs). L'utilisateur de démo en a deux.</p>
+    <div class="tbl-scroll">
+      <table>
+        <thead>
+          <tr><th>Utilisateur</th><th>Message favori</th><th>Contenu</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="mono">#2 Utilisateur Démo</td><td class="id">message #1</td><td>Ne sois pas trop dur(e) envers toi-même…</td></tr>
+          <tr><td class="mono">#2 Utilisateur Démo</td><td class="id">message #3</td><td>Chaque petit pas compte…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 4. RESTAURATION -->
+  <section>
+    <div class="sec-head"><span class="sec-num">4</span><h2>Restauration / réinitialisation</h2></div>
+    <p class="sec-desc">En cas d'incident (base corrompue, données de test polluées par des essais manuels) ou pour faire repartir les tests de zéro, un script dédié remet l'application dans un état propre et connu — <strong>en une seule commande, avec vérification automatique</strong>.</p>
+
+    <h3>Restaurer en une commande : <code>npm run db:reset</code></h3>
+    <p>Le script <code>scripts/reset-db.js</code> enchaîne les quatre étapes exigées et refuse de s'exécuter si une base de production Turso est configurée (garde-fou anti-effacement). Voici sa sortie réelle&nbsp;:</p>
+    <div class="term">
+      <div class="term-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="lbl">bash — npm run db:reset</span></div>
+<pre><span class="cmd">$ npm run db:reset</span>
+
+<span class="out">[1/4]</span>  Suppression de la base locale... OK (1 fichier(s) retiré(s))
+<span class="out">[2/4]</span>  Création des tables (init)... OK
+<span class="out">[3/4]</span>  Réinjection des données de démonstration (seed)... OK
+<span class="out">[4/4]</span>  Vérification :
+       <span class="str">✓</span> admin@soleil.fr  (admin)
+       <span class="str">✓</span> user@soleil.fr  (user)
+       <span class="str">✓</span> camille@soleil.fr  (user)
+       <span class="str">✓</span> messages validés  : 5 (attendu 5)
+       <span class="str">✓</span> messages en attente : 2 (attendu 2)
+       <span class="str">✓</span> messages rejetés  : 1 (attendu 1)
+       <span class="str">✓</span> favoris           : 2 (attendu 2)
+
+<span class="str">Base restaurée avec succès.</span> Tous les comptes et volumes sont conformes.</pre>
+    </div>
+
+    <h3>Les quatre étapes du script</h3>
+    <ol class="steps">
+      <li><strong>Suppression de la base locale</strong> — efface <code>soleil.db</code> et ses fichiers annexes (<code>-wal</code>, <code>-shm</code>).</li>
+      <li><strong>Relance de l'initialisation</strong> — recrée les tables via <code>init()</code>.</li>
+      <li><strong>Réinjection des données de démonstration</strong> — insère le jeu d'essai via <code>seed()</code>.</li>
+      <li><strong>Vérification des comptes de test</strong> — contrôle que les 3 comptes attendus sont présents avec le bon rôle, et que les volumes (5 validés, 2 en attente, 1 rejeté, 2 favoris) sont exacts. Le script sort en erreur (<code>exit 1</code>) si un seul contrôle échoue.</li>
+    </ol>
+
+    <div class="warn">
+      <span class="tag">Note</span>
+      <p>Fermer d'abord le serveur (<code>npm start</code>) : sous Windows, un serveur en cours verrouille <code>soleil.db</code> et empêche sa suppression.</p>
+    </div>
+
+    <h3>Méthode manuelle équivalente</h3>
+    <p>Sans le script, les mêmes étapes se font à la main&nbsp;:</p>
+    <div class="term">
+      <div class="term-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="lbl">bash — restauration manuelle</span></div>
+<pre><span class="com"># 1. Supprimer la base actuelle (et ses fichiers annexes WAL/SHM)</span>
+<span class="cmd">rm</span> <span class="flag">-f</span> soleil.db soleil.db-wal soleil.db-shm
+
+<span class="com"># 2. Recréer les tables + réinsérer le jeu d'essai complet</span>
+<span class="cmd">npm</span> run init-db</pre>
+    </div>
+
+    <h3>Comment fonctionne la restauration</h3>
+    <p>La commande <code>npm run init-db</code> exécute <code>node db.js --init</code>, qui appelle <code>init()</code> (création des tables via <code>CREATE TABLE IF NOT EXISTS</code>) puis <code>seed()</code> (insertion du jeu d'essai). La fonction <code>seed()</code> est <strong>idempotente</strong> : si des comptes existent déjà, elle ne réinsère rien — d'où l'étape&nbsp;1 qui repart d'une base vide.</p>
+
+    <div class="term">
+      <div class="term-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="lbl">db.js — garde-fou d'idempotence</span></div>
+<pre><span class="kw">async function</span> seed() {
+  <span class="kw">const</span> count = <span class="kw">await</span> db.prepare(<span class="str">'SELECT COUNT(*) AS n FROM users'</span>).get();
+  <span class="kw">if</span> (count &amp;&amp; count.n &gt; 0) <span class="kw">return</span>;   <span class="com">// déjà peuplée → on ne duplique pas</span>
+  <span class="com">// … insertion des comptes, messages et favoris …</span>
+}</pre>
+    </div>
+
+    <h3>Cas de la base en ligne (Turso)</h3>
+    <p>La même commande initialise la base de production, en la préfixant des variables d'environnement Turso&nbsp;:</p>
+    <div class="term">
+      <div class="term-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="lbl">bash — initialisation de la base Turso</span></div>
+<pre><span class="var">TURSO_DATABASE_URL</span>=<span class="str">libsql://&lt;base&gt;.turso.io</span> \
+<span class="var">TURSO_AUTH_TOKEN</span>=<span class="str">&lt;jeton&gt;</span> \
+  <span class="cmd">npm</span> run init-db</pre>
+    </div>
+  </section>
+
+  <!-- 5. RESUME -->
+  <section>
+    <div class="sec-head"><span class="sec-num">✓</span><h2>Résumé</h2></div>
+    <div class="tbl-scroll">
+      <table>
+        <thead>
+          <tr><th>Élément demandé</th><th>Présent dans le jeu d'essai</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Compte admin</td><td><span class="pill ok">oui</span> &nbsp; <code>admin@soleil.fr</code></td></tr>
+          <tr><td>Compte utilisateur</td><td><span class="pill ok">oui</span> &nbsp; 2 comptes (<code>user@soleil.fr</code>, <code>camille@soleil.fr</code>)</td></tr>
+          <tr><td>Messages validés</td><td><span class="pill ok">oui</span> &nbsp; 5 messages <code>approved</code></td></tr>
+          <tr><td>Messages en attente</td><td><span class="pill ok">oui</span> &nbsp; 2 messages <code>pending</code></td></tr>
+          <tr><td>Messages rejetés</td><td><span class="pill ok">oui</span> &nbsp; 1 message <code>rejected</code> (conservé)</td></tr>
+          <tr><td>Favoris</td><td><span class="pill ok">oui</span> &nbsp; 2 favoris</td></tr>
+          <tr><td>Procédure de réinitialisation</td><td><span class="pill ok">oui</span> &nbsp; script <code>npm run db:reset</code> (suppression + init + seed + vérification)</td></tr>
+          <tr><td>Vérification des comptes de test</td><td><span class="pill ok">oui</span> &nbsp; automatisée par le script (échoue en <code>exit 1</code> si non conforme)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    Petit Rayon de Soleil — Annexe « Jeu d'essai &amp; restauration ». Données et sortie du script vérifiées sur l'exécution réelle de <code>npm run db:reset</code>.
+  </footer>
+
+</div>
+</body>
+</html>

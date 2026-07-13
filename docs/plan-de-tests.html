@@ -24,6 +24,10 @@
     --serif: Georgia, 'Times New Roman', serif;
     --sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
     --mono: ui-monospace, 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+    --u-unit:#3E82C4; --u-unit-bg:#E8F1FB; --u-unit-bd:#B7D4F0;
+    --u-int:#B4791F;  --u-int-bg:#FBF1DA;  --u-int-bd:#E4C061;
+    --u-sys:#7A4FB0;  --u-sys-bg:#F0EAFA;  --u-sys-bd:#CDBCEC;
+    --u-uat:#2E9E52;  --u-uat-bg:#E9F6EC;  --u-uat-bd:#B9E0C3;
   }
   @media (prefers-color-scheme: dark) {
     :root {
@@ -40,6 +44,10 @@
       --fail-bg: #2A1815;
       --code-bg: #10160F;
       --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+      --u-unit:#6BA6E0; --u-unit-bg:#131E2A; --u-unit-bd:#2C4763;
+      --u-int:#E4C061;  --u-int-bg:#241E0F;  --u-int-bd:#5C4A1E;
+      --u-sys:#B99BE0;  --u-sys-bg:#1E1630;  --u-sys-bd:#3F2E63;
+      --u-uat:#56C878;  --u-uat-bg:#12251A;  --u-uat-bd:#2E5238;
     }
   }
   :root[data-theme="light"] {
@@ -47,12 +55,20 @@
     --hair: #E2E8E3; --accent: #2E9E52; --accent-deep: #1F7A3D;
     --pass-bg: #E9F6EC; --pass-ink: #1F7A3D; --fail-ink: #C0392B; --fail-bg: #FBEBE9;
     --code-bg: #F1F5F2; --shadow: 0 1px 2px rgba(27,33,29,.05), 0 8px 28px rgba(27,33,29,.06);
+    --u-unit:#3E82C4; --u-unit-bg:#E8F1FB; --u-unit-bd:#B7D4F0;
+    --u-int:#B4791F;  --u-int-bg:#FBF1DA;  --u-int-bd:#E4C061;
+    --u-sys:#7A4FB0;  --u-sys-bg:#F0EAFA;  --u-sys-bd:#CDBCEC;
+    --u-uat:#2E9E52;  --u-uat-bg:#E9F6EC;  --u-uat-bd:#B9E0C3;
   }
   :root[data-theme="dark"] {
     --ground: #12160F; --panel: #191E17; --ink: #E7EDE7; --muted: #9AA79C;
     --hair: #2A3228; --accent: #56C878; --accent-deep: #7BD996;
     --pass-bg: #14251A; --pass-ink: #7BD996; --fail-ink: #E88C82; --fail-bg: #2A1815;
     --code-bg: #10160F; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+    --u-unit:#6BA6E0; --u-unit-bg:#131E2A; --u-unit-bd:#2C4763;
+    --u-int:#E4C061;  --u-int-bg:#241E0F;  --u-int-bd:#5C4A1E;
+    --u-sys:#B99BE0;  --u-sys-bg:#1E1630;  --u-sys-bd:#3F2E63;
+    --u-uat:#56C878;  --u-uat-bg:#12251A;  --u-uat-bd:#2E5238;
   }
 
   * { box-sizing: border-box; }
@@ -70,7 +86,6 @@
     padding: clamp(1.5rem, 4vw, 4rem) clamp(1.1rem, 4vw, 2.5rem) 5rem;
   }
 
-  /* Masthead */
   .eyebrow {
     font-family: var(--mono);
     font-size: .72rem;
@@ -106,7 +121,6 @@
   .meta b { color: var(--ink); font-weight: 600; }
   .meta code { font-family: var(--mono); font-size: .82rem; }
 
-  /* Verdict banner */
   .verdict {
     display: flex;
     align-items: center;
@@ -124,12 +138,12 @@
     color: var(--pass-ink);
     line-height: 1;
     font-variant-numeric: tabular-nums;
+    white-space: nowrap;
   }
   .verdict .vtext { font-size: .95rem; }
   .verdict .vtext strong { color: var(--pass-ink); }
   .verdict .vtext span { color: var(--muted); display: block; font-size: .85rem; }
 
-  /* Sections */
   section { margin-top: 3.2rem; }
   .sec-head {
     display: flex;
@@ -159,15 +173,28 @@
   }
   p { margin: 0 0 1rem; }
   a { color: var(--accent-deep); }
+  strong { font-weight: 700; }
 
   code { font-family: var(--mono); font-size: .86em; }
-  p code, li code, td code {
+  p code, li code, td code, dd code {
     background: var(--code-bg);
     padding: .1em .4em;
     border-radius: 5px;
   }
 
-  /* Definition grid (environment) */
+  /* Les 4 niveaux de test — pyramide de cartes */
+  .levels { display: grid; grid-template-columns: repeat(auto-fit, minmax(11.5rem, 1fr)); gap: .9rem; margin-top: 1.2rem; }
+  .lvl { background: var(--panel); border: 1px solid var(--hair); border-top: 4px solid var(--bd); border-radius: 12px; padding: 1rem 1.1rem; box-shadow: var(--shadow); }
+  .lvl.unit { --tint:var(--u-unit); --bd:var(--u-unit); --tbg:var(--u-unit-bg); --tbd:var(--u-unit-bd); }
+  .lvl.int  { --tint:var(--u-int);  --bd:var(--u-int);  --tbg:var(--u-int-bg);  --tbd:var(--u-int-bd); }
+  .lvl.sys  { --tint:var(--u-sys);  --bd:var(--u-sys);  --tbg:var(--u-sys-bg);  --tbd:var(--u-sys-bd); }
+  .lvl.uat  { --tint:var(--u-uat);  --bd:var(--u-uat);  --tbg:var(--u-uat-bg);  --tbd:var(--u-uat-bd); }
+  .lvl .tag { display:inline-block; font-family:var(--mono); font-size:.62rem; letter-spacing:.08em; text-transform:uppercase; font-weight:700; color:var(--tint); background:var(--tbg); border:1px solid var(--tbd); border-radius:20px; padding:.12rem .55rem; margin-bottom:.6rem; }
+  .lvl h3 { margin:0 0 .3rem; font-size:.98rem; }
+  .lvl p { margin:0; font-size:.85rem; color:var(--muted); line-height:1.45; }
+  .lvl .count { font-family:var(--serif); font-size:1.5rem; font-weight:600; color:var(--tint); margin-top:.5rem; line-height:1; }
+  .lvl .count small { font-size:.75rem; color:var(--muted); font-family:var(--sans); }
+
   .env {
     display: grid;
     grid-template-columns: max-content 1fr;
@@ -194,7 +221,6 @@
   }
   .env dt:last-of-type, .env dd:last-of-type { border-bottom: none; }
 
-  /* Steps list */
   ol.steps { margin: 0; padding: 0; counter-reset: step; list-style: none; }
   ol.steps li {
     position: relative;
@@ -217,7 +243,6 @@
     font-weight: 600;
   }
 
-  /* Table */
   .tbl-scroll { overflow-x: auto; border: 1px solid var(--hair); border-radius: 12px; box-shadow: var(--shadow); }
   table { border-collapse: collapse; width: 100%; font-size: .88rem; background: var(--panel); }
   caption { text-align: left; color: var(--muted); font-size: .82rem; padding: 0 0 .7rem; }
@@ -246,6 +271,12 @@
     background: color-mix(in srgb, var(--accent) 16%, transparent);
     color: var(--accent-deep);
   }
+  /* Pastilles de niveau dans les tableaux */
+  .badge-lvl { font-family:var(--mono); font-size:.66rem; font-weight:700; letter-spacing:.05em; text-transform:uppercase; padding:.1em .5em; border-radius:20px; white-space:nowrap; }
+  .badge-lvl.unit { color:var(--u-unit); background:var(--u-unit-bg); border:1px solid var(--u-unit-bd); }
+  .badge-lvl.int  { color:var(--u-int);  background:var(--u-int-bg);  border:1px solid var(--u-int-bd); }
+  .badge-lvl.sys  { color:var(--u-sys);  background:var(--u-sys-bg);  border:1px solid var(--u-sys-bd); }
+  .badge-lvl.uat  { color:var(--u-uat);  background:var(--u-uat-bg);  border:1px solid var(--u-uat-bd); }
   .status-cell { font-family: var(--mono); font-variant-numeric: tabular-nums; }
   .ok {
     display: inline-flex; align-items: center; gap: .35rem;
@@ -259,7 +290,6 @@
     font-size: .75rem;
   }
 
-  /* Terminal capture */
   .terminal {
     background: #0E140F;
     border-radius: 12px;
@@ -283,14 +313,15 @@
     padding: 1rem 1.2rem;
     overflow-x: auto;
     font-family: var(--mono);
-    font-size: .8rem;
-    line-height: 1.55;
+    font-size: .78rem;
+    line-height: 1.5;
     color: #C7D4C8;
   }
   pre.term .cmd { color: #EAF2EA; }
   pre.term .pass { color: #6FD37F; }
   pre.term .dim { color: #6E7C70; }
   pre.term .info { color: #9FB0A1; }
+  pre.term .u { color: #7FB5E6; }
   pre.term b { color: #EAF2EA; font-weight: 600; }
 
   .callout {
@@ -320,7 +351,6 @@
     .env dd { padding-top: .1rem; }
   }
 
-  /* Impression / export PDF */
   @media print {
     :root {
       --ground: #FFFFFF; --panel: #FFFFFF; --ink: #000000; --muted: #444;
@@ -331,13 +361,12 @@
     body { background: #fff; }
     .wrap { max-width: none; padding: 0 1rem; }
     section { break-inside: avoid; }
-    .tbl-scroll, .terminal, .env, .verdict { break-inside: avoid; box-shadow: none; }
-    .terminal { border: 1px solid #999; }
+    .tbl-scroll, .terminal, .env, .verdict, .levels, .lvl { break-inside: avoid; box-shadow: none; }
+    .terminal { border: 1px solid #999; background: #F4F4F4; }
     pre.term { color: #111; }
     pre.term .cmd, pre.term b { color: #000; }
     pre.term .pass { color: #1F7A3D; }
-    pre.term .dim, pre.term .info { color: #555; }
-    .terminal { background: #F4F4F4; }
+    pre.term .dim, pre.term .info, pre.term .u { color: #555; }
     .term-bar { background: #E8E8E8; border-bottom: 1px solid #CCC; }
   }
 </style>
@@ -348,72 +377,115 @@
 
   <p class="eyebrow">Dossier CDA &middot; Compétence &laquo; Préparer et exécuter les plans de tests &raquo;</p>
   <h1>Plan de tests &amp; jeu d'essai</h1>
-  <p class="sub">Application web &laquo; Petit Rayon de Soleil &raquo;. Tests automatisés de l'API REST couvrant les parcours critiques du cahier des charges : authentification, contrôle d'accès, modération et conformité RGPD.</p>
+  <p class="sub">Application web &laquo; Petit Rayon de Soleil &raquo;. Plan de tests couvrant les quatre niveaux — unitaires, intégration, système et acceptation utilisateur — avec preuve d'exécution automatisée.</p>
 
   <div class="meta">
     <span><b>Projet</b> petit-rayon-de-soleil v1.0.0</span>
-    <span><b>Suite</b> <code>tests/api.test.js</code></span>
+    <span><b>Suites</b> <code>tests/auth.unit.test.js</code> · <code>tests/api.test.js</code></span>
     <span><b>Commande</b> <code>npm test</code></span>
-    <span><b>Date d'exécution</b> 12/07/2026</span>
+    <span><b>Date d'exécution</b> 13/07/2026</span>
   </div>
 
   <div class="verdict" role="status">
-    <div class="score">7 / 7</div>
+    <div class="score">14 / 14</div>
     <div class="vtext">
       <strong>Tous les tests passent.</strong>
-      <span>0 échec &middot; 0 ignoré &middot; durée totale 1 745 ms</span>
+      <span>7 unitaires + 7 d'intégration · 0 échec · 0 ignoré · durée totale 4 201 ms</span>
     </div>
   </div>
 
-  <!-- 1. STRATEGIE -->
+  <!-- 1. STRATEGIE / NIVEAUX -->
   <section>
-    <div class="sec-head"><span class="sec-num">01</span><h2>Stratégie de test</h2></div>
-    <p>La stratégie repose sur des <strong>tests d'intégration automatisés</strong> exécutés de bout en bout contre le serveur réel : chaque test démarre l'application Express, envoie de vraies requêtes HTTP via <code>fetch</code>, et vérifie le code de statut et le corps de la réponse. Cette approche valide simultanément le routage, la logique métier, l'accès aux données SQLite et la sécurité — au plus près de l'usage réel.</p>
-    <p>Le choix a été fait de couvrir en priorité les exigences <strong>Must</strong> du MoSCoW et les exigences non fonctionnelles de sécurité, plutôt que de viser une couverture exhaustive de chaque route :</p>
-    <ul class="plain">
-      <li><strong>Cas nominal</strong> — un message aléatoire est bien renvoyé (page d'accueil).</li>
-      <li><strong>Authentification</strong> — inscription puis connexion valides ; connexion refusée avec un mauvais mot de passe.</li>
-      <li><strong>Contrôle d'accès</strong> — une route protégée refuse l'anonyme (401) ; une route admin refuse un utilisateur normal (403).</li>
-      <li><strong>Parcours métier complet</strong> — proposition d'un message → invisible tant qu'il n'est pas approuvé → approbation admin → visible.</li>
-      <li><strong>Conformité RGPD</strong> — la suppression de compte efface l'utilisateur, qui ne peut plus se connecter.</li>
-    </ul>
+    <div class="sec-head"><span class="sec-num">01</span><h2>Stratégie et niveaux de test</h2></div>
+    <p>Le plan couvre les <strong>quatre niveaux de test</strong> attendus, du plus fin (une fonction isolée) au plus global (le parcours utilisateur complet). Les niveaux unitaire et intégration sont <strong>automatisés</strong> (14 tests, module natif <code>node:test</code>) ; les niveaux système et acceptation sont validés par ces tests de bout en bout complétés d'une vérification manuelle des parcours.</p>
+
+    <div class="levels">
+      <div class="lvl unit">
+        <span class="tag">Unitaire</span>
+        <h3>Fonctions isolées</h3>
+        <p>Hachage de mot de passe, extraction du token — sans base ni serveur.</p>
+        <div class="count">7 <small>tests auto.</small></div>
+      </div>
+      <div class="lvl int">
+        <span class="tag">Intégration</span>
+        <h3>Couches assemblées</h3>
+        <p>Route → logique → base SQLite, via de vraies requêtes HTTP.</p>
+        <div class="count">7 <small>tests auto.</small></div>
+      </div>
+      <div class="lvl sys">
+        <span class="tag">Système</span>
+        <h3>Application entière</h3>
+        <p>Serveur réel démarré, parcours métier complet proposition → approbation.</p>
+        <div class="count">✓ <small>couvert</small></div>
+      </div>
+      <div class="lvl uat">
+        <span class="tag">Acceptation</span>
+        <h3>Besoins utilisateur</h3>
+        <p>Chaque exigence Must du cahier des charges vérifiée côté usage.</p>
+        <div class="count">✓ <small>couvert</small></div>
+      </div>
+    </div>
+
     <div class="callout">
-      <strong>Outil retenu :</strong> le module natif <code>node:test</code> (assertions <code>node:assert</code>), sans aucune dépendance de test à installer. Cohérent avec la philosophie minimale du projet et exécutable partout où Node est présent.
+      <strong>Outil retenu :</strong> le module natif <code>node:test</code> (assertions <code>node:assert</code>), sans aucune dépendance de test à installer — cohérent avec la philosophie minimale du projet et exécutable partout où Node est présent.
     </div>
   </section>
 
   <!-- 2. ENVIRONNEMENT -->
   <section>
     <div class="sec-head"><span class="sec-num">02</span><h2>Environnement de test</h2></div>
-    <p>Les tests s'exécutent en local, sur une <strong>base de données isolée</strong>. Le hook <code>before()</code> supprime l'éventuel fichier <code>soleil.db</code> puis le recrée et le remplit (seed) avant la première assertion ; le serveur écoute sur un port dédié <code>3999</code> pour ne pas entrer en conflit avec une instance de développement.</p>
+    <p>Les tests s'exécutent en local. Les <strong>tests unitaires</strong> n'ont besoin d'aucune base. Les <strong>tests d'intégration</strong> travaillent sur une base <strong>réinitialisée à neuf</strong> : le hook <code>before()</code> supprime le fichier <code>soleil.db</code> puis le recrée et le remplit (seed) avant la première assertion ; le serveur écoute sur un port dédié <code>3999</code> pour ne pas entrer en conflit avec une instance de développement.</p>
     <dl class="env">
       <dt>Système</dt><dd>Windows 10 (win32 x64)</dd>
-      <dt>Runtime</dt><dd>Node.js v24.12.0</dd>
-      <dt>Gestionnaire</dt><dd>npm 11.6.2</dd>
-      <dt>Base de données</dt><dd>SQLite via node:sqlite (natif)</dd>
+      <dt>Runtime</dt><dd>Node.js 18+ </dd>
+      <dt>Base de données</dt><dd>SQLite / libSQL via @libsql/client</dd>
       <dt>Port de test</dt><dd>3999 (isolé du port applicatif 3000)</dd>
-      <dt>Framework de test</dt><dd>node:test + node:assert</dd>
+      <dt>Framework de test</dt><dd>node:test + node:assert (natif)</dd>
       <dt>Jeu de données</dt><dd>seed : 1 admin, 1 utilisateur, 5 messages</dd>
     </dl>
     <h3>Procédure d'exécution</h3>
     <ol class="steps">
       <li>Installer les dépendances applicatives : <code>npm install</code>.</li>
       <li>S'assurer qu'aucune instance du serveur ne tient <code>soleil.db</code> ouverte (sinon le verrou de fichier empêche la réinitialisation de la base sous Windows).</li>
-      <li>Lancer la suite : <code>npm test</code> (raccourci de <code>node --test</code>).</li>
+      <li>Lancer la suite complète : <code>npm test</code> (raccourci de <code>node --test</code>) — les deux fichiers de tests sont découverts automatiquement.</li>
     </ol>
   </section>
 
-  <!-- 3. RESULTATS -->
+  <!-- 3. TESTS UNITAIRES -->
   <section>
-    <div class="sec-head"><span class="sec-num">03</span><h2>Résultats : attendu vs obtenu</h2></div>
-    <p>Chaque ligne correspond à un test de <code>tests/api.test.js</code>. La colonne &laquo; Obtenu &raquo; reporte le résultat réel de l'exécution du 12/07/2026.</p>
+    <div class="sec-head"><span class="sec-num">03</span><h2>Tests unitaires <span class="badge-lvl unit" style="font-size:.7rem">tests/auth.unit.test.js</span></h2></div>
+    <p>Ils vérifient des <strong>fonctions pures</strong> de <code>auth.js</code>, isolées de toute base de données. Ce sont les briques de sécurité les plus critiques : le hachage des mots de passe et la lecture du jeton d'authentification.</p>
     <div class="tbl-scroll">
       <table>
-        <caption>Tableau de synthèse des 7 tests — entrée, résultat attendu, résultat obtenu.</caption>
+        <caption>7 tests unitaires — comportement attendu vs obtenu.</caption>
+        <thead>
+          <tr><th>#</th><th>Fonction testée</th><th>Ce qui est vérifié</th><th>Attendu</th><th>Obtenu</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td><code>hashPassword</code></td><td>Le hash ne contient jamais le mot de passe en clair</td><td class="status-cell">hash ≠ clair, format bcrypt</td><td><span class="ok">OK</span></td></tr>
+          <tr><td>2</td><td><code>checkPassword</code></td><td>Le bon mot de passe est accepté</td><td class="status-cell">true</td><td><span class="ok">true</span></td></tr>
+          <tr><td>3</td><td><code>checkPassword</code></td><td>Un mauvais mot de passe est refusé</td><td class="status-cell">false</td><td><span class="ok">false</span></td></tr>
+          <tr><td>4</td><td><code>hashPassword</code></td><td>Deux hachages du même mot diffèrent (sel aléatoire)</td><td class="status-cell">hash1 ≠ hash2</td><td><span class="ok">différents</span></td></tr>
+          <tr><td>5</td><td><code>tokenFromReq</code></td><td>Extraction correcte d'un en-tête <code>Bearer</code></td><td class="status-cell">le token</td><td><span class="ok">OK</span></td></tr>
+          <tr><td>6</td><td><code>tokenFromReq</code></td><td>Renvoie <code>null</code> si aucun en-tête</td><td class="status-cell">null</td><td><span class="ok">null</span></td></tr>
+          <tr><td>7</td><td><code>tokenFromReq</code></td><td>Ignore un schéma non-Bearer (ex. <code>Basic</code>)</td><td class="status-cell">null</td><td><span class="ok">null</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 4. TESTS INTEGRATION / SYSTEME / ACCEPTATION -->
+  <section>
+    <div class="sec-head"><span class="sec-num">04</span><h2>Tests d'intégration, système &amp; acceptation <span class="badge-lvl int" style="font-size:.7rem">tests/api.test.js</span></h2></div>
+    <p>Ces tests démarrent l'application Express réelle et envoient de vraies requêtes HTTP via <code>fetch</code>. Ils valident donc à la fois l'<strong>intégration</strong> des couches (route → métier → base), le fonctionnement <strong>système</strong> de l'application entière, et l'<strong>acceptation</strong> des exigences Must du cahier des charges. La colonne « Niveau » précise l'apport dominant de chaque test.</p>
+    <div class="tbl-scroll">
+      <table>
+        <caption>7 tests de bout en bout — niveau, entrée, résultat attendu, résultat obtenu (exécution du 13/07/2026).</caption>
         <thead>
           <tr>
             <th>#</th>
             <th>Scénario</th>
+            <th>Niveau</th>
             <th>Requête</th>
             <th>Attendu</th>
             <th>Obtenu</th>
@@ -423,6 +495,7 @@
           <tr>
             <td>1</td>
             <td>Message aléatoire (accueil)</td>
+            <td><span class="badge-lvl int">Intégr.</span></td>
             <td><span class="verb">GET</span> <span class="ep">/api/messages/random</span></td>
             <td class="status-cell">200 + contenu non vide</td>
             <td><span class="ok">200</span></td>
@@ -430,6 +503,7 @@
           <tr>
             <td>2</td>
             <td>Inscription puis connexion</td>
+            <td><span class="badge-lvl uat">Accept.</span></td>
             <td><span class="verb">POST</span> <span class="ep">/api/register</span> → <span class="verb">POST</span> <span class="ep">/api/login</span></td>
             <td class="status-cell">201 puis 200, jeton émis</td>
             <td><span class="ok">201 / 200</span></td>
@@ -437,6 +511,7 @@
           <tr>
             <td>3</td>
             <td>Connexion, mauvais mot de passe</td>
+            <td><span class="badge-lvl int">Sécurité</span></td>
             <td><span class="verb">POST</span> <span class="ep">/api/login</span></td>
             <td class="status-cell">401 (refus)</td>
             <td><span class="ok">401</span></td>
@@ -444,6 +519,7 @@
           <tr>
             <td>4</td>
             <td>Proposition sans authentification</td>
+            <td><span class="badge-lvl int">Sécurité</span></td>
             <td><span class="verb">POST</span> <span class="ep">/api/messages</span></td>
             <td class="status-cell">401 (non authentifié)</td>
             <td><span class="ok">401</span></td>
@@ -451,6 +527,7 @@
           <tr>
             <td>5</td>
             <td>Accès admin par un utilisateur normal</td>
+            <td><span class="badge-lvl int">Sécurité</span></td>
             <td><span class="verb">GET</span> <span class="ep">/api/admin/pending</span></td>
             <td class="status-cell">403 (interdit)</td>
             <td><span class="ok">403</span></td>
@@ -458,6 +535,7 @@
           <tr>
             <td>6</td>
             <td>Parcours proposition → approbation</td>
+            <td><span class="badge-lvl sys">Système</span></td>
             <td><span class="verb">POST</span> <span class="ep">/api/messages</span> → <span class="verb">POST</span> <span class="ep">/api/admin/approve/:id</span></td>
             <td class="status-cell">invisible avant, 200, visible après</td>
             <td><span class="ok">Conforme</span></td>
@@ -465,6 +543,7 @@
           <tr>
             <td>7</td>
             <td>Suppression de compte (RGPD)</td>
+            <td><span class="badge-lvl uat">Accept.</span></td>
             <td><span class="verb">DELETE</span> <span class="ep">/api/me</span></td>
             <td class="status-cell">200, reconnexion impossible (401)</td>
             <td><span class="ok">200 / 401</span></td>
@@ -472,8 +551,12 @@
         </tbody>
       </table>
     </div>
+  </section>
 
-    <h3>Capture de la sortie du terminal</h3>
+  <!-- 5. PREUVE D'EXECUTION -->
+  <section>
+    <div class="sec-head"><span class="sec-num">05</span><h2>Preuve d'exécution — sortie du terminal</h2></div>
+    <p>Capture fidèle de la sortie de <code>npm test</code> le 13/07/2026. Les 14 tests (7 unitaires préfixés <code>[unitaire]</code> + 7 d'intégration) passent sans échec.</p>
     <div class="terminal">
       <div class="term-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="path">petit-rayon-de-soleil — npm test</span></div>
 <pre class="term"><span class="cmd">$ npm test</span>
@@ -482,26 +565,33 @@
 <span class="dim">&gt; node --test</span>
 
 <span class="info">Base initialisée avec un admin, un utilisateur et 5 messages.</span>
-<span class="pass">&#10004;</span> GET /api/messages/random renvoie un message <span class="dim">(144.66ms)</span>
-<span class="pass">&#10004;</span> inscription puis connexion fonctionnent <span class="dim">(293.67ms)</span>
-<span class="pass">&#10004;</span> connexion avec mauvais mot de passe est refusée <span class="dim">(119.81ms)</span>
-<span class="pass">&#10004;</span> proposer un message sans être connecté est refusé (401) <span class="dim">(4.42ms)</span>
-<span class="pass">&#10004;</span> un utilisateur normal ne peut pas accéder à l'admin (403) <span class="dim">(120.08ms)</span>
-<span class="pass">&#10004;</span> parcours complet : proposition -&gt; approbation admin <span class="dim">(245.25ms)</span>
-<span class="pass">&#10004;</span> suppression de compte (RGPD) efface l'utilisateur <span class="dim">(125.88ms)</span>
-<span class="info">&#8505; tests 7</span>
+<span class="pass">&#10004;</span> GET /api/messages/random renvoie un message <span class="dim">(1917.03ms)</span>
+<span class="pass">&#10004;</span> inscription puis connexion fonctionnent <span class="dim">(346.25ms)</span>
+<span class="pass">&#10004;</span> connexion avec mauvais mot de passe est refusée <span class="dim">(130.44ms)</span>
+<span class="pass">&#10004;</span> proposer un message sans être connecté est refusé (401) <span class="dim">(4.65ms)</span>
+<span class="pass">&#10004;</span> un utilisateur normal ne peut pas accéder à l'admin (403) <span class="dim">(134.60ms)</span>
+<span class="pass">&#10004;</span> parcours complet : proposition -&gt; approbation admin <span class="dim">(290.95ms)</span>
+<span class="pass">&#10004;</span> suppression de compte (RGPD) efface l'utilisateur <span class="dim">(142.59ms)</span>
+<span class="pass">&#10004;</span> <span class="u">[unitaire]</span> hashPassword ne renvoie jamais le mot de passe en clair <span class="dim">(151.31ms)</span>
+<span class="pass">&#10004;</span> <span class="u">[unitaire]</span> checkPassword accepte le bon mot de passe <span class="dim">(289.42ms)</span>
+<span class="pass">&#10004;</span> <span class="u">[unitaire]</span> checkPassword refuse un mauvais mot de passe <span class="dim">(340.37ms)</span>
+<span class="pass">&#10004;</span> <span class="u">[unitaire]</span> deux hachages du même mot de passe sont différents (sel aléatoire) <span class="dim">(272.88ms)</span>
+<span class="pass">&#10004;</span> <span class="u">[unitaire]</span> tokenFromReq extrait le token d'un en-tête Bearer <span class="dim">(0.38ms)</span>
+<span class="pass">&#10004;</span> <span class="u">[unitaire]</span> tokenFromReq renvoie null sans en-tête Authorization <span class="dim">(0.20ms)</span>
+<span class="pass">&#10004;</span> <span class="u">[unitaire]</span> tokenFromReq ignore un schéma non-Bearer <span class="dim">(0.20ms)</span>
+<span class="info">&#8505; tests 14</span>
 <span class="info">&#8505; suites 0</span>
-<span class="info">&#8505;</span> <b>pass 7</b>
+<span class="info">&#8505;</span> <b>pass 14</b>
 <span class="info">&#8505; fail 0</span>
 <span class="info">&#8505; skipped 0</span>
-<span class="info">&#8505; duration_ms 1745.69</span></pre>
+<span class="info">&#8505; duration_ms 4201.40</span></pre>
     </div>
   </section>
 
-  <!-- 4. JEU D'ESSAI -->
+  <!-- 6. JEU D'ESSAI -->
   <section>
-    <div class="sec-head"><span class="sec-num">04</span><h2>Jeu d'essai détaillé — fonctionnalité la plus représentative</h2></div>
-    <p>La fonctionnalité retenue est le <strong>parcours proposition → approbation</strong> (test #6). Elle traverse toutes les couches de l'application et implique les deux rôles (utilisateur et administrateur), ce qui en fait le scénario le plus démonstratif du bon fonctionnement du système.</p>
+    <div class="sec-head"><span class="sec-num">06</span><h2>Jeu d'essai détaillé — fonctionnalité la plus représentative</h2></div>
+    <p>La fonctionnalité retenue est le <strong>parcours proposition → approbation</strong> (test système #6). Elle traverse toutes les couches de l'application et implique les deux rôles (utilisateur et administrateur), ce qui en fait le scénario le plus démonstratif du bon fonctionnement du système.</p>
     <div class="tbl-scroll">
       <table>
         <caption>Décomposition étape par étape : entrée → attendu → obtenu → écart.</caption>
@@ -543,13 +633,10 @@
     <div class="callout">
       <strong>Aucun écart constaté.</strong> Le comportement observé correspond exactement au comportement attendu à chaque étape. Le cycle de modération fonctionne : un message reste privé tant qu'un administrateur ne l'a pas approuvé.
     </div>
-
-    <h3>Piste d'amélioration</h3>
-    <p>Pour renforcer le volet sécurité du plan de tests, un test explicite d'anti-injection SQL pourrait être ajouté (envoi d'une charge du type <code>' OR '1'='1</code> dans un champ, et vérification qu'elle est traitée comme une donnée littérale grâce aux requêtes paramétrées, sans effet sur la base).</p>
   </section>
 
   <footer>
-    Document généré à partir de l'exécution réelle de la suite <code>tests/api.test.js</code> &middot; Petit Rayon de Soleil &middot; Titre professionnel CDA.
+    Document généré à partir de l'exécution réelle des suites <code>tests/auth.unit.test.js</code> et <code>tests/api.test.js</code> &middot; Petit Rayon de Soleil &middot; Titre professionnel CDA.
   </footer>
 
 </div>

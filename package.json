@@ -7,11 +7,17 @@
   "scripts": {
     "start": "node server.js",
     "init-db": "node db.js --init",
-    "test": "node --test"
+    "db:reset": "node scripts/reset-db.js",
+    "test": "node --test",
+    "setup": "npm install && npm run init-db",
+    "deploy": "vercel --prod",
+    "predeploy": "npm test",
+    "redeploy": "git push"
   },
   "author": "de Breyne Hélio",
   "license": "MIT",
   "dependencies": {
+    "@libsql/client": "^0.14.0",
     "bcryptjs": "^2.4.3",
     "express": "^4.21.0"
   }

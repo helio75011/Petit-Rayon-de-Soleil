@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Déploiement Vercel — Petit Rayon de Soleil</title>
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  :root {
+    --ground:#FBFCFB; --panel:#FFFFFF; --ink:#1B211D; --muted:#5A635C; --hair:#E2E8E3;
+    --accent:#2E9E52; --accent-deep:#1F7A3D; --code-bg:#0E140F;
+    --chip:#E9F6EC; --warn-bg:#FBF1DA; --warn-ink:#9A6B12; --warn-bd:#E4C061;
+    --shadow:0 1px 2px rgba(27,33,29,.05),0 8px 26px rgba(27,33,29,.07);
+    --serif:Georgia,'Times New Roman',serif;
+    --sans:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    --mono:ui-monospace,'SF Mono','Cascadia Code','Consolas',monospace;
+    --c-com:#6E7C70; --c-var:#E5C07B; --c-cmd:#EAF2EA;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground:#12160F; --panel:#191E17; --ink:#E7EDE7; --muted:#9AA79C; --hair:#2A3228;
+      --accent:#56C878; --accent-deep:#7BD996; --code-bg:#0C110C;
+      --chip:#14251A; --warn-bg:#241E0F; --warn-ink:#E4C061; --warn-bd:#5C4A1E;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.4);
+    }
+  }
+  :root[data-theme="light"] {
+    --ground:#FBFCFB;--panel:#FFFFFF;--ink:#1B211D;--muted:#5A635C;--hair:#E2E8E3;
+    --accent:#2E9E52;--accent-deep:#1F7A3D;--code-bg:#0E140F;--chip:#E9F6EC;
+    --warn-bg:#FBF1DA;--warn-ink:#9A6B12;--warn-bd:#E4C061;
+    --shadow:0 1px 2px rgba(27,33,29,.05),0 8px 26px rgba(27,33,29,.07);
+  }
+  :root[data-theme="dark"] {
+    --ground:#12160F;--panel:#191E17;--ink:#E7EDE7;--muted:#9AA79C;--hair:#2A3228;
+    --accent:#56C878;--accent-deep:#7BD996;--code-bg:#0C110C;--chip:#14251A;
+    --warn-bg:#241E0F;--warn-ink:#E4C061;--warn-bd:#5C4A1E;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.4);
+  }
+
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--ground); color:var(--ink); font-family:var(--sans); line-height:1.6; -webkit-font-smoothing:antialiased; }
+  .wrap { max-width:52rem; margin:0 auto; padding:clamp(1.5rem,4vw,4rem) clamp(1.1rem,4vw,2.5rem) 5rem; }
+
+  .eyebrow { font-family:var(--mono); font-size:.72rem; letter-spacing:.18em; text-transform:uppercase; color:var(--accent-deep); margin:0 0 .9rem; }
+  h1 { font-family:var(--serif); font-weight:600; font-size:clamp(1.9rem,5vw,2.9rem); line-height:1.1; letter-spacing:-.01em; text-wrap:balance; margin:0 0 .5rem; }
+  .sub { color:var(--muted); font-size:1.05rem; max-width:44rem; margin:0 0 1.6rem; }
+  .meta { display:flex; flex-wrap:wrap; gap:.5rem 1.4rem; padding:1rem 0 0; border-top:1px solid var(--hair); font-size:.85rem; color:var(--muted); }
+  .meta b { color:var(--ink); font-weight:600; }
+  .meta code { font-family:var(--mono); font-size:.82rem; }
+
+  .arch { display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; margin:2rem 0 0; padding:1rem 1.2rem; background:var(--panel); border:1px solid var(--hair); border-radius:12px; box-shadow:var(--shadow); font-size:.9rem; }
+  .arch .box { font-family:var(--mono); font-size:.8rem; padding:.4rem .7rem; border-radius:7px; background:var(--chip); border:1px solid color-mix(in srgb,var(--accent) 25%,transparent); white-space:nowrap; }
+  .arch .arrow { color:var(--muted); font-size:1.1rem; }
+
+  section { margin-top:3rem; }
+  .sec-head { display:flex; align-items:baseline; gap:.8rem; margin:0 0 1.1rem; padding-bottom:.6rem; border-bottom:2px solid var(--ink); }
+  .sec-num { font-family:var(--mono); font-size:1rem; font-weight:700; color:#fff; background:var(--accent); border-radius:7px; padding:.15rem .6rem; }
+  h2 { font-family:var(--serif); font-weight:600; font-size:1.4rem; margin:0; }
+  h3 { font-size:1rem; font-weight:700; margin:1.6rem 0 .5rem; }
+  p { margin:0 0 1rem; }
+  a { color:var(--accent-deep); }
+
+  ol.steps { counter-reset:s; list-style:none; margin:0; padding:0; }
+  ol.steps > li { position:relative; padding:0 0 .3rem 2rem; margin-bottom:.7rem; }
+  ol.steps > li::before { counter-increment:s; content:counter(s); position:absolute; left:0; top:0; width:1.4rem; height:1.4rem; background:var(--accent); color:#fff; border-radius:50%; display:grid; place-items:center; font-family:var(--mono); font-size:.76rem; font-weight:700; }
+
+  code { font-family:var(--mono); font-size:.86em; }
+  p code, li code, td code { background:var(--chip); padding:.1em .4em; border-radius:5px; }
+
+  .term { background:var(--code-bg); border-radius:12px; overflow:hidden; box-shadow:var(--shadow); border:1px solid #223022; margin:.8rem 0 1.2rem; }
+  .term-bar { display:flex; align-items:center; gap:.5rem; padding:.55rem .9rem; background:#161E17; border-bottom:1px solid #223022; }
+  .term-bar i { width:.68rem; height:.68rem; border-radius:50%; display:block; }
+  .term-bar .r{background:#E5534B;} .term-bar .y{background:#E5B14B;} .term-bar .g{background:#5FB96A;}
+  .term-bar .lbl { margin-left:.5rem; font-family:var(--mono); font-size:.72rem; color:#8FA091; }
+  pre { margin:0; padding:.9rem 1.1rem; overflow-x:auto; font-family:var(--mono); font-size:.8rem; line-height:1.7; color:#C7D4C8; }
+  pre .com { color:var(--c-com); } pre .var { color:var(--c-var); } pre .cmd { color:var(--c-cmd); }
+
+  table { border-collapse:collapse; width:100%; font-size:.88rem; background:var(--panel); border:1px solid var(--hair); border-radius:12px; overflow:hidden; box-shadow:var(--shadow); }
+  thead th { background:var(--accent); color:#fff; text-align:left; font-weight:600; padding:.6rem .85rem; font-size:.82rem; }
+  tbody td { padding:.6rem .85rem; border-top:1px solid var(--hair); vertical-align:top; }
+  tbody td:first-child { font-family:var(--mono); font-size:.82rem; white-space:nowrap; }
+  .tbl-scroll { overflow-x:auto; }
+
+  .warn { display:flex; gap:.7rem; margin:1.2rem 0; padding:.9rem 1.1rem; background:var(--warn-bg); border:1px solid var(--warn-bd); border-radius:10px; font-size:.9rem; }
+  .warn .tag { font-family:var(--mono); font-size:.66rem; letter-spacing:.08em; text-transform:uppercase; color:var(--warn-ink); font-weight:700; white-space:nowrap; padding-top:.1rem; }
+  .warn p { margin:0; }
+
+  .note { border-left:3px solid var(--accent); background:color-mix(in srgb,var(--accent) 7%,transparent); padding:.85rem 1.1rem; border-radius:0 8px 8px 0; font-size:.92rem; margin:1.2rem 0; }
+  .note strong { color:var(--accent-deep); }
+
+  footer { margin-top:3.5rem; padding-top:1.1rem; border-top:1px solid var(--hair); color:var(--muted); font-size:.82rem; }
+
+  @media print {
+    :root { --ground:#fff; --panel:#fff; --ink:#000; --shadow:none; }
+    body { background:#fff; }
+    .wrap { max-width:none; padding:0 .5rem; }
+    section, .term, table, .arch { break-inside:avoid; }
+    .term { background:#F4F4F4; border:1px solid #999; } pre { color:#111; }
+    pre .cmd { color:#000; } pre .com,pre .var { color:#555; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="eyebrow">Dossier CDA · §4.11 Déploiement</p>
+  <h1>Déploiement sur Vercel</h1>
+  <p class="sub">Mise en ligne de l'application &laquo; Petit Rayon de Soleil &raquo; sur Vercel (hébergement serverless), avec une base de données Turso (SQLite hébergé, compatible serverless).</p>
+
+  <div class="meta">
+    <span><b>Hébergeur</b> Vercel (serverless)</span>
+    <span><b>Base</b> Turso / libSQL</span>
+    <span><b>Runtime</b> Node.js</span>
+    <span><b>Prérequis</b> compte GitHub</span>
+  </div>
+
+  <div class="arch">
+    <span class="box">Navigateur</span>
+    <span class="arrow">→</span>
+    <span class="box">Vercel (fonction serverless)</span>
+    <span class="arrow">→</span>
+    <span class="box">app Express</span>
+    <span class="arrow">→</span>
+    <span class="box">Turso / libSQL</span>
+  </div>
+
+  <div class="note">
+    <strong>Pourquoi une base cloud ?</strong> Vercel est <em>serverless</em> : son système de fichiers est éphémère. Un fichier SQLite local (<code>soleil.db</code>) y serait effacé à chaque requête. La base est donc déportée vers <strong>Turso</strong>, qui expose SQLite via le réseau — le code SQL du projet reste identique, seul le connecteur change (<code>@libsql/client</code>).
+  </div>
+
+  <!-- 1 -->
+  <section>
+    <div class="sec-head"><span class="sec-num">1</span><h2>Adaptations du code (déjà réalisées)</h2></div>
+    <p>Le projet a été rendu compatible serverless. Ces changements sont déjà en place dans le dépôt :</p>
+    <div class="tbl-scroll">
+      <table>
+        <thead><tr><th>Fichier</th><th>Adaptation</th></tr></thead>
+        <tbody>
+          <tr><td>db.js</td><td>Connexion via <code>@libsql/client</code> — Turso si les variables d'environnement sont définies, sinon fichier local. Adaptateur asynchrone conservant l'interface <code>prepare().get/run/all</code>.</td></tr>
+          <tr><td>auth.js</td><td>Fonctions d'accès à la base et middlewares passés en <code>async / await</code>.</td></tr>
+          <tr><td>server.js</td><td>Routes passées en <code>async / await</code> ; gestionnaire d'erreurs global ; l'app n'écoute un port qu'en local.</td></tr>
+          <tr><td>api/index.js</td><td>Point d'entrée serverless : réutilise l'app Express exportée par <code>server.js</code>.</td></tr>
+          <tr><td>vercel.json</td><td>Redirige toutes les requêtes vers la fonction <code>/api</code>.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note">Les <strong>7 tests automatisés passent</strong> après ces changements (fonctionnement identique en local et en cloud).</div>
+  </section>
+
+  <!-- 2 -->
+  <section>
+    <div class="sec-head"><span class="sec-num">2</span><h2>Créer la base Turso</h2></div>
+    <ol class="steps">
+      <li>Créer un compte gratuit sur <a href="https://turso.tech">turso.tech</a> (connexion via GitHub).</li>
+      <li>Créer une base de données (ex. <code>petit-rayon-de-soleil</code>).</li>
+      <li>Récupérer les deux informations de connexion :</li>
+    </ol>
+    <div class="tbl-scroll">
+      <table>
+        <thead><tr><th>Information</th><th>Exemple</th></tr></thead>
+        <tbody>
+          <tr><td>Database URL</td><td><code>libsql://petit-rayon-de-soleil-xxxx.turso.io</code></td></tr>
+          <tr><td>Auth Token</td><td>un long jeton secret (bouton &laquo; Create Token &raquo;)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section>
+    <div class="sec-head"><span class="sec-num">3</span><h2>Initialiser les tables dans Turso</h2></div>
+    <p>Une seule fois, depuis sa machine, créer les tables et les données de démonstration dans la base cloud :</p>
+    <div class="term">
+      <div class="term-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="lbl">PowerShell</span></div>
+<pre><span class="com"># Renseigner ses vraies valeurs Turso</span>
+<span class="cmd">$env:TURSO_DATABASE_URL=<span class="var">"libsql://...turso.io"</span></span>
+<span class="cmd">$env:TURSO_AUTH_TOKEN=<span class="var">"ton-token"</span></span>
+<span class="cmd">npm run init-db</span></pre>
+    </div>
+    <p>Le message &laquo; Base initialisée avec un admin, un utilisateur et 5 messages &raquo; confirme la création.</p>
+  </section>
+
+  <!-- 4 -->
+  <section>
+    <div class="sec-head"><span class="sec-num">4</span><h2>Publier le dépôt sur GitHub</h2></div>
+    <p>Vercel se déploie depuis un dépôt Git. Pousser le projet sur GitHub. Le fichier <code>.gitignore</code> exclut déjà <code>node_modules</code>, la base locale et les secrets (<code>.env</code>).</p>
+    <div class="term">
+      <div class="term-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="lbl">terminal</span></div>
+<pre><span class="cmd">git init</span>
+<span class="cmd">git add .</span>
+<span class="cmd">git commit -m <span class="var">"Version compatible Vercel + Turso"</span></span>
+<span class="cmd">git remote add origin <span class="var">https://github.com/&lt;compte&gt;/&lt;repo&gt;.git</span></span>
+<span class="cmd">git push -u origin main</span></pre>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section>
+    <div class="sec-head"><span class="sec-num">5</span><h2>Déployer sur Vercel</h2></div>
+    <ol class="steps">
+      <li>Se connecter sur <a href="https://vercel.com">vercel.com</a> via GitHub.</li>
+      <li><strong>Add New → Project</strong>, puis sélectionner le dépôt.</li>
+      <li>Dans <strong>Environment Variables</strong>, ajouter les deux mêmes clés que pour Turso :</li>
+    </ol>
+    <div class="tbl-scroll">
+      <table>
+        <thead><tr><th>Name</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td>TURSO_DATABASE_URL</td><td><code>libsql://...turso.io</code></td></tr>
+          <tr><td>TURSO_AUTH_TOKEN</td><td>le jeton secret</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <ol class="steps" start="4" style="counter-reset:s 3;">
+      <li>Cliquer sur <strong>Deploy</strong>. Au bout d'environ une minute, Vercel fournit une URL publique, par exemple <code>https://petit-rayon-de-soleil.vercel.app</code>.</li>
+    </ol>
+    <div class="warn">
+      <span class="tag">Sécurité</span>
+      <p>Le token Turso ne doit <strong>jamais</strong> être commité dans le dépôt. Il est fourni uniquement via les variables d'environnement (locales et Vercel), et <code>.env</code> est exclu par <code>.gitignore</code>.</p>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section>
+    <div class="sec-head"><span class="sec-num">6</span><h2>Comptes de démonstration</h2></div>
+    <div class="tbl-scroll">
+      <table>
+        <thead><tr><th>Rôle</th><th>Email</th><th>Mot de passe</th></tr></thead>
+        <tbody>
+          <tr><td>Admin</td><td><code>admin@soleil.fr</code></td><td><code>admin123</code></td></tr>
+          <tr><td>Utilisateur</td><td><code>user@soleil.fr</code></td><td><code>user1234</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    Procédure de déploiement de &laquo; Petit Rayon de Soleil &raquo; sur Vercel + Turso · Titre professionnel CDA. Le projet reste exécutable en local (<code>npm start</code> → <code>http://localhost:3000</code>) sans configuration Turso, grâce au repli sur un fichier SQLite.
+  </footer>
+
+</div>
+</body>
+</html>

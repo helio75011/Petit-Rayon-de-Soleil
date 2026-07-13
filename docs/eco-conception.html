@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Éco-conception et sobriété numérique — Petit Rayon de Soleil</title>
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  :root {
+    --ground:#FBFCFB; --panel:#FFFFFF; --ink:#1B211D; --muted:#5A635C; --hair:#E2E8E3;
+    --accent:#2E9E52; --accent-deep:#1F7A3D; --code-bg:#0E140F;
+    --chip:#E9F6EC; --leaf-bg:#EAF6EC; --leaf-bd:#B9E0C3;
+    --shadow:0 1px 2px rgba(27,33,29,.05),0 8px 26px rgba(27,33,29,.07);
+    --serif:Georgia,'Times New Roman',serif;
+    --sans:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    --mono:ui-monospace,'SF Mono','Cascadia Code','Consolas',monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground:#12160F; --panel:#191E17; --ink:#E7EDE7; --muted:#9AA79C; --hair:#2A3228;
+      --accent:#56C878; --accent-deep:#7BD996; --code-bg:#0C110C;
+      --chip:#14251A; --leaf-bg:#12251A; --leaf-bd:#2E5238;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.4);
+    }
+  }
+  :root[data-theme="light"] {
+    --ground:#FBFCFB;--panel:#FFFFFF;--ink:#1B211D;--muted:#5A635C;--hair:#E2E8E3;
+    --accent:#2E9E52;--accent-deep:#1F7A3D;--code-bg:#0E140F;--chip:#E9F6EC;
+    --leaf-bg:#EAF6EC;--leaf-bd:#B9E0C3;
+    --shadow:0 1px 2px rgba(27,33,29,.05),0 8px 26px rgba(27,33,29,.07);
+  }
+  :root[data-theme="dark"] {
+    --ground:#12160F;--panel:#191E17;--ink:#E7EDE7;--muted:#9AA79C;--hair:#2A3228;
+    --accent:#56C878;--accent-deep:#7BD996;--code-bg:#0C110C;--chip:#14251A;
+    --leaf-bg:#12251A;--leaf-bd:#2E5238;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.4);
+  }
+
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--ground); color:var(--ink); font-family:var(--sans); line-height:1.6; -webkit-font-smoothing:antialiased; }
+  .wrap { max-width:52rem; margin:0 auto; padding:clamp(1.5rem,4vw,4rem) clamp(1.1rem,4vw,2.5rem) 5rem; }
+
+  .eyebrow { font-family:var(--mono); font-size:.72rem; letter-spacing:.18em; text-transform:uppercase; color:var(--accent-deep); margin:0 0 .9rem; }
+  h1 { font-family:var(--serif); font-weight:600; font-size:clamp(1.9rem,5vw,2.9rem); line-height:1.1; letter-spacing:-.01em; text-wrap:balance; margin:0 0 .5rem; }
+  .sub { color:var(--muted); font-size:1.05rem; max-width:44rem; margin:0 0 1.6rem; }
+  .meta { display:flex; flex-wrap:wrap; gap:.5rem 1.4rem; padding:1rem 0 0; border-top:1px solid var(--hair); font-size:.85rem; color:var(--muted); }
+  .meta b { color:var(--ink); font-weight:600; }
+
+  section { margin-top:3rem; }
+  .sec-head { display:flex; align-items:baseline; gap:.8rem; margin:0 0 1.1rem; padding-bottom:.6rem; border-bottom:2px solid var(--ink); }
+  .sec-num { font-family:var(--mono); font-size:1rem; font-weight:700; color:#fff; background:var(--accent); border-radius:7px; padding:.15rem .6rem; }
+  h2 { font-family:var(--serif); font-weight:600; font-size:1.4rem; margin:0; }
+  h3 { font-size:1rem; font-weight:700; margin:1.6rem 0 .5rem; }
+  p { margin:0 0 1rem; }
+  a { color:var(--accent-deep); }
+  strong { font-weight:700; }
+
+  code { font-family:var(--mono); font-size:.86em; }
+  p code, li code, td code { background:var(--chip); padding:.1em .4em; border-radius:5px; }
+
+  /* Bandeau chiffres clés */
+  .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(8.5rem,1fr)); gap:.9rem; margin:2rem 0 0; }
+  .stat { background:var(--panel); border:1px solid var(--hair); border-radius:12px; padding:1.1rem 1.2rem; box-shadow:var(--shadow); }
+  .stat .n { font-family:var(--serif); font-size:1.9rem; font-weight:600; color:var(--accent-deep); line-height:1; }
+  .stat .n small { font-size:.9rem; }
+  .stat .l { font-size:.8rem; color:var(--muted); margin-top:.4rem; line-height:1.35; }
+
+  /* Cartes leviers */
+  .levier { background:var(--panel); border:1px solid var(--hair); border-left:4px solid var(--accent); border-radius:12px; padding:1.1rem 1.3rem; box-shadow:var(--shadow); margin-bottom:1rem; }
+  .levier h3 { margin:0 0 .5rem; display:flex; align-items:center; gap:.55rem; }
+  .levier h3 .tag { font-family:var(--mono); font-size:.66rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-deep); background:var(--leaf-bg); border:1px solid var(--leaf-bd); border-radius:20px; padding:.1rem .55rem; font-weight:700; }
+  .levier p { margin:0; font-size:.94rem; }
+  .levier p + p { margin-top:.6rem; }
+  .levier .preuve { margin-top:.7rem; font-size:.85rem; color:var(--muted); border-top:1px dashed var(--hair); padding-top:.6rem; }
+  .levier .preuve b { color:var(--ink); }
+
+  table { border-collapse:collapse; width:100%; font-size:.88rem; background:var(--panel); border:1px solid var(--hair); border-radius:12px; overflow:hidden; box-shadow:var(--shadow); margin:.5rem 0 0; }
+  thead th { background:var(--accent); color:#fff; text-align:left; font-weight:600; padding:.6rem .85rem; font-size:.82rem; }
+  tbody td { padding:.6rem .85rem; border-top:1px solid var(--hair); vertical-align:top; }
+  tbody tr:nth-child(even) td { background:color-mix(in srgb,var(--chip) 40%,transparent); }
+  .twrap { overflow-x:auto; }
+
+  ul.clean { margin:.4rem 0 0; padding-left:1.2rem; }
+  ul.clean li { margin-bottom:.35rem; }
+
+  .note { background:var(--leaf-bg); border:1px solid var(--leaf-bd); border-radius:12px; padding:1rem 1.2rem; margin-top:1.4rem; font-size:.92rem; }
+  .note b { color:var(--accent-deep); }
+
+  footer { margin-top:3.5rem; padding-top:1.2rem; border-top:1px solid var(--hair); font-size:.82rem; color:var(--muted); }
+
+  @media print {
+    body { background:#fff; }
+    .stat, .levier, table, .note { box-shadow:none; }
+    section { break-inside:avoid; }
+    .levier { break-inside:avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="eyebrow">Dossier CDA — Annexe architecture</p>
+  <h1>Éco-conception &amp; sobriété numérique</h1>
+  <p class="sub">Choix de conception visant à limiter l'empreinte de l'application <strong>Petit Rayon de Soleil</strong> : moins de code, moins de données transférées, moins de ressources serveur mobilisées.</p>
+  <div class="meta">
+    <span><b>Projet</b> Petit Rayon de Soleil</span>
+    <span><b>Auteur</b> de Breyne Hélio</span>
+    <span><b>Réf.</b> RNCP CDA — Concevoir l'architecture logicielle</span>
+  </div>
+
+  <!-- Chiffres clés mesurés sur le projet réel -->
+  <div class="stats">
+    <div class="stat">
+      <div class="n">~15<small> Ko</small></div>
+      <div class="l">Poids total du front (HTML + CSS + JS), non compressé</div>
+    </div>
+    <div class="stat">
+      <div class="n">0</div>
+      <div class="l">Image, police web ou script tiers chargé côté client</div>
+    </div>
+    <div class="stat">
+      <div class="n">2</div>
+      <div class="l">Dépendances runtime seulement (Express, bcryptjs)</div>
+    </div>
+    <div class="stat">
+      <div class="n">0 W</div>
+      <div class="l">Consommation serveur au repos (hébergement serverless)</div>
+    </div>
+  </div>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">1</span><h2>Démarche</h2></div>
+    <p>La sobriété numérique n'a pas été traitée comme une couche ajoutée après coup, mais comme un <strong>principe de conception</strong> présent dès le choix de l'architecture. La règle appliquée : ne mobiliser une ressource (dépendance, requête, octet transféré, calcul serveur) que si elle apporte une valeur réelle à l'utilisateur.</p>
+    <p>Cette démarche rejoint directement le cahier des charges : l'application a un périmètre volontairement resserré (lire, proposer, mettre en favori des messages bienveillants). Cette simplicité fonctionnelle est aussi ce qui la rend économe.</p>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">2</span><h2>Les six leviers appliqués</h2></div>
+
+    <div class="levier">
+      <h3><span class="tag">Dépendances</span> Limitation des dépendances</h3>
+      <p>Le projet ne s'appuie que sur <strong>deux dépendances</strong> d'exécution : <code>express</code> (serveur HTTP) et <code>bcryptjs</code> (hachage des mots de passe). Les tests utilisent le module natif <code>node:test</code> — aucune bibliothèque de test à installer.</p>
+      <p>Moins de dépendances, c'est un <code>node_modules</code> plus petit, moins de code téléchargé et exécuté, une surface d'attaque réduite et une maintenance simplifiée (moins de mises à jour de sécurité en cascade).</p>
+      <p class="preuve"><b>Preuve :</b> <code>package.json</code> → bloc <code>dependencies</code> (Express, bcryptjs, client libSQL pour l'hébergement).</p>
+    </div>
+
+    <div class="levier">
+      <h3><span class="tag">Interface</span> Interface légère</h3>
+      <p>Le front est écrit en <strong>HTML, CSS et JavaScript natifs</strong>, sans React, Vue ni bundler. Résultat : environ <strong>15 Ko</strong> au total, chargés en trois fichiers seulement, sans étape de compilation.</p>
+      <p>Aucun framework à télécharger côté navigateur signifie un premier affichage quasi instantané, y compris sur une connexion lente ou un appareil modeste — un gain d'accessibilité autant que de sobriété.</p>
+      <p class="preuve"><b>Preuve :</b> dossier <code>public/</code> — <code>index.html</code> (~4,8 Ko), <code>style.css</code> (~3 Ko), <code>app.js</code> (~7,9 Ko).</p>
+    </div>
+
+    <div class="levier">
+      <h3><span class="tag">Images</span> Optimisation des images</h3>
+      <p>L'application ne sert <strong>aucune image</strong> : pas de logo bitmap, pas de bannière, pas d'icône lourde. La mise en forme repose uniquement sur le CSS (couleurs, typographie système, mise en page).</p>
+      <p>C'est l'optimisation d'image la plus efficace qui soit : celle qu'on n'a pas à charger. Les images sont souvent le premier poste de poids d'une page web ; ici ce poste est nul.</p>
+      <p class="preuve"><b>Preuve :</b> aucune balise <code>&lt;img&gt;</code> ni <code>background-image</code> distante dans <code>public/</code> (les fichiers PNG du projet sont les diagrammes du dossier, non servis à l'utilisateur).</p>
+    </div>
+
+    <div class="levier">
+      <h3><span class="tag">Hébergement</span> Hébergement adapté</h3>
+      <p>L'application est déployée sur une infrastructure <strong>serverless</strong> (Vercel), couplée à une base <strong>SQLite / libSQL</strong> (Turso). Le serveur n'est instancié qu'à la réception d'une requête, puis libéré : <strong>aucune ressource n'est consommée au repos</strong>, contrairement à un serveur allumé en permanence.</p>
+      <p>SQLite est un moteur particulièrement léger (un simple fichier, pas de processus serveur dédié), adapté à la volumétrie réelle du projet. On dimensionne l'infrastructure au juste besoin plutôt que de sur-provisionner.</p>
+      <p class="preuve"><b>Preuve :</b> <code>vercel.json</code> + <code>api/index.js</code> (fonction serverless) ; <code>db.js</code> (moteur SQLite / libSQL).</p>
+    </div>
+
+    <div class="levier">
+      <h3><span class="tag">Requêtes</span> Réduction des requêtes inutiles</h3>
+      <p>Les échanges réseau sont réduits au strict nécessaire. Le message d'accueil est obtenu par un unique appel <code>GET /api/messages/random</code>, et les requêtes SQL sont <strong>ciblées</strong> : on ne sélectionne que les colonnes utiles et on filtre côté base (<code>WHERE approved = 1</code>) plutôt que de tout rapatrier pour trier ensuite.</p>
+      <p>Chaque requête évitée, c'est de la bande passante et du temps de calcul économisés, côté client comme côté serveur.</p>
+      <p class="preuve"><b>Preuve :</b> routes de <code>server.js</code> ; requêtes préparées et filtrées de <code>db.js</code>.</p>
+    </div>
+
+    <div class="levier">
+      <h3><span class="tag">Périmètre</span> Application simple et peu consommatrice</h3>
+      <p>Le périmètre fonctionnel est délibérément <strong>minimal et maîtrisé</strong> : consulter des messages, en proposer, gérer ses favoris, modérer côté admin. Pas de fonctionnalité superflue, pas de traitement lourd (pas de média, pas de calcul intensif, pas de tâche de fond permanente).</p>
+      <p>Une application qui fait peu, mais bien, est structurellement plus sobre qu'une application riche dont la majorité des fonctions restent inutilisées.</p>
+      <p class="preuve"><b>Preuve :</b> cahier des charges + liste des routes de l'API (périmètre fermé et documenté).</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">3</span><h2>Synthèse</h2></div>
+    <div class="twrap">
+    <table>
+      <thead>
+        <tr><th>Levier de sobriété</th><th>Choix concret dans le projet</th><th>Bénéfice</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Dépendances</td><td>2 dépendances runtime ; tests via <code>node:test</code> natif</td><td>Moins de code, moins de failles, maintenance allégée</td></tr>
+        <tr><td>Interface</td><td>HTML/CSS/JS natif, ~15 Ko, sans bundler</td><td>Affichage rapide, accessible sur appareil modeste</td></tr>
+        <tr><td>Images</td><td>Aucune image servie, mise en forme CSS seule</td><td>Poids de page fortement réduit</td></tr>
+        <tr><td>Hébergement</td><td>Serverless (Vercel) + SQLite/libSQL</td><td>Zéro consommation au repos, infra au juste besoin</td></tr>
+        <tr><td>Requêtes</td><td>Appels API minimaux, requêtes SQL ciblées et filtrées</td><td>Moins de bande passante et de calcul</td></tr>
+        <tr><td>Périmètre</td><td>Fonctions essentielles uniquement</td><td>Consommation structurellement basse</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="note">
+      <p style="margin:0"><b>À retenir.</b> La sobriété de <em>Petit Rayon de Soleil</em> ne résulte pas d'une contrainte subie mais d'un ensemble de choix d'architecture cohérents : un périmètre simple, un front sans dépendance, une base légère et un hébergement qui ne consomme que sur sollicitation. La conception frugale sert à la fois l'écologie, la performance et l'accessibilité.</p>
+    </div>
+  </section>
+
+  <footer>
+    Petit Rayon de Soleil — Annexe « Éco-conception et sobriété numérique » du dossier professionnel CDA. Chiffres mesurés sur le code source du projet.
+  </footer>
+
+</div>
+</body>
+</html>

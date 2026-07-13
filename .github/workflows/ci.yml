@@ -1,0 +1,59 @@
+# Intégration continue — Petit Rayon de Soleil
+#
+# Ce pipeline s'exécute automatiquement sur le serveur d'automatisation
+# GitHub Actions, à chaque push et à chaque pull request sur la branche main.
+#
+# Il garantit qu'aucun code cassé ne rejoint la branche principale :
+#   1. Récupération du code (checkout)
+#   2. Installation de Node.js
+#   3. Installation des dépendances (npm install)
+#   4. Contrôle qualité : vérification syntaxique des fichiers source
+#   5. Exécution de la suite de tests automatisés (npm test)
+#
+# Le résultat (succès / échec) est visible dans l'onglet "Actions" du dépôt
+# et sous forme de pastille verte/rouge sur chaque commit et chaque PR.
+
+name: CI
+
+# Déclencheurs : à chaque poussée et à chaque PR visant main.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Installation, qualité & tests
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Récupère le code du dépôt dans le runner.
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      # 2. Installe l'environnement Node.js (version LTS).
+      - name: Installer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # 3. Installe les dépendances de façon reproductible.
+      #    (npm ci si un package-lock.json est présent, sinon npm install)
+      - name: Installer les dépendances
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm install; fi
+
+      # 4. Contrôle qualité : vérifie que chaque fichier JS est
+      #    syntaxiquement valide, sans dépendance externe (node --check).
+      - name: Contrôle qualité (vérification syntaxique)
+        run: |
+          node --check server.js
+          node --check db.js
+          node --check auth.js
+          node --check scripts/reset-db.js
+
+      # 5. Lance la suite de tests (unitaires + intégration).
+      - name: Exécuter les tests
+        run: npm test

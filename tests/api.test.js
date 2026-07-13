@@ -26,8 +26,8 @@ before(async () => {
     if (fs.existsSync(f)) fs.unlinkSync(f);
   }
   const { init, seed } = require('../db');
-  init();
-  seed();
+  await init();
+  await seed();
   const app = require('../server');
   await new Promise((resolve) => (server = app.listen(3999, resolve)));
 });
@@ -124,6 +124,44 @@ test('parcours complet : proposition -> approbation admin', async () => {
   const apres = await call('GET', '/api/messages');
   const trouveApres = apres.data.messages.some((m) => m.content.includes('grandes choses'));
   assert.strictEqual(trouveApres, true);
+});
+
+test('parcours de rejet : une proposition refusée quitte la file de modération', async () => {
+  // 1. Un utilisateur propose un message
+  const user = await call('POST', '/api/login', {
+    email: 'user@soleil.fr',
+    password: 'user1234',
+  });
+  const prop = await call(
+    'POST',
+    '/api/messages',
+    { content: 'Message qui sera rejete par la moderation.' },
+    user.data.token
+  );
+  assert.strictEqual(prop.status, 201);
+
+  // 2. L'admin le voit dans la file d'attente
+  const admin = await call('POST', '/api/login', {
+    email: 'admin@soleil.fr',
+    password: 'admin123',
+  });
+  const fileAvant = await call('GET', '/api/admin/pending', null, admin.data.token);
+  const presentAvant = fileAvant.data.pending.some((m) => m.id === prop.data.id);
+  assert.strictEqual(presentAvant, true);
+
+  // 3. L'admin le rejette
+  const reject = await call('DELETE', '/api/admin/reject/' + prop.data.id, null, admin.data.token);
+  assert.strictEqual(reject.status, 200);
+
+  // 4. Il ne figure plus dans la file d'attente...
+  const fileApres = await call('GET', '/api/admin/pending', null, admin.data.token);
+  const presentApres = fileApres.data.pending.some((m) => m.id === prop.data.id);
+  assert.strictEqual(presentApres, false);
+
+  // 5. ...et n'est pas non plus visible publiquement.
+  const publique = await call('GET', '/api/messages');
+  const visiblePublic = publique.data.messages.some((m) => m.content.includes('rejete par la moderation'));
+  assert.strictEqual(visiblePublic, false);
 });
 
 test('suppression de compte (RGPD) efface l’utilisateur', async () => {

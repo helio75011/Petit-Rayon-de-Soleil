@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intégration &amp; déploiement continus (CI/CD) — Petit Rayon de Soleil</title>
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  :root {
+    --ground:#FBFCFB; --panel:#FFFFFF; --ink:#1B211D; --muted:#5A635C; --hair:#E2E8E3;
+    --accent:#2E9E52; --accent-deep:#1F7A3D; --code-bg:#0E140F;
+    --chip:#E9F6EC; --warn-bg:#FBF1DA; --warn-ink:#9A6B12; --warn-bd:#E4C061;
+    --auto:#2E9E52; --auto-bg:#E9F6EC; --auto-bd:#B9E0C3;
+    --manu:#B4791F; --manu-bg:#FBF1DA; --manu-bd:#E4C061;
+    --next:#3E82C4; --next-bg:#E8F1FB; --next-bd:#B7D4F0;
+    --shadow:0 1px 2px rgba(27,33,29,.05),0 8px 26px rgba(27,33,29,.07);
+    --serif:Georgia,'Times New Roman',serif;
+    --sans:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    --mono:ui-monospace,'SF Mono','Cascadia Code','Consolas',monospace;
+    --c-com:#6E7C70; --c-var:#E5C07B; --c-str:#98C379; --c-cmd:#EAF2EA; --c-key:#7FB5E6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground:#12160F; --panel:#191E17; --ink:#E7EDE7; --muted:#9AA79C; --hair:#2A3228;
+      --accent:#56C878; --accent-deep:#7BD996; --code-bg:#0C110C;
+      --chip:#14251A; --warn-bg:#241E0F; --warn-ink:#E4C061; --warn-bd:#5C4A1E;
+      --auto:#56C878; --auto-bg:#12251A; --auto-bd:#2E5238;
+      --manu:#E4C061; --manu-bg:#241E0F; --manu-bd:#5C4A1E;
+      --next:#6BA6E0; --next-bg:#131E2A; --next-bd:#2C4763;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.4);
+    }
+  }
+  :root[data-theme="light"] {
+    --ground:#FBFCFB;--panel:#FFFFFF;--ink:#1B211D;--muted:#5A635C;--hair:#E2E8E3;
+    --accent:#2E9E52;--accent-deep:#1F7A3D;--code-bg:#0E140F;--chip:#E9F6EC;
+    --warn-bg:#FBF1DA;--warn-ink:#9A6B12;--warn-bd:#E4C061;
+    --auto:#2E9E52;--auto-bg:#E9F6EC;--auto-bd:#B9E0C3;
+    --manu:#B4791F;--manu-bg:#FBF1DA;--manu-bd:#E4C061;
+    --next:#3E82C4;--next-bg:#E8F1FB;--next-bd:#B7D4F0;
+    --shadow:0 1px 2px rgba(27,33,29,.05),0 8px 26px rgba(27,33,29,.07);
+  }
+  :root[data-theme="dark"] {
+    --ground:#12160F;--panel:#191E17;--ink:#E7EDE7;--muted:#9AA79C;--hair:#2A3228;
+    --accent:#56C878;--accent-deep:#7BD996;--code-bg:#0C110C;--chip:#14251A;
+    --warn-bg:#241E0F;--warn-ink:#E4C061;--warn-bd:#5C4A1E;
+    --auto:#56C878;--auto-bg:#12251A;--auto-bd:#2E5238;
+    --manu:#E4C061;--manu-bg:#241E0F;--manu-bd:#5C4A1E;
+    --next:#6BA6E0;--next-bg:#131E2A;--next-bd:#2C4763;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.4);
+  }
+
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--ground); color:var(--ink); font-family:var(--sans); line-height:1.6; -webkit-font-smoothing:antialiased; }
+  .wrap { max-width:54rem; margin:0 auto; padding:clamp(1.5rem,4vw,4rem) clamp(1.1rem,4vw,2.5rem) 5rem; }
+
+  .eyebrow { font-family:var(--mono); font-size:.72rem; letter-spacing:.18em; text-transform:uppercase; color:var(--accent-deep); margin:0 0 .9rem; }
+  h1 { font-family:var(--serif); font-weight:600; font-size:clamp(1.9rem,5vw,2.9rem); line-height:1.1; letter-spacing:-.01em; text-wrap:balance; margin:0 0 .5rem; }
+  .sub { color:var(--muted); font-size:1.05rem; max-width:46rem; margin:0 0 1.6rem; }
+  .meta { display:flex; flex-wrap:wrap; gap:.5rem 1.4rem; padding:1rem 0 0; border-top:1px solid var(--hair); font-size:.85rem; color:var(--muted); }
+  .meta b { color:var(--ink); font-weight:600; }
+  .meta code { font-family:var(--mono); font-size:.82rem; }
+
+  section { margin-top:2.8rem; }
+  .sec-head { display:flex; align-items:baseline; gap:.8rem; margin:0 0 .3rem; padding-bottom:.6rem; border-bottom:2px solid var(--ink); }
+  .sec-num { font-family:var(--mono); font-size:.95rem; font-weight:700; color:#fff; background:var(--accent); border-radius:7px; padding:.15rem .55rem; }
+  h2 { font-family:var(--serif); font-weight:600; font-size:1.35rem; margin:0; }
+  .sec-desc { color:var(--muted); font-size:.95rem; margin:.7rem 0 1rem; }
+  h3 { font-size:.98rem; font-weight:700; margin:1.6rem 0 .6rem; }
+  p { margin:0 0 1rem; }
+  a { color:var(--accent-deep); }
+  strong { font-weight:700; }
+
+  code { font-family:var(--mono); font-size:.86em; }
+  p code, li code, td code, .flow code { background:var(--chip); padding:.1em .4em; border-radius:5px; }
+
+  /* Pipeline visuel */
+  .pipeline { display:flex; align-items:stretch; gap:.5rem; flex-wrap:wrap; margin:1.4rem 0; padding:1.1rem 1.2rem; background:var(--panel); border:1px solid var(--hair); border-radius:12px; box-shadow:var(--shadow); }
+  .pstep { flex:1 1 6rem; min-width:6rem; text-align:center; padding:.7rem .5rem; background:var(--chip); border:1px solid var(--auto-bd); border-radius:9px; position:relative; }
+  .pstep .k { font-family:var(--mono); font-size:.64rem; color:var(--accent-deep); font-weight:700; letter-spacing:.05em; }
+  .pstep .t { font-size:.82rem; font-weight:600; margin-top:.2rem; }
+  .pstep .d { font-size:.72rem; color:var(--muted); margin-top:.15rem; }
+  .parrow { align-self:center; color:var(--muted); font-size:1.1rem; }
+
+  /* Cartes automatisé / manuel / à venir */
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(15rem,1fr)); gap:1rem; margin-top:1.2rem; }
+  .card { background:var(--panel); border:1px solid var(--hair); border-top:4px solid var(--bd); border-radius:12px; padding:1.1rem 1.2rem; box-shadow:var(--shadow); }
+  .card.auto { --tint:var(--auto); --bd:var(--auto); --tbg:var(--auto-bg); --tbd:var(--auto-bd); }
+  .card.manu { --tint:var(--manu); --bd:var(--manu); --tbg:var(--manu-bg); --tbd:var(--manu-bd); }
+  .card.next { --tint:var(--next); --bd:var(--next); --tbg:var(--next-bg); --tbd:var(--next-bd); }
+  .card .badge { display:inline-block; font-family:var(--mono); font-size:.64rem; letter-spacing:.08em; text-transform:uppercase; font-weight:700; color:var(--tint); background:var(--tbg); border:1px solid var(--tbd); border-radius:20px; padding:.12rem .55rem; margin-bottom:.6rem; }
+  .card h3 { margin:0 0 .5rem; font-size:1rem; }
+  .card ul { margin:0; padding-left:1.1rem; font-size:.9rem; }
+  .card li { margin-bottom:.4rem; }
+  .card li::marker { color:var(--tint); }
+
+  /* Terminal / code */
+  .term { background:var(--code-bg); border-radius:12px; overflow:hidden; box-shadow:var(--shadow); border:1px solid #223022; margin:1rem 0; }
+  .term-bar { display:flex; align-items:center; gap:.5rem; padding:.55rem .9rem; background:#161E17; border-bottom:1px solid #223022; }
+  .term-bar i { width:.68rem; height:.68rem; border-radius:50%; display:block; }
+  .term-bar .r{background:#E5534B;} .term-bar .y{background:#E5B14B;} .term-bar .g{background:#5FB96A;}
+  .term-bar .lbl { margin-left:.5rem; font-family:var(--mono); font-size:.72rem; color:#8FA091; }
+  pre { margin:0; padding:.9rem 1.1rem; overflow-x:auto; font-family:var(--mono); font-size:.78rem; line-height:1.65; color:#C7D4C8; }
+  pre .com { color:var(--c-com); } pre .var { color:var(--c-var); } pre .str { color:var(--c-str); } pre .cmd { color:var(--c-cmd); } pre .key { color:var(--c-key); } pre .out { color:#8FA091; } pre .ok { color:#6FD37F; }
+
+  table { border-collapse:collapse; width:100%; font-size:.86rem; background:var(--panel); border:1px solid var(--hair); border-radius:12px; overflow:hidden; box-shadow:var(--shadow); }
+  thead th { background:var(--accent); color:#fff; text-align:left; font-weight:600; padding:.6rem .85rem; font-size:.8rem; }
+  tbody td { padding:.55rem .85rem; border-top:1px solid var(--hair); vertical-align:top; }
+  tbody tr:nth-child(even) td { background:color-mix(in srgb,var(--chip) 40%,transparent); }
+  .tbl-scroll { overflow-x:auto; }
+  .pill { display:inline-block; font-family:var(--mono); font-size:.66rem; font-weight:700; padding:.1em .5em; border-radius:20px; white-space:nowrap; }
+  .pill.auto { color:var(--auto); background:var(--auto-bg); border:1px solid var(--auto-bd); }
+  .pill.manu { color:var(--manu); background:var(--manu-bg); border:1px solid var(--manu-bd); }
+
+  .note { border-left:3px solid var(--accent); background:color-mix(in srgb,var(--accent) 7%,transparent); padding:.85rem 1.1rem; border-radius:0 8px 8px 0; font-size:.92rem; margin:1.2rem 0; }
+  .note strong { color:var(--accent-deep); }
+
+  footer { margin-top:3.5rem; padding-top:1.1rem; border-top:1px solid var(--hair); color:var(--muted); font-size:.82rem; }
+
+  @media print {
+    :root { --ground:#fff; --panel:#fff; --ink:#000; --shadow:none; }
+    body { background:#fff; }
+    .wrap { max-width:none; padding:0 .5rem; }
+    section, .term, table, .cards, .card, .pipeline { break-inside:avoid; }
+    .term { background:#F4F4F4; border:1px solid #999; } pre { color:#111; }
+    pre .cmd,pre .str,pre .key,pre .ok { color:#000; } pre .com,pre .var,pre .out { color:#555; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="eyebrow">Dossier CDA · Annexe DevOps</p>
+  <h1>Intégration &amp; déploiement continus</h1>
+  <p class="sub">Chaîne CI/CD de <strong>Petit Rayon de Soleil</strong> : ce qui est automatisé aujourd'hui, ce qui reste manuel, et les évolutions prévues. Un pipeline GitHub Actions valide chaque modification avant qu'elle n'atteigne la production.</p>
+
+  <div class="meta">
+    <span><b>Projet</b> Petit Rayon de Soleil</span>
+    <span><b>Auteur</b> de Breyne Hélio</span>
+    <span><b>Serveur CI</b> GitHub Actions</span>
+    <span><b>Déploiement</b> Vercel (continu)</span>
+  </div>
+
+  <!-- 1. LE PIPELINE -->
+  <section>
+    <div class="sec-head"><span class="sec-num">1</span><h2>Le pipeline en un coup d'œil</h2></div>
+    <p class="sec-desc">À chaque <code>git push</code> (ou pull request) sur <code>main</code>, GitHub Actions exécute automatiquement cette chaîne. Si une étape échoue, la fusion est signalée en rouge et le déploiement ne suit pas.</p>
+
+    <div class="pipeline">
+      <div class="pstep"><div class="k">git</div><div class="t">Push / PR</div><div class="d">sur main</div></div>
+      <span class="parrow">→</span>
+      <div class="pstep"><div class="k">CI</div><div class="t">Checkout</div><div class="d">récup. du code</div></div>
+      <span class="parrow">→</span>
+      <div class="pstep"><div class="k">CI</div><div class="t">Install</div><div class="d">npm install</div></div>
+      <span class="parrow">→</span>
+      <div class="pstep"><div class="k">CI</div><div class="t">Qualité</div><div class="d">node --check</div></div>
+      <span class="parrow">→</span>
+      <div class="pstep"><div class="k">CI</div><div class="t">Tests</div><div class="d">npm test · 15/15</div></div>
+      <span class="parrow">→</span>
+      <div class="pstep" style="background:var(--next-bg); border-color:var(--next-bd)"><div class="k" style="color:var(--next)">CD</div><div class="t">Déploiement</div><div class="d">Vercel auto</div></div>
+    </div>
+
+    <p>Le fichier de workflow (<code>.github/workflows/ci.yml</code>) est court et versionné avec le code&nbsp;:</p>
+    <div class="term">
+      <div class="term-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="lbl">.github/workflows/ci.yml</span></div>
+<pre><span class="key">name:</span> CI
+<span class="key">on:</span>
+  <span class="key">push:</span>     { <span class="key">branches:</span> [main] }
+  <span class="key">pull_request:</span> { <span class="key">branches:</span> [main] }
+
+<span class="key">jobs:</span>
+  <span class="key">test:</span>
+    <span class="key">runs-on:</span> ubuntu-latest
+    <span class="key">steps:</span>
+      - <span class="key">uses:</span> actions/checkout@v4
+      - <span class="key">uses:</span> actions/setup-node@v4
+        <span class="key">with:</span> { <span class="key">node-version:</span> <span class="str">'20'</span> }
+      - <span class="key">run:</span> npm install
+      - <span class="key">run:</span> node --check server.js db.js auth.js   <span class="com"># qualité</span>
+      - <span class="key">run:</span> npm test                              <span class="com"># 15 tests</span></pre>
+    </div>
+  </section>
+
+  <!-- 2. AUTOMATISE / MANUEL / A VENIR -->
+  <section>
+    <div class="sec-head"><span class="sec-num">2</span><h2>Automatisé, manuel, à venir</h2></div>
+    <div class="cards">
+      <div class="card auto">
+        <span class="badge">Automatisé aujourd'hui</span>
+        <h3>Ce qui tourne tout seul</h3>
+        <ul>
+          <li><strong>Tests</strong> à chaque push/PR via GitHub Actions (15 tests).</li>
+          <li><strong>Contrôle qualité</strong> : vérification syntaxique de chaque fichier (<code>node --check</code>).</li>
+          <li><strong>Garde-fou avant déploiement</strong> : le hook <code>predeploy</code> relance <code>npm test</code> avant <code>vercel --prod</code>.</li>
+          <li><strong>Déploiement</strong> : Vercel redéploie à chaque push sur <code>main</code>.</li>
+        </ul>
+      </div>
+      <div class="card manu">
+        <span class="badge">Encore manuel</span>
+        <h3>Ce qui reste à la main</h3>
+        <ul>
+          <li><strong>Revue de code</strong> : relecture humaine avant fusion d'une PR.</li>
+          <li><strong>Migrations de base</strong> : <code>init-db</code> / <code>db:reset</code> lancés manuellement.</li>
+          <li><strong>Tests de bout en bout navigateur</strong> : vérification visuelle de l'interface.</li>
+          <li><strong>Décision de mise en production</strong> : le choix de pousser sur <code>main</code> reste humain.</li>
+        </ul>
+      </div>
+      <div class="card next">
+        <span class="badge">Évolutions prévues</span>
+        <h3>Ce que je mettrais ensuite</h3>
+        <ul>
+          <li><strong>ESLint + Prettier</strong> dans le pipeline pour un vrai linting de style.</li>
+          <li><strong>Couverture de code</strong> (<code>node --test --experimental-test-coverage</code>) avec seuil minimal.</li>
+          <li><strong>Matrice de versions</strong> Node (18 / 20 / 22) pour tester la compatibilité.</li>
+          <li><strong>Déploiement conditionné au vert CI</strong> via l'intégration GitHub↔Vercel (« deploy on success »).</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. LIRE UN RAPPORT CI -->
+  <section>
+    <div class="sec-head"><span class="sec-num">3</span><h2>Interpréter un rapport d'intégration continue</h2></div>
+    <p class="sec-desc">Après chaque push, le rapport est consultable dans l'onglet <strong>Actions</strong> du dépôt GitHub. Voici comment le lire.</p>
+    <div class="term">
+      <div class="term-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="lbl">GitHub Actions — journal du job « test »</span></div>
+<pre><span class="ok">✓</span> Récupérer le code            <span class="out">(2s)</span>
+<span class="ok">✓</span> Installer Node.js            <span class="out">(4s)</span>
+<span class="ok">✓</span> Installer les dépendances    <span class="out">(9s)</span>
+<span class="ok">✓</span> Contrôle qualité             <span class="out">(1s)</span>
+<span class="ok">✓</span> Exécuter les tests           <span class="out">(6s)</span>
+  <span class="out">ℹ tests 15 · pass 15 · fail 0</span>
+
+<span class="ok">Job terminé : succès</span>  →  pastille verte sur le commit</pre>
+    </div>
+    <div class="tbl-scroll">
+      <table>
+        <thead><tr><th>Signal</th><th>Signification</th><th>Action attendue</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pill auto">✓ vert</span></td><td>Toutes les étapes ont réussi (installation, qualité, tests).</td><td>La fusion / le déploiement peut se faire en confiance.</td></tr>
+          <tr><td><span class="pill manu">✗ rouge</span></td><td>Une étape a échoué — le plus souvent un test cassé.</td><td>Ouvrir le journal, lire la ligne <code>fail</code>, corriger, repousser.</td></tr>
+          <tr><td><span class="pill manu">● jaune</span></td><td>Le pipeline est en cours d'exécution.</td><td>Attendre le résultat avant de fusionner.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:1rem">La clé de lecture est la ligne finale des tests : <code>pass 15 · fail 0</code> signifie que les 15 tests passent. Un <code>fail</code> non nul pointe directement le test en échec, dont le nom et l'assertion apparaissent juste au-dessus dans le journal.</p>
+  </section>
+
+  <!-- 4. VERCEL CD -->
+  <section>
+    <div class="sec-head"><span class="sec-num">4</span><h2>Pourquoi Vercel automatise déjà le déploiement</h2></div>
+    <p>Vercel est connecté au dépôt GitHub. Cette liaison assure un <strong>déploiement continu</strong> sans serveur à gérer&nbsp;:</p>
+    <ul>
+      <li>À chaque <code>git push</code> sur <code>main</code>, Vercel <strong>reconstruit et remet en ligne</strong> l'application automatiquement — c'est le « CD » de la chaîne.</li>
+      <li>Chaque pull request reçoit une <strong>URL de prévisualisation</strong> dédiée, pour tester la version avant fusion.</li>
+      <li>Un déploiement raté peut être <strong>annulé (rollback)</strong> en un clic vers la version précédente.</li>
+    </ul>
+    <div class="note">
+      <strong>Complémentarité CI + CD.</strong> GitHub Actions joue le rôle de <em>gardien de la qualité</em> (il teste), Vercel celui de <em>livreur</em> (il déploie). Ensemble, ils forment une chaîne où une modification passe automatiquement des tests à la mise en ligne, la décision humaine se limitant à valider et à pousser le code.
+    </div>
+  </section>
+
+  <footer>
+    Petit Rayon de Soleil — Annexe « CI/CD ». Pipeline <code>.github/workflows/ci.yml</code> ; étapes qualité et tests vérifiées localement (15/15) avant documentation.
+  </footer>
+
+</div>
+</body>
+</html>
