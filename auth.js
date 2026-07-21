@@ -70,7 +70,8 @@ async function requireAuth(req, res, next) {
 async function requireAdmin(req, res, next) {
   const user = await userFromToken(tokenFromReq(req));
   if (!user) return res.status(401).json({ error: 'Non authentifié' });
-  if (user.role !== 'admin') return res.status(403).json({ error: 'Accès réservé à l’administrateur' });
+  if (user.role !== 'admin')
+    return res.status(403).json({ error: 'Accès réservé à l’administrateur' });
   req.user = user;
   next();
 }

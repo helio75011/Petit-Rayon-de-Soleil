@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Outils de qualité de code — Petit Rayon de Soleil</title>
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  :root {
+    --ground:#FBFCFB; --panel:#FFFFFF; --ink:#1B211D; --muted:#5A635C; --hair:#E2E8E3;
+    --accent:#2E9E52; --accent-deep:#1F7A3D; --code-bg:#0E140F;
+    --chip:#E9F6EC; --warn-bg:#FBF1DA; --warn-ink:#9A6B12; --warn-bd:#E4C061;
+    --yes:#2E9E52; --yes-bg:#E9F6EC; --yes-bd:#B9E0C3;
+    --partial:#B4791F; --partial-bg:#FBF1DA; --partial-bd:#E4C061;
+    --shadow:0 1px 2px rgba(27,33,29,.05),0 8px 26px rgba(27,33,29,.07);
+    --serif:Georgia,'Times New Roman',serif;
+    --sans:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    --mono:ui-monospace,'SF Mono','Cascadia Code','Consolas',monospace;
+    --c-com:#6E7C70; --c-str:#98C379; --c-cmd:#EAF2EA; --c-ok:#6FD37F; --c-key:#7FB5E6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground:#12160F; --panel:#191E17; --ink:#E7EDE7; --muted:#9AA79C; --hair:#2A3228;
+      --accent:#56C878; --accent-deep:#7BD996; --code-bg:#0C110C;
+      --chip:#14251A; --warn-bg:#241E0F; --warn-ink:#E4C061; --warn-bd:#5C4A1E;
+      --yes:#56C878; --yes-bg:#12251A; --yes-bd:#2E5238;
+      --partial:#E4C061; --partial-bg:#241E0F; --partial-bd:#5C4A1E;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.4);
+    }
+  }
+  :root[data-theme="light"] {
+    --ground:#FBFCFB;--panel:#FFFFFF;--ink:#1B211D;--muted:#5A635C;--hair:#E2E8E3;
+    --accent:#2E9E52;--accent-deep:#1F7A3D;--code-bg:#0E140F;--chip:#E9F6EC;
+    --warn-bg:#FBF1DA;--warn-ink:#9A6B12;--warn-bd:#E4C061;
+    --yes:#2E9E52;--yes-bg:#E9F6EC;--yes-bd:#B9E0C3;
+    --partial:#B4791F;--partial-bg:#FBF1DA;--partial-bd:#E4C061;
+    --shadow:0 1px 2px rgba(27,33,29,.05),0 8px 26px rgba(27,33,29,.07);
+  }
+  :root[data-theme="dark"] {
+    --ground:#12160F;--panel:#191E17;--ink:#E7EDE7;--muted:#9AA79C;--hair:#2A3228;
+    --accent:#56C878;--accent-deep:#7BD996;--code-bg:#0C110C;--chip:#14251A;
+    --warn-bg:#241E0F;--warn-ink:#E4C061;--warn-bd:#5C4A1E;
+    --yes:#56C878;--yes-bg:#12251A;--yes-bd:#2E5238;
+    --partial:#E4C061;--partial-bg:#241E0F;--partial-bd:#5C4A1E;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.4);
+  }
+
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--ground); color:var(--ink); font-family:var(--sans); line-height:1.6; -webkit-font-smoothing:antialiased; }
+  .wrap { max-width:53rem; margin:0 auto; padding:clamp(1.5rem,4vw,4rem) clamp(1.1rem,4vw,2.5rem) 5rem; }
+
+  .eyebrow { font-family:var(--mono); font-size:.72rem; letter-spacing:.18em; text-transform:uppercase; color:var(--accent-deep); margin:0 0 .9rem; }
+  h1 { font-family:var(--serif); font-weight:600; font-size:clamp(1.9rem,5vw,2.9rem); line-height:1.1; letter-spacing:-.01em; text-wrap:balance; margin:0 0 .5rem; }
+  .sub { color:var(--muted); font-size:1.05rem; max-width:45rem; margin:0 0 1.6rem; }
+  .meta { display:flex; flex-wrap:wrap; gap:.5rem 1.4rem; padding:1rem 0 0; border-top:1px solid var(--hair); font-size:.85rem; color:var(--muted); }
+  .meta b { color:var(--ink); font-weight:600; }
+  .meta code { font-family:var(--mono); font-size:.82rem; }
+
+  section { margin-top:2.8rem; }
+  .sec-head { display:flex; align-items:baseline; gap:.8rem; margin:0 0 .3rem; padding-bottom:.6rem; border-bottom:2px solid var(--ink); }
+  .sec-num { font-family:var(--mono); font-size:.95rem; font-weight:700; color:#fff; background:var(--accent); border-radius:7px; padding:.15rem .55rem; }
+  h2 { font-family:var(--serif); font-weight:600; font-size:1.35rem; margin:0; }
+  .sec-desc { color:var(--muted); font-size:.95rem; margin:.7rem 0 1rem; }
+  h3 { font-size:.98rem; font-weight:700; margin:1.6rem 0 .6rem; }
+  p { margin:0 0 1rem; }
+  a { color:var(--accent-deep); }
+  strong { font-weight:700; }
+
+  code { font-family:var(--mono); font-size:.86em; }
+  p code, li code, td code { background:var(--chip); padding:.1em .4em; border-radius:5px; }
+
+  /* Tableau de synthèse des 6 points */
+  .tbl-scroll { overflow-x:auto; border:1px solid var(--hair); border-radius:12px; box-shadow:var(--shadow); }
+  table { border-collapse:collapse; width:100%; font-size:.87rem; background:var(--panel); }
+  thead th { background:var(--accent); color:#fff; text-align:left; font-weight:600; padding:.65rem .85rem; font-size:.8rem; white-space:nowrap; }
+  tbody td { padding:.6rem .85rem; border-top:1px solid var(--hair); vertical-align:top; }
+  tbody tr:nth-child(even) td { background:color-mix(in srgb,var(--chip) 40%,transparent); }
+  td.crit { font-weight:700; white-space:nowrap; }
+  .pill { display:inline-flex; align-items:center; gap:.3rem; font-family:var(--mono); font-size:.68rem; font-weight:700; padding:.12em .55em; border-radius:20px; white-space:nowrap; }
+  .pill.yes { color:var(--yes); background:var(--yes-bg); border:1px solid var(--yes-bd); }
+  .pill.partial { color:var(--partial); background:var(--partial-bg); border:1px solid var(--partial-bd); }
+  td .tool { font-family:var(--mono); font-size:.78rem; color:var(--accent-deep); }
+
+  /* Terminal */
+  .term { background:var(--code-bg); border-radius:12px; overflow:hidden; box-shadow:var(--shadow); border:1px solid #223022; margin:1rem 0; }
+  .term-bar { display:flex; align-items:center; gap:.5rem; padding:.55rem .9rem; background:#161E17; border-bottom:1px solid #223022; }
+  .term-bar i { width:.68rem; height:.68rem; border-radius:50%; display:block; }
+  .term-bar .r{background:#E5534B;} .term-bar .y{background:#E5B14B;} .term-bar .g{background:#5FB96A;}
+  .term-bar .lbl { margin-left:.5rem; font-family:var(--mono); font-size:.72rem; color:#8FA091; }
+  pre { margin:0; padding:.9rem 1.1rem; overflow-x:auto; font-family:var(--mono); font-size:.79rem; line-height:1.7; color:#C7D4C8; }
+  pre .com { color:var(--c-com); } pre .cmd { color:var(--c-cmd); } pre .ok { color:var(--c-ok); } pre .out { color:#8FA091; } pre .key { color:var(--c-key); } pre .str { color:var(--c-str); }
+
+  .cols { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1rem; }
+  @media (max-width:40rem){ .cols { grid-template-columns:1fr; } }
+  .toolcard { background:var(--panel); border:1px solid var(--hair); border-top:4px solid var(--accent); border-radius:12px; padding:1rem 1.2rem; box-shadow:var(--shadow); }
+  .toolcard h3 { margin:0 0 .4rem; font-size:1rem; display:flex; align-items:center; gap:.5rem; }
+  .toolcard h3 .role { font-family:var(--mono); font-size:.62rem; letter-spacing:.06em; text-transform:uppercase; color:var(--accent-deep); background:var(--chip); border:1px solid var(--yes-bd); border-radius:20px; padding:.1rem .5rem; font-weight:700; }
+  .toolcard p { margin:0; font-size:.9rem; }
+  .toolcard code { font-size:.8rem; }
+
+  .note { border-left:3px solid var(--accent); background:color-mix(in srgb,var(--accent) 7%,transparent); padding:.85rem 1.1rem; border-radius:0 8px 8px 0; font-size:.92rem; margin:1.2rem 0; }
+  .note strong { color:var(--accent-deep); }
+  .warn { display:flex; gap:.7rem; margin:1.2rem 0; padding:.9rem 1.1rem; background:var(--warn-bg); border:1px solid var(--warn-bd); border-radius:10px; font-size:.9rem; }
+  .warn .tag { font-family:var(--mono); font-size:.66rem; letter-spacing:.08em; text-transform:uppercase; color:var(--warn-ink); font-weight:700; white-space:nowrap; padding-top:.1rem; }
+  .warn p { margin:0; }
+
+  ul.tight { margin:.3rem 0 0; padding-left:1.15rem; font-size:.92rem; }
+  ul.tight li { margin-bottom:.35rem; }
+  ul.tight code { font-size:.82rem; }
+
+  footer { margin-top:3.5rem; padding-top:1.1rem; border-top:1px solid var(--hair); color:var(--muted); font-size:.82rem; }
+
+  @media print {
+    :root { --ground:#fff; --panel:#fff; --ink:#000; --shadow:none; }
+    body { background:#fff; }
+    .wrap { max-width:none; padding:0 .5rem; }
+    section, .term, .tbl-scroll, .toolcard, .cols { break-inside:avoid; }
+    .term { background:#F4F4F4; border:1px solid #999; } pre { color:#111; }
+    pre .cmd,pre .ok,pre .key,pre .str { color:#000; } pre .com,pre .out { color:#555; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="eyebrow">Dossier CDA · Annexe qualité</p>
+  <h1>Outils de qualité de code</h1>
+  <p class="sub">Dispositif de qualité en place sur <strong>Petit Rayon de Soleil</strong> : analyse statique, formatage automatique, tests, conventions et revue. Chaque outil est réellement installé et intégré au pipeline d'intégration continue.</p>
+
+  <div class="meta">
+    <span><b>Projet</b> Petit Rayon de Soleil</span>
+    <span><b>Auteur</b> de Breyne Hélio</span>
+    <span><b>Outils</b> ESLint · Prettier · node:test</span>
+  </div>
+
+  <!-- 1. SYNTHESE -->
+  <section>
+    <div class="sec-head"><span class="sec-num">1</span><h2>Synthèse : les six pratiques</h2></div>
+    <p class="sec-desc">État réel de chaque pratique de qualité demandée, avec l'outil correspondant.</p>
+    <div class="tbl-scroll">
+      <table>
+        <thead>
+          <tr><th>Pratique</th><th>Utilisé ?</th><th>Outil / moyen</th><th>Comment</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="crit">ESLint</td>
+            <td><span class="pill yes">✓ oui</span></td>
+            <td><span class="tool">eslint 9</span></td>
+            <td>Analyse statique. <code>npm run lint</code> → 0 problème.</td>
+          </tr>
+          <tr>
+            <td class="crit">Prettier</td>
+            <td><span class="pill yes">✓ oui</span></td>
+            <td><span class="tool">prettier 3</span></td>
+            <td>Formatage automatique et uniforme. <code>npm run format</code>.</td>
+          </tr>
+          <tr>
+            <td class="crit">Tests automatisés</td>
+            <td><span class="pill yes">✓ oui</span></td>
+            <td><span class="tool">node:test</span></td>
+            <td>15 tests (unitaires + intégration). <code>npm test</code>.</td>
+          </tr>
+          <tr>
+            <td class="crit">Conventions de nommage</td>
+            <td><span class="pill yes">✓ oui</span></td>
+            <td><span class="tool">convention projet</span></td>
+            <td>Règles explicites et cohérentes (voir §3).</td>
+          </tr>
+          <tr>
+            <td class="crit">Organisation des commits</td>
+            <td><span class="pill partial">◐ en cours</span></td>
+            <td><span class="tool">Conventional Commits</span></td>
+            <td>Convention adoptée pour la suite du projet (voir §4).</td>
+          </tr>
+          <tr>
+            <td class="crit">Revue manuelle du code</td>
+            <td><span class="pill partial">◐ adapté</span></td>
+            <td><span class="tool">auto-revue + PR</span></td>
+            <td>Projet solo : relecture systématique + CI (voir §4).</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 2. ESLINT + PRETTIER -->
+  <section>
+    <div class="sec-head"><span class="sec-num">2</span><h2>ESLint &amp; Prettier</h2></div>
+    <p class="sec-desc">Deux outils complémentaires, aux rôles bien séparés : ESLint traque les <em>erreurs</em>, Prettier impose un <em>style</em> uniforme. Une configuration (<code>eslint-config-prettier</code>) évite qu'ils se contredisent.</p>
+
+    <div class="cols">
+      <div class="toolcard">
+        <h3>ESLint <span class="role">analyse</span></h3>
+        <p>Détecte variables inutilisées, blocs vides, erreurs potentielles. Configuration adaptée au projet : contexte Node.js pour le serveur, contexte navigateur pour le dossier <code>public/</code>.</p>
+      </div>
+      <div class="toolcard">
+        <h3>Prettier <span class="role">format</span></h3>
+        <p>Reformate automatiquement tout le code selon des règles fixes (guillemets simples, largeur 100, point-virgule). Fin des débats de style : le formatage n'est plus manuel.</p>
+      </div>
+    </div>
+
+    <h3>Preuve d'exécution</h3>
+    <div class="term">
+      <div class="term-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="lbl">bash — outils de qualité</span></div>
+<pre><span class="cmd">$ npm run lint</span>          <span class="com"># ESLint</span>
+<span class="ok">(aucune sortie = 0 erreur, 0 avertissement)</span>
+
+<span class="cmd">$ npm run format:check</span>  <span class="com"># Prettier</span>
+<span class="out">Checking formatting...</span>
+<span class="ok">All matched files use Prettier code style!</span>
+
+<span class="cmd">$ npm test</span>             <span class="com"># Tests</span>
+<span class="out">ℹ tests 15 · pass 15 · fail 0</span></pre>
+    </div>
+
+    <div class="note">
+      <strong>Intégrés à la CI.</strong> Ces trois contrôles (<code>lint</code>, <code>format:check</code>, <code>test</code>) sont rejoués automatiquement par le pipeline GitHub Actions à chaque push. Un code non conforme au style ou une erreur ESLint fait échouer le build avant tout déploiement.
+    </div>
+  </section>
+
+  <!-- 3. NOMMAGE -->
+  <section>
+    <div class="sec-head"><span class="sec-num">3</span><h2>Conventions de nommage</h2></div>
+    <p class="sec-desc">Un nommage cohérent rend le code lisible sans documentation. Les règles suivies dans le projet&nbsp;:</p>
+    <ul class="tight">
+      <li><strong>Variables &amp; fonctions</strong> : <code>camelCase</code> (<code>hashPassword</code>, <code>montrerVue</code>, <code>dernierMessageId</code>).</li>
+      <li><strong>Constantes globales</strong> : <code>UPPER_CASE</code> (<code>PORT</code>, <code>BASE</code>, <code>DB_FILES</code>).</li>
+      <li><strong>Tables &amp; colonnes SQL</strong> : <code>snake_case</code> (<code>password_hash</code>, <code>propose_par</code>, <code>message_id</code>).</li>
+      <li><strong>Routes REST</strong> : chemins en minuscules, préfixe <code>/api/</code>, noms au pluriel (<code>/api/messages</code>, <code>/api/favoris</code>).</li>
+      <li><strong>Fichiers</strong> : minuscules, rôle explicite (<code>server.js</code>, <code>auth.js</code>, <code>reset-db.js</code>, <code>*.test.js</code>).</li>
+      <li><strong>Argument non utilisé</strong> : préfixé <code>_</code> (<code>_next</code>) pour signaler l'intention.</li>
+    </ul>
+    <div class="note">
+      <strong>Français / anglais assumé.</strong> Le code métier visible (fonctions d'interface, messages) est en français, cohérent avec le domaine ; les termes techniques standards restent en anglais (<code>token</code>, <code>hash</code>, <code>status</code>). Ce choix est constant dans tout le projet.
+    </div>
+  </section>
+
+  <!-- 4. COMMITS + REVUE -->
+  <section>
+    <div class="sec-head"><span class="sec-num">4</span><h2>Commits &amp; revue de code</h2></div>
+
+    <h3>Organisation des commits</h3>
+    <p>La convention retenue est <strong>Conventional Commits</strong> : chaque message commence par un type qui décrit la nature du changement.</p>
+    <div class="term">
+      <div class="term-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="lbl">exemples de messages de commit</span></div>
+<pre><span class="key">feat:</span>     ajout du statut 'rejected' pour les messages
+<span class="key">fix:</span>      correction du verrou de base lors des tests
+<span class="key">test:</span>     ajout du parcours de rejet en modération
+<span class="key">chore:</span>    mise en place d'ESLint et Prettier
+<span class="key">docs:</span>     annexe sur les environnements de déploiement</pre>
+    </div>
+    <p style="font-size:.9rem">Types utilisés : <code>feat</code> (fonctionnalité), <code>fix</code> (correction), <code>test</code>, <code>docs</code>, <code>chore</code> (outillage), <code>refactor</code>. Cette convention rend l'historique lisible et faciliterait la génération automatique d'un changelog.</p>
+
+    <div class="warn">
+      <span class="tag">Honnête</span>
+      <p>L'historique initial du dépôt comporte quelques commits courts (« first commit », « capture »). La convention Conventional Commits est adoptée <strong>à partir de maintenant</strong> pour structurer la suite du travail — c'est une amélioration en cours, pas un acquis rétroactif.</p>
+    </div>
+
+    <h3>Revue manuelle du code</h3>
+    <p>Le projet étant développé en solo, il n'y a pas de relecture par un pair. La qualité est maintenue par un dispositif adapté&nbsp;:</p>
+    <ul class="tight">
+      <li><strong>Auto-revue</strong> systématique avant chaque commit (relecture du diff).</li>
+      <li><strong>Filet automatique</strong> : ESLint + Prettier + 15 tests détectent ce qu'un œil humain manquerait.</li>
+      <li><strong>Pull requests</strong> : le workflow via PR est en place ; le pipeline CI joue le rôle de « relecteur automatique » qui doit passer au vert avant fusion.</li>
+    </ul>
+    <div class="note">
+      <strong>En équipe, la suite naturelle</strong> serait d'exiger l'approbation d'un relecteur sur chaque PR (branch protection GitHub) — la mécanique de PR + CI est déjà prête à l'accueillir.
+    </div>
+  </section>
+
+  <footer>
+    Petit Rayon de Soleil — Annexe « Outils de qualité de code ». États ESLint (0 problème), Prettier (conforme) et tests (15/15) vérifiés sur le projet. Configs : <code>eslint.config.js</code>, <code>.prettierrc.json</code>.
+  </footer>
+
+</div>
+</body>
+</html>

@@ -149,18 +149,28 @@ async function seed() {
     'INSERT INTO users (name, email, password_hash, role) VALUES (?, ?, ?, ?)'
   );
   // Mots de passe hachés (jamais stockés en clair).
-  const admin = await insertUser.run('Admin', 'admin@soleil.fr', bcrypt.hashSync('admin123', 10), 'admin');
-  const user1 = await insertUser.run('Utilisateur Démo', 'user@soleil.fr', bcrypt.hashSync('user1234', 10), 'user');
-  const user2 = await insertUser.run('Camille Martin', 'camille@soleil.fr', bcrypt.hashSync('camille1', 10), 'user');
+  await insertUser.run('Admin', 'admin@soleil.fr', bcrypt.hashSync('admin123', 10), 'admin');
+  const user1 = await insertUser.run(
+    'Utilisateur Démo',
+    'user@soleil.fr',
+    bcrypt.hashSync('user1234', 10),
+    'user'
+  );
+  const user2 = await insertUser.run(
+    'Camille Martin',
+    'camille@soleil.fr',
+    bcrypt.hashSync('camille1', 10),
+    'user'
+  );
 
   // --- Messages VALIDÉS (approved) : visibles de tous --------------------
   const insertApproved = db.prepare(
     "INSERT INTO messages (content, status, propose_par) VALUES (?, 'approved', ?)"
   );
   const valides = [
-    "Ne sois pas trop dur(e) envers toi-même. La bienveillance commence par soi.",
+    'Ne sois pas trop dur(e) envers toi-même. La bienveillance commence par soi.',
     "Tu mérites tout l'amour et le respect que tu offres si généreusement aux autres.",
-    "Chaque petit pas compte. Sois fier(e) du chemin déjà parcouru.",
+    'Chaque petit pas compte. Sois fier(e) du chemin déjà parcouru.',
     "Prends le temps de respirer. Tu fais de ton mieux, et c'est déjà beaucoup.",
     "Ta présence rend le monde un peu plus doux. Merci d'être toi.",
   ];
@@ -174,21 +184,27 @@ async function seed() {
   const insertPending = db.prepare(
     "INSERT INTO messages (content, status, propose_par) VALUES (?, 'pending', ?)"
   );
-  await insertPending.run("Tu es capable de bien plus que tu ne l'imagines.", user1.lastInsertRowid);
-  await insertPending.run("Ce petit rayon de soleil, c'est toi aujourd'hui.", user2.lastInsertRowid);
+  await insertPending.run(
+    "Tu es capable de bien plus que tu ne l'imagines.",
+    user1.lastInsertRowid
+  );
+  await insertPending.run(
+    "Ce petit rayon de soleil, c'est toi aujourd'hui.",
+    user2.lastInsertRowid
+  );
 
   // --- Messages REJETÉS (rejected) : conservés mais non publiés ----------
   const insertRejected = db.prepare(
     "INSERT INTO messages (content, status, propose_par) VALUES (?, 'rejected', ?)"
   );
-  await insertRejected.run("Message hors sujet refusé par la modération.", user2.lastInsertRowid);
+  await insertRejected.run('Message hors sujet refusé par la modération.', user2.lastInsertRowid);
 
   // --- Favoris : l'utilisateur de démo aime deux messages validés --------
   const insertFav = db.prepare('INSERT INTO favoris (user_id, message_id) VALUES (?, ?)');
   await insertFav.run(user1.lastInsertRowid, idsValides[0]);
   await insertFav.run(user1.lastInsertRowid, idsValides[2]);
 
-  console.log('Jeu d\'essai inséré :');
+  console.log("Jeu d'essai inséré :");
   console.log('  Comptes  : 1 admin + 2 utilisateurs');
   console.log('  Messages : 5 validés, 2 en attente, 1 rejeté');
   console.log('  Favoris  : 2 (utilisateur de démo)');

@@ -7,8 +7,9 @@
 #   1. Récupération du code (checkout)
 #   2. Installation de Node.js
 #   3. Installation des dépendances (npm install)
-#   4. Contrôle qualité : vérification syntaxique des fichiers source
-#   5. Exécution de la suite de tests automatisés (npm test)
+#   4. Qualité du code : analyse statique ESLint
+#   5. Formatage : vérification du style Prettier
+#   6. Exécution de la suite de tests automatisés (npm test)
 #
 # Le résultat (succès / échec) est visible dans l'onglet "Actions" du dépôt
 # et sous forme de pastille verte/rouge sur chaque commit et chaque PR.
@@ -45,15 +46,14 @@ jobs:
         run: |
           if [ -f package-lock.json ]; then npm ci; else npm install; fi
 
-      # 4. Contrôle qualité : vérifie que chaque fichier JS est
-      #    syntaxiquement valide, sans dépendance externe (node --check).
-      - name: Contrôle qualité (vérification syntaxique)
-        run: |
-          node --check server.js
-          node --check db.js
-          node --check auth.js
-          node --check scripts/reset-db.js
+      # 4. Qualité du code : ESLint détecte les erreurs et mauvaises pratiques.
+      - name: Analyse statique (ESLint)
+        run: npm run lint
 
-      # 5. Lance la suite de tests (unitaires + intégration).
+      # 5. Formatage : vérifie que tout le code respecte le style Prettier.
+      - name: Vérifier le formatage (Prettier)
+        run: npm run format:check
+
+      # 6. Lance la suite de tests (unitaires + intégration).
       - name: Exécuter les tests
         run: npm test

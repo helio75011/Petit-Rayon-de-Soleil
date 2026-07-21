@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cas d'exception &amp; contrôle des entrées — Petit Rayon de Soleil</title>
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  :root {
+    --ground:#FBFCFB; --panel:#FFFFFF; --ink:#1B211D; --muted:#5A635C; --hair:#E2E8E3;
+    --accent:#2E9E52; --accent-deep:#1F7A3D; --code-bg:#0E140F;
+    --chip:#E9F6EC; --warn-bg:#FBF1DA; --warn-ink:#9A6B12; --warn-bd:#E4C061;
+    --s4:#B4791F; --s4bg:#FBF1DA; --s4bd:#E4C061;
+    --s401:#3E82C4; --s401bg:#E8F1FB; --s401bd:#B7D4F0;
+    --s403:#7A4FB0; --s403bg:#F0EAFA; --s403bd:#CDBCEC;
+    --s500:#C0392B; --s500bg:#FBEBE9; --s500bd:#EDC3BD;
+    --sok:#2E9E52; --sokbg:#E9F6EC; --sokbd:#B9E0C3;
+    --shadow:0 1px 2px rgba(27,33,29,.05),0 8px 26px rgba(27,33,29,.07);
+    --serif:Georgia,'Times New Roman',serif;
+    --sans:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    --mono:ui-monospace,'SF Mono','Cascadia Code','Consolas',monospace;
+    --c-com:#6E7C70; --c-str:#98C379; --c-cmd:#EAF2EA; --c-kw:#C678DD; --c-fn:#7FB5E6; --c-num:#D19A66;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground:#12160F; --panel:#191E17; --ink:#E7EDE7; --muted:#9AA79C; --hair:#2A3228;
+      --accent:#56C878; --accent-deep:#7BD996; --code-bg:#0C110C;
+      --chip:#14251A; --warn-bg:#241E0F; --warn-ink:#E4C061; --warn-bd:#5C4A1E;
+      --s4:#E4C061; --s4bg:#241E0F; --s4bd:#5C4A1E;
+      --s401:#6BA6E0; --s401bg:#131E2A; --s401bd:#2C4763;
+      --s403:#B99BE0; --s403bg:#1E1630; --s403bd:#3F2E63;
+      --s500:#E88C82; --s500bg:#2A1815; --s500bd:#5C2E28;
+      --sok:#56C878; --sokbg:#12251A; --sokbd:#2E5238;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.4);
+    }
+  }
+  :root[data-theme="light"] {
+    --ground:#FBFCFB;--panel:#FFFFFF;--ink:#1B211D;--muted:#5A635C;--hair:#E2E8E3;
+    --accent:#2E9E52;--accent-deep:#1F7A3D;--code-bg:#0E140F;--chip:#E9F6EC;
+    --warn-bg:#FBF1DA;--warn-ink:#9A6B12;--warn-bd:#E4C061;
+    --s4:#B4791F;--s4bg:#FBF1DA;--s4bd:#E4C061;--s401:#3E82C4;--s401bg:#E8F1FB;--s401bd:#B7D4F0;
+    --s403:#7A4FB0;--s403bg:#F0EAFA;--s403bd:#CDBCEC;--s500:#C0392B;--s500bg:#FBEBE9;--s500bd:#EDC3BD;
+    --sok:#2E9E52;--sokbg:#E9F6EC;--sokbd:#B9E0C3;
+    --shadow:0 1px 2px rgba(27,33,29,.05),0 8px 26px rgba(27,33,29,.07);
+  }
+  :root[data-theme="dark"] {
+    --ground:#12160F;--panel:#191E17;--ink:#E7EDE7;--muted:#9AA79C;--hair:#2A3228;
+    --accent:#56C878;--accent-deep:#7BD996;--code-bg:#0C110C;--chip:#14251A;
+    --warn-bg:#241E0F;--warn-ink:#E4C061;--warn-bd:#5C4A1E;
+    --s4:#E4C061;--s4bg:#241E0F;--s4bd:#5C4A1E;--s401:#6BA6E0;--s401bg:#131E2A;--s401bd:#2C4763;
+    --s403:#B99BE0;--s403bg:#1E1630;--s403bd:#3F2E63;--s500:#E88C82;--s500bg:#2A1815;--s500bd:#5C2E28;
+    --sok:#56C878;--sokbg:#12251A;--sokbd:#2E5238;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.4);
+  }
+
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--ground); color:var(--ink); font-family:var(--sans); line-height:1.6; -webkit-font-smoothing:antialiased; }
+  .wrap { max-width:55rem; margin:0 auto; padding:clamp(1.5rem,4vw,4rem) clamp(1.1rem,4vw,2.5rem) 5rem; }
+
+  .eyebrow { font-family:var(--mono); font-size:.72rem; letter-spacing:.18em; text-transform:uppercase; color:var(--accent-deep); margin:0 0 .9rem; }
+  h1 { font-family:var(--serif); font-weight:600; font-size:clamp(1.9rem,5vw,2.9rem); line-height:1.1; letter-spacing:-.01em; text-wrap:balance; margin:0 0 .5rem; }
+  .sub { color:var(--muted); font-size:1.05rem; max-width:46rem; margin:0 0 1.6rem; }
+  .meta { display:flex; flex-wrap:wrap; gap:.5rem 1.4rem; padding:1rem 0 0; border-top:1px solid var(--hair); font-size:.85rem; color:var(--muted); }
+  .meta b { color:var(--ink); font-weight:600; }
+
+  section { margin-top:2.8rem; }
+  .sec-head { display:flex; align-items:baseline; gap:.8rem; margin:0 0 .3rem; padding-bottom:.6rem; border-bottom:2px solid var(--ink); }
+  .sec-num { font-family:var(--mono); font-size:.95rem; font-weight:700; color:#fff; background:var(--accent); border-radius:7px; padding:.15rem .55rem; }
+  h2 { font-family:var(--serif); font-weight:600; font-size:1.35rem; margin:0; }
+  .sec-desc { color:var(--muted); font-size:.95rem; margin:.7rem 0 1rem; }
+  h3 { font-size:.98rem; font-weight:700; margin:1.6rem 0 .6rem; }
+  p { margin:0 0 1rem; }
+  a { color:var(--accent-deep); }
+  strong { font-weight:700; }
+
+  code { font-family:var(--mono); font-size:.86em; }
+  p code, li code, td code { background:var(--chip); padding:.1em .4em; border-radius:5px; }
+
+  /* Tableau des cas */
+  .tbl-scroll { overflow-x:auto; border:1px solid var(--hair); border-radius:12px; box-shadow:var(--shadow); }
+  table { border-collapse:collapse; width:100%; font-size:.86rem; background:var(--panel); }
+  thead th { background:var(--accent); color:#fff; text-align:left; font-weight:600; padding:.65rem .8rem; font-size:.8rem; white-space:nowrap; }
+  tbody td { padding:.6rem .8rem; border-top:1px solid var(--hair); vertical-align:top; }
+  tbody tr:nth-child(even) td { background:color-mix(in srgb,var(--chip) 40%,transparent); }
+  td.cas { font-weight:700; }
+  td.mono { font-family:var(--mono); font-size:.8rem; }
+
+  .code-status { display:inline-block; font-family:var(--mono); font-size:.72rem; font-weight:700; padding:.15em .55em; border-radius:6px; white-space:nowrap; }
+  .c400 { color:var(--s4);   background:var(--s4bg);   border:1px solid var(--s4bd); }
+  .c401 { color:var(--s401); background:var(--s401bg); border:1px solid var(--s401bd); }
+  .c403 { color:var(--s403); background:var(--s403bg); border:1px solid var(--s403bd); }
+  .c404 { color:var(--s4);   background:var(--s4bg);   border:1px solid var(--s4bd); }
+  .c409 { color:var(--s4);   background:var(--s4bg);   border:1px solid var(--s4bd); }
+  .c500 { color:var(--s500); background:var(--s500bg); border:1px solid var(--s500bd); }
+  .c200 { color:var(--sok);  background:var(--sokbg);  border:1px solid var(--sokbd); }
+
+  /* Code block */
+  .code { background:var(--code-bg); border-radius:12px; overflow:hidden; box-shadow:var(--shadow); border:1px solid #223022; margin:1rem 0; }
+  .code-bar { display:flex; align-items:center; gap:.5rem; padding:.55rem .9rem; background:#161E17; border-bottom:1px solid #223022; }
+  .code-bar i { width:.68rem; height:.68rem; border-radius:50%; display:block; }
+  .code-bar .r{background:#E5534B;} .code-bar .y{background:#E5B14B;} .code-bar .g{background:#5FB96A;}
+  .code-bar .lbl { margin-left:.5rem; font-family:var(--mono); font-size:.72rem; color:#8FA091; }
+  pre { margin:0; padding:.9rem 1.1rem; overflow-x:auto; font-family:var(--mono); font-size:.79rem; line-height:1.7; color:#C7D4C8; }
+  pre .com { color:var(--c-com); } pre .str { color:var(--c-str); } pre .kw { color:var(--c-kw); } pre .fn { color:var(--c-fn); } pre .num { color:var(--c-num); } pre .cmd { color:var(--c-cmd); } pre .ok { color:#6FD37F; } pre .out { color:#8FA091; }
+
+  .note { border-left:3px solid var(--accent); background:color-mix(in srgb,var(--accent) 7%,transparent); padding:.85rem 1.1rem; border-radius:0 8px 8px 0; font-size:.92rem; margin:1.2rem 0; }
+  .note strong { color:var(--accent-deep); }
+  .warn { display:flex; gap:.7rem; margin:1.2rem 0; padding:.9rem 1.1rem; background:var(--warn-bg); border:1px solid var(--warn-bd); border-radius:10px; font-size:.9rem; }
+  .warn .tag { font-family:var(--mono); font-size:.66rem; letter-spacing:.08em; text-transform:uppercase; color:var(--warn-ink); font-weight:700; white-space:nowrap; padding-top:.1rem; }
+  .warn p { margin:0; }
+
+  footer { margin-top:3.5rem; padding-top:1.1rem; border-top:1px solid var(--hair); color:var(--muted); font-size:.82rem; }
+
+  @media print {
+    :root { --ground:#fff; --panel:#fff; --ink:#000; --shadow:none; }
+    body { background:#fff; }
+    .wrap { max-width:none; padding:0 .5rem; }
+    section, .code, .tbl-scroll { break-inside:avoid; }
+    .code { background:#F4F4F4; border:1px solid #999; } pre { color:#111; }
+    pre .cmd,pre .str,pre .kw,pre .fn,pre .num,pre .ok { color:#000; } pre .com,pre .out { color:#555; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="eyebrow">Dossier CDA · Annexe robustesse</p>
+  <h1>Cas d'exception &amp; contrôle des entrées</h1>
+  <p class="sub">Toutes les entrées de <strong>Petit Rayon de Soleil</strong> sont validées <strong>côté serveur</strong>, jamais uniquement côté client. Chaque cas d'erreur renvoie un code HTTP explicite et un message clair, plutôt qu'un plantage.</p>
+
+  <div class="meta">
+    <span><b>Projet</b> Petit Rayon de Soleil</span>
+    <span><b>Auteur</b> de Breyne Hélio</span>
+    <span><b>Principe</b> ne jamais faire confiance à l'entrée</span>
+  </div>
+
+  <div class="note">
+    <strong>Pourquoi côté serveur ?</strong> Les contrôles côté navigateur (attribut <code>required</code>, etc.) améliorent le confort mais peuvent être contournés (requête directe à l'API, client modifié). La <strong>seule validation qui protège réellement</strong> les données est celle du serveur. C'est celle documentée ici.
+  </div>
+
+  <!-- 1. TABLEAU DES 7 CAS -->
+  <section>
+    <div class="sec-head"><span class="sec-num">1</span><h2>Les sept cas d'exception</h2></div>
+    <p class="sec-desc">Chaque ligne : la situation, le contrôle qui la détecte dans le code, le code HTTP renvoyé et le message. Comportements vérifiés par appels réels à l'API.</p>
+    <div class="tbl-scroll">
+      <table>
+        <thead>
+          <tr><th>Cas d'exception</th><th>Contrôle serveur</th><th>Réponse</th><th>Message renvoyé</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cas">Message vide</td>
+            <td class="mono">!content || content.trim().length &lt; 5</td>
+            <td><span class="code-status c400">400</span></td>
+            <td>« Le message doit faire au moins 5 caractères. »</td>
+          </tr>
+          <tr>
+            <td class="cas">Message trop court</td>
+            <td class="mono">content.trim().length &lt; 5</td>
+            <td><span class="code-status c400">400</span></td>
+            <td>« Le message doit faire au moins 5 caractères. »</td>
+          </tr>
+          <tr>
+            <td class="cas">Utilisateur non connecté</td>
+            <td class="mono">requireAuth (token absent/invalide)</td>
+            <td><span class="code-status c401">401</span></td>
+            <td>« Non authentifié »</td>
+          </tr>
+          <tr>
+            <td class="cas">Utilisateur non admin</td>
+            <td class="mono">requireAdmin (role !== 'admin')</td>
+            <td><span class="code-status c403">403</span></td>
+            <td>« Accès réservé à l'administrateur »</td>
+          </tr>
+          <tr>
+            <td class="cas">Favori déjà existant</td>
+            <td class="mono">INSERT OR IGNORE (idempotent)</td>
+            <td><span class="code-status c200">201</span></td>
+            <td>Ignoré silencieusement, pas de doublon créé</td>
+          </tr>
+          <tr>
+            <td class="cas">Identifiants invalides</td>
+            <td class="mono">!user || !checkPassword(...)</td>
+            <td><span class="code-status c401">401</span></td>
+            <td>« Email ou mot de passe incorrect. »</td>
+          </tr>
+          <tr>
+            <td class="cas">Erreur base de données</td>
+            <td class="mono">wrap() → middleware d'erreurs global</td>
+            <td><span class="code-status c500">500</span></td>
+            <td>« Erreur interne du serveur. »</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="warn">
+      <span class="tag">Précision</span>
+      <p>Les contrôles s'appliquent dans l'ordre du traitement. Ainsi, un message vide envoyé <em>sans être connecté</em> renvoie d'abord <span class="code-status c401">401</span> (l'authentification est vérifiée avant le contenu). Une fois connecté, le même message vide renvoie bien <span class="code-status c400">400</span>.</p>
+    </div>
+  </section>
+
+  <!-- 2. VALIDATION DES ENTREES -->
+  <section>
+    <div class="sec-head"><span class="sec-num">2</span><h2>Contrôle des entrées (exemples de code)</h2></div>
+    <p class="sec-desc">Chaque route valide ses entrées avant tout traitement. Extraits réels de <code>server.js</code>.</p>
+
+    <h3>Proposition de message — longueur contrôlée</h3>
+    <div class="code">
+      <div class="code-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="lbl">server.js — POST /api/messages</span></div>
+<pre><span class="kw">const</span> { content } = req.body || {};
+<span class="kw">if</span> (!content || content.<span class="fn">trim</span>().length &lt; <span class="num">5</span>) {
+  <span class="kw">return</span> res.<span class="fn">status</span>(<span class="num">400</span>).<span class="fn">json</span>({ error: <span class="str">'Le message doit faire au moins 5 caractères.'</span> });
+}</pre>
+    </div>
+
+    <h3>Inscription — champs requis &amp; email unique</h3>
+    <div class="code">
+      <div class="code-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="lbl">server.js — POST /api/register</span></div>
+<pre><span class="kw">const</span> { name, email, password } = req.body || {};
+<span class="kw">if</span> (!name || !email || !password) {
+  <span class="kw">return</span> res.<span class="fn">status</span>(<span class="num">400</span>).<span class="fn">json</span>({ error: <span class="str">'Nom, email et mot de passe sont requis.'</span> });
+}
+<span class="kw">if</span> (password.length &lt; <span class="num">6</span>) {
+  <span class="kw">return</span> res.<span class="fn">status</span>(<span class="num">400</span>).<span class="fn">json</span>({ error: <span class="str">'Le mot de passe doit faire au moins 6 caractères.'</span> });
+}
+<span class="com">// Email déjà pris → 409 Conflict</span>
+<span class="kw">const</span> existing = <span class="kw">await</span> db.<span class="fn">prepare</span>(<span class="str">'SELECT id FROM users WHERE email = ?'</span>).<span class="fn">get</span>(email);
+<span class="kw">if</span> (existing) <span class="kw">return</span> res.<span class="fn">status</span>(<span class="num">409</span>).<span class="fn">json</span>({ error: <span class="str">'Cet email est déjà utilisé.'</span> });</pre>
+    </div>
+
+    <h3>Favori en double — <code>INSERT OR IGNORE</code></h3>
+    <p>Plutôt que de renvoyer une erreur si le favori existe déjà, la requête l'ignore : l'opération est <strong>idempotente</strong> (la rejouer ne change rien). L'utilisateur n'a pas à se soucier de savoir s'il a déjà mis ce message en favori.</p>
+    <div class="code">
+      <div class="code-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="lbl">server.js — POST /api/favoris</span></div>
+<pre><span class="com">// INSERT OR IGNORE : pas d'erreur si le favori existe déjà.</span>
+<span class="kw">await</span> db.<span class="fn">prepare</span>(<span class="str">'INSERT OR IGNORE INTO favoris (user_id, message_id) VALUES (?, ?)'</span>)
+  .<span class="fn">run</span>(req.user.id, message_id);</pre>
+    </div>
+  </section>
+
+  <!-- 3. GESTION D'ERREUR GLOBALE -->
+  <section>
+    <div class="sec-head"><span class="sec-num">3</span><h2>Filet de sécurité : erreurs imprévues</h2></div>
+    <p class="sec-desc">Au-delà des validations explicites, toute exception non prévue (erreur SQL, bug) est rattrapée pour éviter de laisser une requête sans réponse ou de faire tomber le serveur.</p>
+    <p>Deux mécanismes se combinent&nbsp;: un <strong>wrapper</strong> qui capture les erreurs des fonctions asynchrones, et un <strong>middleware d'erreurs global</strong> qui renvoie une réponse 500 propre.</p>
+    <div class="code">
+      <div class="code-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="lbl">server.js — capture + middleware d'erreurs</span></div>
+<pre><span class="com">// Enveloppe chaque handler async : redirige toute erreur vers le middleware.</span>
+<span class="kw">const</span> wrap = (fn) => (req, res, next) => <span class="fn">Promise</span>.<span class="fn">resolve</span>(<span class="fn">fn</span>(req, res, next)).<span class="fn">catch</span>(next);
+
+<span class="com">// Middleware d'erreurs global (4 paramètres) : dernier rempart.</span>
+app.<span class="fn">use</span>((err, req, res, _next) =&gt; {
+  console.<span class="fn">error</span>(<span class="str">'Erreur serveur :'</span>, err);
+  res.<span class="fn">status</span>(<span class="num">500</span>).<span class="fn">json</span>({ error: <span class="str">'Erreur interne du serveur.'</span> });
+});</pre>
+    </div>
+
+    <h3>Preuve : une erreur SQL ne fait pas planter le serveur</h3>
+    <p>Test réel provoquant une requête sur une table inexistante&nbsp;:</p>
+    <div class="code">
+      <div class="code-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="lbl">test d'une erreur base de données</span></div>
+<pre><span class="cmd">$ curl /boom</span>   <span class="com"># route qui déclenche une erreur SQL volontaire</span>
+<span class="out">[handler] erreur interceptée : SQLITE_ERROR: no such table: ...</span>
+<span class="ok">erreur base de données → 500  { "error": "Erreur interne du serveur." }</span>
+<span class="out">(le process ne crashe pas, une réponse 500 propre est renvoyée)</span></pre>
+    </div>
+    <div class="note">
+      <strong>Message d'erreur volontairement générique.</strong> Le 500 ne révèle jamais le détail technique (nom de table, requête SQL) au client : ces informations restent dans les logs serveur. Exposer une trace d'erreur serait une fuite d'information exploitable.
+    </div>
+  </section>
+
+  <!-- 4. SYNTHESE SECURITE -->
+  <section>
+    <div class="sec-head"><span class="sec-num">4</span><h2>Ce que garantit ce dispositif</h2></div>
+    <ul>
+      <li><strong>Aucune entrée n'est prise pour argent comptant</strong> : présence, longueur et validité sont vérifiées côté serveur.</li>
+      <li><strong>Chaque erreur a un code HTTP juste</strong> : 400 (entrée invalide), 401 (non authentifié), 403 (interdit), 404 (introuvable), 409 (conflit), 500 (erreur interne).</li>
+      <li><strong>Les accès sont contrôlés avant l'action</strong> : les middlewares <code>requireAuth</code> / <code>requireAdmin</code> s'exécutent en amont des handlers.</li>
+      <li><strong>Aucune exception ne fait tomber le serveur</strong> : le wrapper + le middleware global forment un dernier rempart.</li>
+      <li><strong>Les injections SQL sont neutralisées</strong> : toutes les requêtes sont paramétrées (<code>?</code>), l'entrée est traitée comme une donnée, jamais comme du code.</li>
+    </ul>
+  </section>
+
+  <footer>
+    Petit Rayon de Soleil — Annexe « Cas d'exception &amp; contrôle des entrées ». Codes de retour vérifiés par appels réels à l'API (message vide/court, identifiants invalides, non connecté, non admin, erreur base).
+  </footer>
+
+</div>
+</body>
+</html>

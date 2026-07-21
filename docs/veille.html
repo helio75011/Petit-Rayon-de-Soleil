@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Veille technologique &amp; sécurité — Petit Rayon de Soleil</title>
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  :root {
+    --ground:#FBFCFB; --panel:#FFFFFF; --ink:#1B211D; --muted:#5A635C; --hair:#E2E8E3;
+    --accent:#2E9E52; --accent-deep:#1F7A3D; --code-bg:#0E140F;
+    --chip:#E9F6EC; --warn-bg:#FBF1DA; --warn-ink:#9A6B12; --warn-bd:#E4C061;
+    --sec:#C0392B; --sec-bg:#FBEBE9; --sec-bd:#EDC3BD;
+    --shadow:0 1px 2px rgba(27,33,29,.05),0 8px 26px rgba(27,33,29,.07);
+    --serif:Georgia,'Times New Roman',serif;
+    --sans:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    --mono:ui-monospace,'SF Mono','Cascadia Code','Consolas',monospace;
+    --c-com:#6E7C70; --c-str:#98C379; --c-cmd:#EAF2EA; --c-ok:#6FD37F;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground:#12160F; --panel:#191E17; --ink:#E7EDE7; --muted:#9AA79C; --hair:#2A3228;
+      --accent:#56C878; --accent-deep:#7BD996; --code-bg:#0C110C;
+      --chip:#14251A; --warn-bg:#241E0F; --warn-ink:#E4C061; --warn-bd:#5C4A1E;
+      --sec:#E88C82; --sec-bg:#2A1815; --sec-bd:#5C2E28;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.4);
+    }
+  }
+  :root[data-theme="light"] {
+    --ground:#FBFCFB;--panel:#FFFFFF;--ink:#1B211D;--muted:#5A635C;--hair:#E2E8E3;
+    --accent:#2E9E52;--accent-deep:#1F7A3D;--code-bg:#0E140F;--chip:#E9F6EC;
+    --warn-bg:#FBF1DA;--warn-ink:#9A6B12;--warn-bd:#E4C061;
+    --sec:#C0392B;--sec-bg:#FBEBE9;--sec-bd:#EDC3BD;
+    --shadow:0 1px 2px rgba(27,33,29,.05),0 8px 26px rgba(27,33,29,.07);
+  }
+  :root[data-theme="dark"] {
+    --ground:#12160F;--panel:#191E17;--ink:#E7EDE7;--muted:#9AA79C;--hair:#2A3228;
+    --accent:#56C878;--accent-deep:#7BD996;--code-bg:#0C110C;--chip:#14251A;
+    --warn-bg:#241E0F;--warn-ink:#E4C061;--warn-bd:#5C4A1E;
+    --sec:#E88C82;--sec-bg:#2A1815;--sec-bd:#5C2E28;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.4);
+  }
+
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--ground); color:var(--ink); font-family:var(--sans); line-height:1.6; -webkit-font-smoothing:antialiased; }
+  .wrap { max-width:52rem; margin:0 auto; padding:clamp(1.5rem,4vw,4rem) clamp(1.1rem,4vw,2.5rem) 5rem; }
+
+  .eyebrow { font-family:var(--mono); font-size:.72rem; letter-spacing:.18em; text-transform:uppercase; color:var(--accent-deep); margin:0 0 .9rem; }
+  h1 { font-family:var(--serif); font-weight:600; font-size:clamp(1.9rem,5vw,2.9rem); line-height:1.1; letter-spacing:-.01em; text-wrap:balance; margin:0 0 .5rem; }
+  .sub { color:var(--muted); font-size:1.05rem; max-width:44rem; margin:0 0 1.6rem; }
+  .meta { display:flex; flex-wrap:wrap; gap:.5rem 1.4rem; padding:1rem 0 0; border-top:1px solid var(--hair); font-size:.85rem; color:var(--muted); }
+  .meta b { color:var(--ink); font-weight:600; }
+  .meta code { font-family:var(--mono); font-size:.82rem; }
+
+  section { margin-top:2.8rem; }
+  .sec-head { display:flex; align-items:baseline; gap:.8rem; margin:0 0 .3rem; padding-bottom:.6rem; border-bottom:2px solid var(--ink); }
+  .sec-num { font-family:var(--mono); font-size:.95rem; font-weight:700; color:#fff; background:var(--accent); border-radius:7px; padding:.15rem .55rem; }
+  h2 { font-family:var(--serif); font-weight:600; font-size:1.35rem; margin:0; }
+  .sec-desc { color:var(--muted); font-size:.95rem; margin:.7rem 0 1rem; }
+  p { margin:0 0 1rem; }
+  a { color:var(--accent-deep); }
+  strong { font-weight:700; }
+
+  code { font-family:var(--mono); font-size:.86em; }
+  p code, li code, td code { background:var(--chip); padding:.1em .4em; border-radius:5px; }
+
+  /* Tableau des axes de veille */
+  .tbl-scroll { overflow-x:auto; border:1px solid var(--hair); border-radius:12px; box-shadow:var(--shadow); }
+  table { border-collapse:collapse; width:100%; font-size:.87rem; background:var(--panel); }
+  thead th { background:var(--accent); color:#fff; text-align:left; font-weight:600; padding:.65rem .85rem; font-size:.8rem; white-space:nowrap; }
+  tbody td { padding:.6rem .85rem; border-top:1px solid var(--hair); vertical-align:top; }
+  tbody tr:nth-child(even) td { background:color-mix(in srgb,var(--chip) 40%,transparent); }
+  td.axe { font-weight:700; white-space:nowrap; }
+  td .src { font-family:var(--mono); font-size:.78rem; color:var(--accent-deep); }
+  .rythme { display:inline-block; font-family:var(--mono); font-size:.68rem; font-weight:700; padding:.1em .5em; border-radius:20px; background:var(--chip); border:1px solid color-mix(in srgb,var(--accent) 30%,transparent); color:var(--accent-deep); white-space:nowrap; }
+
+  /* Bloc sécurité */
+  .seccard { background:var(--panel); border:1px solid var(--hair); border-left:4px solid var(--sec); border-radius:12px; padding:1.1rem 1.3rem; box-shadow:var(--shadow); margin-bottom:1rem; }
+  .seccard h3 { margin:0 0 .4rem; font-size:.98rem; display:flex; align-items:center; gap:.5rem; }
+  .seccard h3 .t { font-family:var(--mono); font-size:.62rem; letter-spacing:.06em; text-transform:uppercase; color:var(--sec); background:var(--sec-bg); border:1px solid var(--sec-bd); border-radius:20px; padding:.1rem .5rem; font-weight:700; }
+  .seccard p { margin:0; font-size:.92rem; }
+  .seccard .etat { margin-top:.6rem; font-size:.84rem; color:var(--muted); border-top:1px dashed var(--hair); padding-top:.55rem; }
+  .seccard .etat b { color:var(--accent-deep); }
+
+  /* Terminal */
+  .term { background:var(--code-bg); border-radius:12px; overflow:hidden; box-shadow:var(--shadow); border:1px solid #223022; margin:1rem 0; }
+  .term-bar { display:flex; align-items:center; gap:.5rem; padding:.55rem .9rem; background:#161E17; border-bottom:1px solid #223022; }
+  .term-bar i { width:.68rem; height:.68rem; border-radius:50%; display:block; }
+  .term-bar .r{background:#E5534B;} .term-bar .y{background:#E5B14B;} .term-bar .g{background:#5FB96A;}
+  .term-bar .lbl { margin-left:.5rem; font-family:var(--mono); font-size:.72rem; color:#8FA091; }
+  pre { margin:0; padding:.9rem 1.1rem; overflow-x:auto; font-family:var(--mono); font-size:.8rem; line-height:1.7; color:#C7D4C8; }
+  pre .com { color:var(--c-com); } pre .cmd { color:var(--c-cmd); } pre .ok { color:var(--c-ok); } pre .out { color:#8FA091; }
+
+  .note { border-left:3px solid var(--accent); background:color-mix(in srgb,var(--accent) 7%,transparent); padding:.85rem 1.1rem; border-radius:0 8px 8px 0; font-size:.92rem; margin:1.2rem 0; }
+  .note strong { color:var(--accent-deep); }
+
+  footer { margin-top:3.5rem; padding-top:1.1rem; border-top:1px solid var(--hair); color:var(--muted); font-size:.82rem; }
+
+  @media print {
+    :root { --ground:#fff; --panel:#fff; --ink:#000; --shadow:none; }
+    body { background:#fff; }
+    .wrap { max-width:none; padding:0 .5rem; }
+    section, .term, .tbl-scroll, .seccard { break-inside:avoid; }
+    .term { background:#F4F4F4; border:1px solid #999; } pre { color:#111; }
+    pre .cmd,pre .ok { color:#000; } pre .com,pre .out { color:#555; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="eyebrow">Dossier CDA · Annexe veille</p>
+  <h1>Veille technologique &amp; sécurité</h1>
+  <p class="sub">Démarche de veille mise en place autour de <strong>Petit Rayon de Soleil</strong> : suivre les évolutions des technologies utilisées et anticiper les problématiques de sécurité liées au déploiement.</p>
+
+  <div class="meta">
+    <span><b>Projet</b> Petit Rayon de Soleil</span>
+    <span><b>Auteur</b> de Breyne Hélio</span>
+    <span><b>Périmètre</b> Node.js · Vercel · npm · sécurité web</span>
+  </div>
+
+  <!-- 1. VEILLE TECHNIQUE -->
+  <section>
+    <div class="sec-head"><span class="sec-num">1</span><h2>Veille technologique</h2></div>
+    <p class="sec-desc">Chaque brique du projet fait l'objet d'un suivi, avec une source de référence et un rythme adapté à sa criticité. L'objectif : ne pas subir une rupture (version dépréciée, faille) mais l'anticiper.</p>
+    <div class="tbl-scroll">
+      <table>
+        <thead>
+          <tr><th>Axe</th><th>Ce que je surveille</th><th>Source suivie</th><th>Rythme</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="axe">Vercel</td>
+            <td>Nouveautés de la plateforme, évolutions du runtime serverless, limites du plan gratuit.</td>
+            <td><span class="src">vercel.com/changelog</span><br>Blog Vercel</td>
+            <td><span class="rythme">mensuel</span></td>
+          </tr>
+          <tr>
+            <td class="axe">Node.js</td>
+            <td>Cycle de vie des versions (LTS), fonctionnalités natives (<code>node:test</code>, <code>node:sqlite</code>), dépréciations.</td>
+            <td><span class="src">nodejs.org/blog</span><br>Calendrier des releases</td>
+            <td><span class="rythme">mensuel</span></td>
+          </tr>
+          <tr>
+            <td class="axe">Dépendances npm</td>
+            <td>Nouvelles versions et failles de <code>express</code>, <code>bcryptjs</code>, <code>@libsql/client</code>.</td>
+            <td><span class="src">npm audit</span><br>GitHub Dependabot</td>
+            <td><span class="rythme">à chaque install</span></td>
+          </tr>
+          <tr>
+            <td class="axe">Base de données</td>
+            <td>Évolutions de Turso / libSQL, compatibilité avec SQLite.</td>
+            <td><span class="src">docs.turso.tech</span><br>Changelog Turso</td>
+            <td><span class="rythme">trimestriel</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note">
+      <strong>Outils de veille passive.</strong> Deux automatismes réduisent l'effort manuel : <strong>GitHub Dependabot</strong> ouvre automatiquement une pull request quand une dépendance a une mise à jour de sécurité, et <strong>npm audit</strong> (intégrable au pipeline CI) signale les vulnérabilités connues à chaque installation.
+    </div>
+  </section>
+
+  <!-- 2. VEILLE SECURITE -->
+  <section>
+    <div class="sec-head"><span class="sec-num">2</span><h2>Veille sécurité &amp; bonnes pratiques</h2></div>
+    <p class="sec-desc">La sécurité du déploiement s'appuie sur un référentiel reconnu (OWASP) et sur des pratiques déjà appliquées dans le code. Chaque carte indique la pratique et son état actuel dans le projet.</p>
+
+    <div class="seccard">
+      <h3><span class="t">Secrets</span> Sécurité des secrets</h3>
+      <p>Les identifiants sensibles (jeton Turso, URL de base) ne doivent jamais se retrouver dans le dépôt. Ils sont fournis uniquement par <strong>variables d'environnement</strong>, et le fichier <code>.env</code> est exclu du versionnement.</p>
+      <p class="etat"><b>État projet :</b> appliqué — <code>.env</code> et <code>.vercel</code> listés dans <code>.gitignore</code> ; aucun secret en dur dans le code (vérifié). Veille : rotation des jetons et bonnes pratiques de gestion des secrets Vercel.</p>
+    </div>
+
+    <div class="seccard">
+      <h3><span class="t">OWASP</span> Bonnes pratiques OWASP</h3>
+      <p>Le <strong>Top 10 OWASP</strong> sert de grille de lecture des risques web courants (injection, mauvaise authentification, contrôle d'accès défaillant…). C'est la référence suivie pour la sécurité applicative.</p>
+      <p class="etat"><b>État projet :</b> plusieurs risques déjà couverts — <b>injection SQL</b> neutralisée par requêtes paramétrées ; <b>mots de passe</b> hachés (bcrypt) ; <b>contrôle d'accès</b> via middlewares <code>requireAuth</code>/<code>requireAdmin</code>. Veille : évolutions du Top 10 et nouvelles recommandations.</p>
+    </div>
+
+    <div class="seccard">
+      <h3><span class="t">Packages</span> Mises à jour des packages</h3>
+      <p>Une dépendance obsolète est une porte d'entrée potentielle. La politique est double : <strong>peu de dépendances</strong> (surface réduite) et <strong>mise à jour régulière</strong> des versions, priorisée sur les correctifs de sécurité.</p>
+      <p class="etat"><b>État projet :</b> 3 dépendances runtime seulement. Contrôle par <code>npm audit</code> — <b>0 vulnérabilité</b> à ce jour. Veille : suivi des correctifs via Dependabot.</p>
+    </div>
+
+    <h3 style="font-size:.98rem; margin:1.6rem 0 .6rem">Contrôle de sécurité des dépendances</h3>
+    <p>La commande ci-dessous, exécutable à tout moment et intégrable au pipeline CI, dresse l'état des vulnérabilités connues&nbsp;:</p>
+    <div class="term">
+      <div class="term-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="lbl">bash — npm audit</span></div>
+<pre><span class="cmd">$ npm audit</span>
+<span class="ok">found 0 vulnerabilities</span></pre>
+    </div>
+  </section>
+
+  <!-- 3. REACTION -->
+  <section>
+    <div class="sec-head"><span class="sec-num">3</span><h2>De la veille à l'action</h2></div>
+    <p>La veille n'a de valeur que si elle déclenche une réaction. Le circuit est le suivant&nbsp;:</p>
+    <ul>
+      <li><strong>Alerte reçue</strong> (Dependabot, <code>npm audit</code>, changelog) → évaluation de la criticité.</li>
+      <li><strong>Correctif de sécurité</strong> → mise à jour de la dépendance, puis <code>npm test</code> (15 tests) pour vérifier l'absence de régression.</li>
+      <li><strong>Validation par la CI</strong> → le pipeline GitHub Actions rejoue installation, qualité et tests avant toute fusion.</li>
+      <li><strong>Déploiement</strong> → une fois au vert, Vercel remet en ligne automatiquement.</li>
+    </ul>
+    <div class="note">
+      <strong>En résumé.</strong> La veille (Dependabot, npm audit, changelogs Node/Vercel/Turso) alimente un cycle court : détecter → corriger → tester → déployer. Les dépendances minimales et les pratiques OWASP déjà en place rendent ce cycle rapide et peu risqué.
+    </div>
+  </section>
+
+  <footer>
+    Petit Rayon de Soleil — Annexe « Veille technologique &amp; sécurité ». État sécurité (0 vulnérabilité, secrets hors dépôt, requêtes paramétrées) vérifié sur le projet.
+  </footer>
+
+</div>
+</body>
+</html>

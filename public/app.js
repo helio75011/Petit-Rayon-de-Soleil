@@ -27,7 +27,9 @@ function flash(msg) {
   const el = document.getElementById('flash');
   el.textContent = msg;
   el.hidden = false;
-  setTimeout(() => { el.hidden = true; }, 3500);
+  setTimeout(() => {
+    el.hidden = true;
+  }, 3500);
 }
 
 // Affiche une seule "vue" (section) et met à jour la navigation.
@@ -151,7 +153,13 @@ document.getElementById('nav-admin').addEventListener('click', async () => {
 });
 
 document.getElementById('nav-logout').addEventListener('click', async () => {
-  try { await api('POST', '/api/logout'); } catch (_) {}
+  // On tente d'invalider la session côté serveur, mais même si l'appel échoue
+  // (token déjà expiré, réseau…), on déconnecte l'utilisateur localement.
+  try {
+    await api('POST', '/api/logout');
+  } catch {
+    /* déconnexion locale quoi qu'il arrive */
+  }
   effacerSession();
   montrerVue('accueil');
   flash('À bientôt !');

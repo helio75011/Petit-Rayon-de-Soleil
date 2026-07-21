@@ -160,7 +160,9 @@ test('parcours de rejet : une proposition refusée quitte la file de modération
 
   // 5. ...et n'est pas non plus visible publiquement.
   const publique = await call('GET', '/api/messages');
-  const visiblePublic = publique.data.messages.some((m) => m.content.includes('rejete par la moderation'));
+  const visiblePublic = publique.data.messages.some((m) =>
+    m.content.includes('rejete par la moderation')
+  );
   assert.strictEqual(visiblePublic, false);
 });
 

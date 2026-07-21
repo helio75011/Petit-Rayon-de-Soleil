@@ -1,10 +1,19 @@
 /* style.css — Design responsive et accessible.
    Couleurs choisies pour un contraste suffisant (WCAG AA). */
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
 body {
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
   color: #1a1a2e;
   background: #fff7f0;
   line-height: 1.6;
@@ -19,8 +28,14 @@ header {
   padding: 1rem;
   text-align: center;
 }
-header .logo { font-size: 2.5rem; }
-header h1 { font-size: 1.5rem; color: #1a1a2e; margin: 0.25rem 0 0.75rem; }
+header .logo {
+  font-size: 2.5rem;
+}
+header h1 {
+  font-size: 1.5rem;
+  color: #1a1a2e;
+  margin: 0.25rem 0 0.75rem;
+}
 
 nav {
   display: flex;
@@ -38,9 +53,16 @@ nav {
   cursor: pointer;
   color: #1a1a2e;
 }
-.nav-btn:hover, .nav-btn:focus { background: #1a1a2e; color: #fff; }
+.nav-btn:hover,
+.nav-btn:focus {
+  background: #1a1a2e;
+  color: #fff;
+}
 /* Indicateur de focus visible pour la navigation au clavier (accessibilité) */
-:focus-visible { outline: 3px solid #d6336c; outline-offset: 2px; }
+:focus-visible {
+  outline: 3px solid #d6336c;
+  outline-offset: 2px;
+}
 
 /* Contenu principal */
 main {
@@ -63,7 +85,9 @@ main {
 }
 
 /* Boutons */
-.btn-primary, .btn-secondary, .btn-danger {
+.btn-primary,
+.btn-secondary,
+.btn-danger {
   border: none;
   border-radius: 999px;
   padding: 0.7rem 1.4rem;
@@ -71,10 +95,19 @@ main {
   cursor: pointer;
   color: #fff;
 }
-.btn-primary  { background: #d6336c; }
-.btn-secondary { background: #f4a6c0; color: #1a1a2e; }
-.btn-danger   { background: #b02a37; }
-.btn-primary:hover  { background: #a61e54; }
+.btn-primary {
+  background: #d6336c;
+}
+.btn-secondary {
+  background: #f4a6c0;
+  color: #1a1a2e;
+}
+.btn-danger {
+  background: #b02a37;
+}
+.btn-primary:hover {
+  background: #a61e54;
+}
 
 /* Formulaires */
 .form {
@@ -85,8 +118,11 @@ main {
   max-width: 360px;
   margin: 1rem auto 2rem;
 }
-.form label { font-weight: 600; }
-.form input, .form textarea {
+.form label {
+  font-weight: 600;
+}
+.form input,
+.form textarea {
   padding: 0.6rem;
   border: 2px solid #ccc;
   border-radius: 8px;
@@ -94,7 +130,10 @@ main {
 }
 
 /* Listes (favoris, en attente) */
-.liste { list-style: none; text-align: left; }
+.liste {
+  list-style: none;
+  text-align: left;
+}
 .liste li {
   background: #fff;
   border: 1px solid #ddd;
@@ -106,9 +145,15 @@ main {
   align-items: center;
   gap: 1rem;
 }
-.liste li button { flex-shrink: 0; }
+.liste li button {
+  flex-shrink: 0;
+}
 
-.rgpd { margin-top: 2rem; font-size: 0.9rem; color: #555; }
+.rgpd {
+  margin-top: 2rem;
+  font-size: 0.9rem;
+  color: #555;
+}
 
 /* Notification flash */
 .flash {
@@ -126,20 +171,29 @@ footer {
   text-align: center;
   font-size: 0.9rem;
 }
-footer a { color: #1a1a2e; }
+footer a {
+  color: #1a1a2e;
+}
 
 /* Texte réservé aux lecteurs d'écran (accessibilité) */
 .sr-only {
   position: absolute;
-  width: 1px; height: 1px;
-  padding: 0; margin: -1px;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
   overflow: hidden;
-  clip: rect(0,0,0,0);
+  clip: rect(0, 0, 0, 0);
   border: 0;
 }
 
 /* Adaptation petits écrans */
 @media (max-width: 480px) {
-  header h1 { font-size: 1.2rem; }
-  .nav-btn { font-size: 0.85rem; padding: 0.35rem 0.7rem; }
+  header h1 {
+    font-size: 1.2rem;
+  }
+  .nav-btn {
+    font-size: 0.85rem;
+    padding: 0.35rem 0.7rem;
+  }
 }

@@ -43,7 +43,7 @@ async function main() {
   if (process.env.TURSO_DATABASE_URL) {
     console.error(
       'ABANDON : TURSO_DATABASE_URL est défini. Ce script ne réinitialise que ' +
-        'la base LOCALE. Retire la variable d\'environnement pour continuer.'
+        "la base LOCALE. Retire la variable d'environnement pour continuer."
     );
     process.exit(1);
   }
@@ -106,7 +106,7 @@ async function main() {
     console.log('Base restaurée avec succès. Tous les comptes et volumes sont conformes.');
     process.exit(0);
   } else {
-    console.error('ÉCHEC : la base restaurée ne correspond pas à l\'état attendu.');
+    console.error("ÉCHEC : la base restaurée ne correspond pas à l'état attendu.");
     process.exit(1);
   }
 }

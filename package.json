@@ -8,6 +8,9 @@
     "start": "node server.js",
     "init-db": "node db.js --init",
     "db:reset": "node scripts/reset-db.js",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "test": "node --test",
     "setup": "npm install && npm run init-db",
     "deploy": "vercel --prod",
@@ -20,5 +23,11 @@
     "@libsql/client": "^0.14.0",
     "bcryptjs": "^2.4.3",
     "express": "^4.21.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "eslint": "^9.39.5",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.9.5"
   }
 }
