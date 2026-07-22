@@ -602,7 +602,7 @@
           <tr>
             <td>1 &middot; Proposer</td>
             <td>Utilisateur de démo <code>user@soleil.fr</code> connecté envoie <span class="ep">POST /api/messages</span> avec <code>{ content: "Tu es capable de grandes choses." }</code></td>
-            <td class="status-cell">201, message créé avec <code>approved = 0</code></td>
+            <td class="status-cell">201, message créé avec <code>status = 'pending'</code></td>
             <td><span class="ok">201</span></td>
             <td>—</td>
           </tr>
@@ -616,7 +616,7 @@
           <tr>
             <td>3 &middot; Approuver</td>
             <td>Admin connecté envoie <span class="ep">POST /api/admin/approve/:id</span></td>
-            <td class="status-cell">200, passage à <code>approved = 1</code></td>
+            <td class="status-cell">200, passage à <code>status = 'approved'</code></td>
             <td><span class="ok">200</span></td>
             <td>—</td>
           </tr>

@@ -1,0 +1,463 @@
+<title>Fiches orales — conception, Merise, UML et CI/CD</title>
+
+<style>
+  :root {
+    --ground: #fcfbf9;
+    --panel: #ffffff;
+    --ink: #17191e;
+    --ink-soft: #555b67;
+    --ink-faint: #8a909d;
+    --rule: #e4e2dd;
+    --accent: #1f6f5c;
+    --accent-soft: #e7f1ed;
+    --warn: #9d4a2b;
+    --warn-soft: #faeee9;
+    --code-bg: #f4f2ee;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground: #131519; --panel: #1a1d23; --ink: #eceef1; --ink-soft: #a8aeba;
+      --ink-faint: #7a8290; --rule: #2b3039; --accent: #6ec0a5; --accent-soft: #192e29;
+      --warn: #df8d71; --warn-soft: #32211b; --code-bg: #21252c;
+    }
+  }
+  :root[data-theme='dark'] {
+    --ground: #131519; --panel: #1a1d23; --ink: #eceef1; --ink-soft: #a8aeba;
+    --ink-faint: #7a8290; --rule: #2b3039; --accent: #6ec0a5; --accent-soft: #192e29;
+    --warn: #df8d71; --warn-soft: #32211b; --code-bg: #21252c;
+  }
+  :root[data-theme='light'] {
+    --ground: #fcfbf9; --panel: #ffffff; --ink: #17191e; --ink-soft: #555b67;
+    --ink-faint: #8a909d; --rule: #e4e2dd; --accent: #1f6f5c; --accent-soft: #e7f1ed;
+    --warn: #9d4a2b; --warn-soft: #faeee9; --code-bg: #f4f2ee;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0; background: var(--ground); color: var(--ink);
+    font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+    line-height: 1.62; -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 58rem; margin: 0 auto; padding: 3.25rem 1.5rem 5rem;
+    display: flex; flex-direction: column; gap: 2.5rem;
+  }
+
+  header { display: flex; flex-direction: column; gap: 0.75rem; }
+
+  .eyebrow {
+    font-family: ui-monospace, 'SFMono-Regular', 'Cascadia Mono', Menlo, monospace;
+    font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent);
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 4vw, 2.5rem); line-height: 1.14; margin: 0;
+    font-weight: 600; text-wrap: balance; letter-spacing: -0.015em;
+  }
+
+  .standfirst { font-size: 1.02rem; color: var(--ink-soft); max-width: 42rem; margin: 0; }
+
+  section { display: flex; flex-direction: column; gap: 1rem; }
+
+  h2 {
+    font-size: 1.28rem; margin: 0; font-weight: 600; letter-spacing: -0.01em;
+    padding-bottom: 0.45rem; border-bottom: 1px solid var(--rule);
+  }
+
+  p { margin: 0; max-width: 42rem; }
+  .note { color: var(--ink-soft); font-size: 0.96rem; }
+
+  code {
+    font-family: ui-monospace, 'SFMono-Regular', 'Cascadia Mono', Menlo, monospace;
+    font-size: 0.85em; background: var(--code-bg); padding: 0.12em 0.36em; border-radius: 3px;
+  }
+
+  ol.steps { margin: 0; padding-left: 1.3rem; display: flex; flex-direction: column; gap: 0.4rem; }
+  ol.steps li { padding-left: 0.2rem; }
+
+  ul.plain { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: 0.35rem; }
+
+  .qa {
+    background: var(--panel); border: 1px solid var(--rule); border-radius: 6px;
+    padding: 1.1rem 1.25rem; display: flex; flex-direction: column; gap: 0.6rem;
+  }
+
+  .qa .q {
+    font-weight: 600; font-size: 1rem;
+    display: flex; gap: 0.55rem; align-items: baseline;
+  }
+
+  .qa .q .marker {
+    font-family: ui-monospace, monospace; color: var(--accent);
+    font-size: 0.8rem; font-weight: 700; flex-shrink: 0;
+  }
+
+  .qa .a { font-size: 0.97rem; color: var(--ink-soft); padding-left: 1.35rem; }
+  .qa .a strong { color: var(--ink); font-weight: 600; }
+
+  .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 1rem; }
+
+  .card {
+    background: var(--panel); border: 1px solid var(--rule); border-radius: 6px;
+    padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: 0.5rem;
+  }
+
+  .card h3 {
+    margin: 0; font-size: 0.95rem; font-weight: 600;
+    display: flex; align-items: baseline; gap: 0.5rem;
+  }
+
+  .card h3 .lvl {
+    font-family: ui-monospace, monospace; font-size: 0.66rem;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent);
+  }
+
+  .card p { font-size: 0.9rem; color: var(--ink-soft); }
+
+  .callout {
+    border-left: 3px solid var(--accent); background: var(--accent-soft);
+    padding: 0.9rem 1.15rem; border-radius: 0 4px 4px 0;
+    display: flex; flex-direction: column; gap: 0.4rem;
+  }
+
+  .callout.attention { border-left-color: var(--warn); background: var(--warn-soft); }
+
+  .callout .label {
+    font-family: ui-monospace, monospace; font-size: 0.67rem; letter-spacing: 0.13em;
+    text-transform: uppercase; font-weight: 700; color: var(--accent);
+  }
+
+  .callout.attention .label { color: var(--warn); }
+  .callout p { font-size: 0.95rem; }
+
+  .table-scroll { overflow-x: auto; }
+
+  table { border-collapse: collapse; width: 100%; font-size: 0.9rem; min-width: 33rem; }
+
+  th, td {
+    text-align: left; padding: 0.55rem 0.75rem;
+    border-bottom: 1px solid var(--rule); vertical-align: top;
+  }
+
+  th {
+    font-family: ui-monospace, monospace; font-size: 0.67rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--ink-faint); font-weight: 700;
+    border-bottom-color: var(--ink-faint);
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+
+  .check { display: flex; flex-direction: column; gap: 0.55rem; }
+
+  .check-item {
+    display: flex; gap: 0.65rem; align-items: flex-start;
+    font-size: 0.95rem; padding: 0.5rem 0.7rem;
+    background: var(--panel); border: 1px solid var(--rule); border-radius: 4px;
+  }
+
+  .check-item .box {
+    font-family: ui-monospace, monospace; color: var(--ink-faint);
+    flex-shrink: 0; font-size: 0.9rem;
+  }
+
+  footer {
+    color: var(--ink-faint); font-size: 0.86rem;
+    border-top: 1px solid var(--rule); padding-top: 1.1rem;
+    display: flex; flex-direction: column; gap: 0.35rem;
+  }
+
+  @media print {
+    body { background: #fff; }
+    .wrap { padding: 0; max-width: none; }
+    section { break-inside: avoid; }
+    .qa, .card, .check-item { break-inside: avoid; }
+  }
+</style>
+
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Aide-mémoire · ne pas réciter</div>
+    <h1>Fiches orales — conception, Merise, UML et CI/CD</h1>
+    <p class="standfirst">
+      Petit Rayon de Soleil · Hélio de Breyne · MyDigitalSchool · Titre professionnel CDA.
+      Répondre d'abord, illustrer ensuite avec le diagramme ou le code correspondant.
+    </p>
+  </header>
+
+  <section>
+    <h2>Phrase d'ouverture</h2>
+    <p>
+      « Je présente le projet en suivant la logique complète du développement : analyser le
+      besoin, modéliser les interactions et les données, implémenter, tester puis déployer. »
+    </p>
+  </section>
+
+  <section>
+    <h2>L'ordre de conception</h2>
+    <p class="note">La question « par lequel on commence ? » est quasi certaine. Cette séquence est la réponse.</p>
+    <ol class="steps">
+      <li><strong>Besoins et acteurs</strong> — qui fait quoi, règles métier, contraintes.</li>
+      <li><strong>Cas d'utilisation UML</strong> — les fonctionnalités par rôle.</li>
+      <li><strong>Diagramme de séquence UML</strong> — le scénario critique dans le temps.</li>
+      <li><strong>MCD, puis MLD, puis MPD</strong> — les données, du métier au SGBD.</li>
+      <li><strong>Architecture en couches</strong>, implémentation, tests, CI/CD, production.</li>
+    </ol>
+    <div class="callout">
+      <span class="label">Réponse courte</span>
+      <p>
+        « Je commence par les besoins et les acteurs. Je modélise les interactions avec UML.
+        Ensuite je modélise les données avec Merise, du MCD au MPD, avant d'implémenter la
+        base et de tester le scénario le plus important. »
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Merise et UML — ne pas les confondre</h2>
+    <p class="note">
+      Ce sont deux méthodes distinctes, complémentaires : elles ne répondent pas à la même question.
+    </p>
+    <div class="grid3">
+      <div class="card">
+        <h3><span class="lvl">Merise</span></h3>
+        <p>Décrit les <strong>données</strong>. Produit le MCD, le MLD et le MPD.</p>
+      </div>
+      <div class="card">
+        <h3><span class="lvl">UML</span></h3>
+        <p>Décrit le <strong>comportement</strong>. Produit les cas d'utilisation et le diagramme de séquence.</p>
+      </div>
+    </div>
+    <p class="note">
+      Formule à retenir : <em>Merise structure ce que le système mémorise, UML décrit ce qu'il fait.</em>
+    </p>
+  </section>
+
+  <section>
+    <h2>Les trois niveaux Merise</h2>
+    <div class="grid3">
+      <div class="card">
+        <h3><span class="lvl">MCD</span> Conceptuel</h3>
+        <p>Vision métier : entités, associations, cardinalités. Aucune table, aucun SQL.</p>
+      </div>
+      <div class="card">
+        <h3><span class="lvl">MLD</span> Logique</h3>
+        <p>Traduction relationnelle : tables, clés primaires, clés étrangères, table de liaison. Indépendant du moteur.</p>
+      </div>
+      <div class="card">
+        <h3><span class="lvl">MPD</span> Physique</h3>
+        <p>Implémentation SQLite : types, contraintes, valeurs par défaut, règles de suppression.</p>
+      </div>
+    </div>
+    <div class="callout">
+      <span class="label">Phrase à retenir</span>
+      <p>
+        « Le MCD explique le métier, le MLD structure le relationnel, le MPD configure la base
+        réellement exécutée. »
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Les règles de passage</h2>
+    <p class="note">C'est ce que le jury attend derrière « savoir l'expliquer ».</p>
+
+    <div class="qa">
+      <div class="q"><span class="marker">MCD →</span> MLD</div>
+      <div class="a">
+        Chaque entité devient une table, son identifiant devient la clé primaire. Une
+        association <strong>1,N</strong> devient une clé étrangère du côté N : « propose »
+        place <code>propose_par</code> dans <code>messages</code>. Une association
+        <strong>N,N</strong> ne peut pas se réduire à une clé étrangère : elle crée une table
+        de liaison — c'est l'origine de <code>favoris</code>, dont la clé primaire est le
+        couple <code>(user_id, message_id)</code>.
+      </div>
+    </div>
+
+    <div class="qa">
+      <div class="q"><span class="marker">MLD →</span> MPD</div>
+      <div class="a">
+        On choisit le SGBD et on descend dans le concret : types SQLite
+        (<code>INTEGER</code>, <code>TEXT</code>), valeurs par défaut, contraintes de domaine
+        (<code>CHECK</code>) et règles de suppression. C'est ici que se décide le comportement
+        RGPD : <code>CASCADE</code> sur favoris et sessions, <code>SET NULL</code> sur
+        <code>propose_par</code> pour anonymiser sans perdre les messages publiés.
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>UML — les deux diagrammes du dossier</h2>
+    <div class="qa">
+      <div class="q"><span class="marker">1.</span> Cas d'utilisation</div>
+      <div class="a">
+        Répond à « qui peut faire quoi ? ». Trois acteurs : visiteur, utilisateur inscrit,
+        administrateur. Les ovales sont les <strong>services rendus</strong>, pas les écrans.
+        Sert à vérifier la couverture des besoins et les droits par rôle.
+      </div>
+    </div>
+    <div class="qa">
+      <div class="q"><span class="marker">2.</span> Séquence</div>
+      <div class="a">
+        Répond à « dans quel ordre les composants échangent-ils ? ». Détaille le scénario
+        <strong>proposition puis approbation</strong> : le front envoie
+        <code>POST /api/messages</code> avec un Bearer token, Express appelle
+        <code>requireAuth</code>, la base vérifie session et utilisateur, le message est inséré
+        avec <code>status = 'pending'</code>. L'admin appelle ensuite
+        <code>POST /api/admin/approve/:id</code>, <code>requireAdmin</code> vérifie le rôle,
+        puis la base passe <code>status</code> à <code>'approved'</code>.
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Questions probables</h2>
+
+    <div class="qa">
+      <div class="q"><span class="marker">Q.</span> Pourquoi commencer par le MCD ?</div>
+      <div class="a">
+        Parce qu'il exprime le besoin métier <strong>sans subir les choix techniques</strong>.
+        Je définis d'abord les entités, les associations et les cardinalités, puis je transforme
+        en tables. Si je commençais par le SQL, je figerais des décisions techniques avant
+        d'avoir compris le métier.
+      </div>
+    </div>
+
+    <div class="qa">
+      <div class="q"><span class="marker">Q.</span> Pourquoi une table <code>favoris</code> ?</div>
+      <div class="a">
+        La relation entre utilisateurs et messages est <strong>N,N</strong> : un utilisateur met
+        plusieurs messages en favori, un message peut être favori de plusieurs utilisateurs.
+        Une clé étrangère ne suffit pas, il faut une table d'association portant les deux clés.
+        Sa clé primaire composite garantit qu'on ne peut pas enregistrer deux fois le même favori.
+      </div>
+    </div>
+
+    <div class="qa">
+      <div class="q"><span class="marker">Q.</span> Pourquoi <code>status = 'pending'</code> au départ ?</div>
+      <div class="a">
+        C'est la règle métier de modération : le message existe en base mais reste invisible au
+        public jusqu'à la décision de l'administrateur. J'ai choisi <strong>un statut à trois
+        valeurs plutôt qu'un booléen</strong>, parce qu'un booléen ne saurait pas distinguer
+        « en attente » de « rejeté » : il me fallait garder la trace d'une décision négative.
+        La contrainte <code>CHECK (status IN ('pending','approved','rejected'))</code> fait
+        respecter la règle par la base elle-même, pas seulement par le code.
+      </div>
+    </div>
+
+    <div class="qa">
+      <div class="q"><span class="marker">Q.</span> Différence entre cas d'utilisation et séquence ?</div>
+      <div class="a">
+        Le cas d'utilisation donne la <strong>vue fonctionnelle</strong> : acteurs et services.
+        La séquence détaille le <strong>déroulement temporel</strong> d'un scénario précis entre
+        le front, l'API, l'authentification et la base.
+      </div>
+    </div>
+
+    <div class="qa">
+      <div class="q"><span class="marker">Q.</span> Que se passe-t-il à la suppression d'un compte ?</div>
+      <div class="a">
+        Trois comportements distincts, décidés au niveau du MPD. Les <strong>sessions</strong> et
+        les <strong>favoris</strong> sont supprimés en <code>CASCADE</code>. Les
+        <strong>messages publiés</strong> sont conservés mais anonymisés : la clé étrangère
+        <code>propose_par</code> passe à <code>NULL</code> grâce à <code>ON DELETE SET NULL</code>.
+        C'est un arbitrage RGPD assumé : on efface la donnée personnelle sans détruire le contenu
+        déjà validé et visible publiquement.
+      </div>
+    </div>
+
+    <div class="qa">
+      <div class="q"><span class="marker">Q.</span> Pourquoi Turso plutôt que SQLite local sur Vercel ?</div>
+      <div class="a">
+        Vercel est <strong>serverless</strong> et son système de fichiers est éphémère : un
+        fichier SQLite local n'y garantit aucune persistance. Turso fournit une base SQLite
+        hébergée, accessible par le réseau via libSQL, ce qui conserve la logique SQL du projet
+        tout en étant compatible avec ce type d'hébergement.
+      </div>
+    </div>
+
+    <div class="qa">
+      <div class="q"><span class="marker">Q.</span> CI et CD, quelle différence ?</div>
+      <div class="a">
+        La <strong>CI</strong> vérifie automatiquement le code à chaque push ou pull request.
+        Le <strong>CD</strong> prépare ou effectue la livraison. Formule courte :
+        « GitHub Actions est le gardien de la qualité, Vercel est le mécanisme de publication. »
+        Distinguer aussi <em>continuous delivery</em> (livrable prêt, approbation humaine
+        possible) et <em>continuous deployment</em> (publication automatique).
+      </div>
+    </div>
+
+    <div class="qa">
+      <div class="q"><span class="marker">Q.</span> Que fait précisément le pipeline ?</div>
+      <div class="a">
+        Cinq étapes à chaque push ou PR sur <code>main</code> : checkout du code, installation de
+        Node.js, <code>npm ci</code>, contrôles de qualité (<code>npm run lint</code> puis
+        <code>npm run format:check</code>), enfin <code>npm test</code>. Une erreur rend le job
+        rouge et signale la fusion en échec.
+      </div>
+    </div>
+
+    <div class="qa">
+      <div class="q"><span class="marker">Q.</span> Qu'est-ce qui reste manuel ?</div>
+      <div class="a">
+        La relecture humaine avant fusion, les tests visuels de bout en bout, les migrations et
+        la restauration de base, et la décision de pousser une version sur <code>main</code>.
+        À dire tel quel : « Je n'automatise pas aveuglément. J'automatise les répétitions
+        vérifiables et je conserve une décision humaine pour les choix sensibles. »
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Les chiffres à connaître</h2>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Élément</th><th>Valeur</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Tests automatisés</td><td>15 passés sur 15</td></tr>
+          <tr><td>ESLint</td><td>0 erreur</td></tr>
+          <tr><td>Prettier</td><td>Formatage conforme</td></tr>
+          <tr><td>Acteurs</td><td>3 — visiteur, membre, administrateur</td></tr>
+          <tr><td>Couches</td><td>4 — présentation, API, métier, données</td></tr>
+          <tr><td>Tables</td><td>4 — users, messages, favoris, sessions</td></tr>
+          <tr><td>Statuts d'un message</td><td>3 — pending, approved, rejected</td></tr>
+          <tr><td>Jeu d'essai</td><td>1 admin + 2 utilisateurs · 5 validés, 2 en attente, 1 rejeté</td></tr>
+          <tr><td>Port local / test</td><td>3000 / 3999</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Checklist avant l'oral</h2>
+    <div class="check">
+      <div class="check-item"><span class="box">☐</span><span>Lancer <code>npm test</code> juste avant et annoncer le nombre réellement affiché.</span></div>
+      <div class="check-item"><span class="box">☐</span><span>Vérifier que le pipeline GitHub Actions est vert.</span></div>
+      <div class="check-item"><span class="box">☐</span><span>Préparer un compte utilisateur et un compte administrateur connectés.</span></div>
+      <div class="check-item"><span class="box">☐</span><span>Préparer un message de démonstration à soumettre puis valider.</span></div>
+      <div class="check-item"><span class="box">☐</span><span>Ouvrir en onglets : MCD, MLD, MPD, cas d'utilisation, séquence, rapport de tests.</span></div>
+      <div class="check-item"><span class="box">☐</span><span>Vérifier que les variables Turso sont dans Vercel et absentes du dépôt Git.</span></div>
+    </div>
+
+    <div class="callout attention">
+      <span class="label">Ne pas survendre</span>
+      <p>
+        Dire ce qui est automatisé aujourd'hui et ce qui reste une évolution — notamment le
+        verrouillage strict du déploiement après CI verte, qui n'est pas encore en place.
+        Distinguer clairement local, test et production. Répondre par le raisonnement et la
+        preuve, jamais par une technologie seule.
+      </p>
+    </div>
+  </section>
+
+  <footer>
+    <div>Vérifié contre <code>db.js</code>, <code>server.js</code> et <code>.github/workflows/ci.yml</code> du dépôt.</div>
+    <div>Petit Rayon de Soleil · Titre professionnel CDA · 2026</div>
+  </footer>
+
+</div>

@@ -167,7 +167,7 @@
 
     <div class="levier">
       <h3><span class="tag">Requêtes</span> Réduction des requêtes inutiles</h3>
-      <p>Les échanges réseau sont réduits au strict nécessaire. Le message d'accueil est obtenu par un unique appel <code>GET /api/messages/random</code>, et les requêtes SQL sont <strong>ciblées</strong> : on ne sélectionne que les colonnes utiles et on filtre côté base (<code>WHERE approved = 1</code>) plutôt que de tout rapatrier pour trier ensuite.</p>
+      <p>Les échanges réseau sont réduits au strict nécessaire. Le message d'accueil est obtenu par un unique appel <code>GET /api/messages/random</code>, et les requêtes SQL sont <strong>ciblées</strong> : on ne sélectionne que les colonnes utiles et on filtre côté base (<code>WHERE status = 'approved'</code>) plutôt que de tout rapatrier pour trier ensuite.</p>
       <p>Chaque requête évitée, c'est de la bande passante et du temps de calcul économisés, côté client comme côté serveur.</p>
       <p class="preuve"><b>Preuve :</b> routes de <code>server.js</code> ; requêtes préparées et filtrées de <code>db.js</code>.</p>
     </div>
