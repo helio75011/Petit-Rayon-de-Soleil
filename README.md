@@ -115,4 +115,3 @@ Projet/
     └── api.test.js  # tests automatisés
 ```
 
-.
