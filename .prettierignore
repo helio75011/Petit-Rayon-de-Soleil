@@ -1,5 +1,6 @@
 node_modules/
 docs/
+support/
 soleil.db
 soleil.db-wal
 soleil.db-shm
