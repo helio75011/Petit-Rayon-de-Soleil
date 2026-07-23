@@ -1,0 +1,551 @@
+<title>Soutenance — Petit Rayon de Soleil</title>
+
+<style>
+  :root {
+    --ground: #fcfbf9;
+    --panel: #ffffff;
+    --ink: #17191e;
+    --ink-soft: #555b67;
+    --ink-faint: #8a909d;
+    --rule: #e4e2dd;
+    --accent: #1f6f5c;
+    --accent-soft: #e7f1ed;
+    --warn: #9d4a2b;
+    --warn-soft: #faeee9;
+    --code-bg: #f4f2ee;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground: #131519; --panel: #1a1d23; --ink: #eceef1; --ink-soft: #a8aeba;
+      --ink-faint: #7a8290; --rule: #2b3039; --accent: #6ec0a5; --accent-soft: #192e29;
+      --warn: #df8d71; --warn-soft: #32211b; --code-bg: #21252c;
+    }
+  }
+  :root[data-theme='dark'] {
+    --ground: #131519; --panel: #1a1d23; --ink: #eceef1; --ink-soft: #a8aeba;
+    --ink-faint: #7a8290; --rule: #2b3039; --accent: #6ec0a5; --accent-soft: #192e29;
+    --warn: #df8d71; --warn-soft: #32211b; --code-bg: #21252c;
+  }
+  :root[data-theme='light'] {
+    --ground: #fcfbf9; --panel: #ffffff; --ink: #17191e; --ink-soft: #555b67;
+    --ink-faint: #8a909d; --rule: #e4e2dd; --accent: #1f6f5c; --accent-soft: #e7f1ed;
+    --warn: #9d4a2b; --warn-soft: #faeee9; --code-bg: #f4f2ee;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0; background: var(--ground); color: var(--ink);
+    font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+    line-height: 1.62; -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 60rem; margin: 0 auto; padding: 3.25rem 1.5rem 5rem;
+    display: flex; flex-direction: column; gap: 2.75rem;
+  }
+
+  header { display: flex; flex-direction: column; gap: 0.8rem; }
+
+  .eyebrow {
+    font-family: ui-monospace, 'SFMono-Regular', 'Cascadia Mono', Menlo, monospace;
+    font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent);
+  }
+
+  h1 {
+    font-size: clamp(1.85rem, 4.2vw, 2.6rem); line-height: 1.13; margin: 0;
+    font-weight: 600; text-wrap: balance; letter-spacing: -0.015em;
+  }
+
+  .standfirst { font-size: 1.02rem; color: var(--ink-soft); max-width: 43rem; margin: 0; }
+
+  .meta {
+    font-size: 0.88rem; color: var(--ink-faint);
+    display: flex; flex-wrap: wrap; gap: 0.5rem 1.2rem;
+  }
+
+  section { display: flex; flex-direction: column; gap: 1rem; }
+
+  h2 {
+    font-size: 1.3rem; margin: 0; font-weight: 600; letter-spacing: -0.01em;
+    padding-bottom: 0.45rem; border-bottom: 1px solid var(--rule);
+    display: flex; align-items: baseline; gap: 0.7rem;
+  }
+
+  h2 .num {
+    font-family: ui-monospace, monospace; font-size: 0.72rem;
+    color: var(--ink-faint); font-weight: 700; flex-shrink: 0;
+  }
+
+  h3 { margin: 0; font-size: 1rem; font-weight: 600; }
+
+  p { margin: 0; max-width: 43rem; }
+  .note { color: var(--ink-soft); font-size: 0.96rem; }
+  .lead { font-size: 1.02rem; }
+
+  code {
+    font-family: ui-monospace, 'SFMono-Regular', 'Cascadia Mono', Menlo, monospace;
+    font-size: 0.85em; background: var(--code-bg); padding: 0.12em 0.36em; border-radius: 3px;
+  }
+
+  .flow { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+  .flow .step {
+    flex: 1 1 9rem; background: var(--panel); border: 1px solid var(--rule);
+    border-radius: 5px; padding: 0.8rem 0.9rem;
+    display: flex; flex-direction: column; gap: 0.35rem;
+  }
+
+  .flow .step .n {
+    font-family: ui-monospace, monospace; font-size: 0.68rem; font-weight: 700;
+    color: var(--accent); letter-spacing: 0.08em;
+  }
+
+  .flow .step .t { font-weight: 600; font-size: 0.93rem; }
+  .flow .step .d { font-size: 0.86rem; color: var(--ink-soft); }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1rem; }
+
+  .card {
+    background: var(--panel); border: 1px solid var(--rule); border-radius: 6px;
+    padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: 0.5rem;
+  }
+
+  .card h3 { display: flex; align-items: baseline; gap: 0.5rem; }
+
+  .card h3 .lvl {
+    font-family: ui-monospace, monospace; font-size: 0.66rem;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent);
+  }
+
+  .card p, .card li { font-size: 0.9rem; color: var(--ink-soft); }
+  .card ul { margin: 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: 0.3rem; }
+
+  ul.plain { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: 0.4rem; }
+  ul.plain li { max-width: 43rem; }
+
+  .callout {
+    border-left: 3px solid var(--accent); background: var(--accent-soft);
+    padding: 0.9rem 1.15rem; border-radius: 0 4px 4px 0;
+    display: flex; flex-direction: column; gap: 0.4rem;
+  }
+
+  .callout.attention { border-left-color: var(--warn); background: var(--warn-soft); }
+
+  .callout .label {
+    font-family: ui-monospace, monospace; font-size: 0.67rem; letter-spacing: 0.13em;
+    text-transform: uppercase; font-weight: 700; color: var(--accent);
+  }
+
+  .callout.attention .label { color: var(--warn); }
+  .callout p { font-size: 0.95rem; }
+
+  .kpis {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    gap: 1rem; padding: 0.5rem 0;
+  }
+
+  .kpi {
+    display: flex; flex-direction: column; gap: 0.25rem; align-items: flex-start;
+    padding: 1rem 1.1rem; background: var(--panel);
+    border: 1px solid var(--rule); border-radius: 6px;
+  }
+
+  .kpi .v {
+    font-size: 2.1rem; font-weight: 700; line-height: 1;
+    color: var(--accent); font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+
+  .kpi .k { font-weight: 600; font-size: 0.92rem; }
+  .kpi .s { font-size: 0.84rem; color: var(--ink-soft); }
+
+  .table-scroll { overflow-x: auto; }
+
+  table { border-collapse: collapse; width: 100%; font-size: 0.9rem; min-width: 32rem; }
+
+  th, td {
+    text-align: left; padding: 0.55rem 0.75rem;
+    border-bottom: 1px solid var(--rule); vertical-align: top;
+  }
+
+  th {
+    font-family: ui-monospace, monospace; font-size: 0.67rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--ink-faint); font-weight: 700;
+    border-bottom-color: var(--ink-faint);
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+
+  .demo { display: flex; flex-direction: column; gap: 0.5rem; }
+
+  .demo-step {
+    display: flex; gap: 0.8rem; align-items: flex-start;
+    background: var(--panel); border: 1px solid var(--rule);
+    border-radius: 5px; padding: 0.7rem 0.9rem;
+  }
+
+  .demo-step .n {
+    font-family: ui-monospace, monospace; font-weight: 700; font-size: 0.85rem;
+    color: var(--accent); flex-shrink: 0; min-width: 1.4rem;
+  }
+
+  .demo-step .body { display: flex; flex-direction: column; gap: 0.2rem; }
+  .demo-step .t { font-weight: 600; font-size: 0.94rem; }
+  .demo-step .d { font-size: 0.9rem; color: var(--ink-soft); }
+
+  footer {
+    color: var(--ink-faint); font-size: 0.86rem;
+    border-top: 1px solid var(--rule); padding-top: 1.1rem;
+    display: flex; flex-direction: column; gap: 0.35rem;
+  }
+
+  @media print {
+    body { background: #fff; }
+    .wrap { padding: 0; max-width: none; }
+    section { break-inside: avoid; }
+    .card, .demo-step, .kpi { break-inside: avoid; }
+  }
+
+  @media (max-width: 34rem) {
+    h2 { flex-direction: column; align-items: flex-start; gap: 0.3rem; }
+  }
+</style>
+
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Titre professionnel Concepteur Développeur d'Applications</div>
+    <h1>Petit Rayon de Soleil</h1>
+    <p class="standfirst">
+      Application web de messages bienveillants, sécurisée et modérée.
+      Concevoir, développer, tester et déployer une application web complète.
+    </p>
+    <div class="meta">
+      <span>Hélio de Breyne</span><span>MyDigitalSchool</span>
+      <span>Session CDA</span><span>2026</span>
+    </div>
+  </header>
+
+  <section>
+    <h2><span class="num">00</span> Fil conducteur</h2>
+    <p class="note">Présentation conçue pour 40 minutes. Le temps de démonstration est réservé au cœur de l'application.</p>
+    <div class="flow">
+      <div class="step"><span class="n">01</span><span class="t">Contexte</span><span class="d">5 min</span></div>
+      <div class="step"><span class="n">02</span><span class="t">Conception</span><span class="d">8 min</span></div>
+      <div class="step"><span class="n">03</span><span class="t">Technique</span><span class="d">10 min</span></div>
+      <div class="step"><span class="n">04</span><span class="t">Qualité + démo</span><span class="d">13 min</span></div>
+      <div class="step"><span class="n">05</span><span class="t">Bilan</span><span class="d">4 min</span></div>
+    </div>
+    <div class="callout">
+      <span class="label">Règle de conduite</span>
+      <p>
+        Ne pas lire les diapositives : elles soutiennent le discours. Privilégier les décisions
+        et les preuves plutôt que la liste des technologies. Garder la démonstration pour montrer
+        les parcours les plus importants.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">01</span> Contexte</h2>
+    <p class="lead">Un projet de formation enrichi par une expérience des usages numériques.</p>
+    <div class="grid">
+      <div class="card">
+        <h3>Mon parcours</h3>
+        <ul>
+          <li>Formation Concepteur développeur d'applications.</li>
+          <li>École : MyDigitalSchool.</li>
+          <li>Progression par projets, pratique et mise en situation.</li>
+          <li>Objectif : construire des applications utiles, maintenables et défendables.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Expérience en entreprise : In Square</h3>
+        <ul>
+          <li>Environnement tourné vers les usages numériques et les contenus.</li>
+          <li>Sensibilisation à la lisibilité, à l'expérience utilisateur et à la qualité perçue.</li>
+          <li>Réflexion sur la cohérence entre contenu, interface et public.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="note">
+      Petit Rayon de Soleil relie conception, front-end, back-end, sécurité, tests et déploiement
+      dans un seul produit.
+    </p>
+  </section>
+
+  <section>
+    <h2><span class="num">02</span> Problématique</h2>
+    <p class="lead">Comment proposer un espace positif sans publication non maîtrisée ?</p>
+    <p class="note">
+      Créer une application web qui permet de consulter et de proposer des messages bienveillants,
+      tout en empêchant la publication immédiate de contenus non validés.
+    </p>
+    <div class="grid">
+      <div class="card">
+        <h3>Expérience simple</h3>
+        <p>Un parcours rapide et accessible, sur desktop comme sur mobile.</p>
+      </div>
+      <div class="card">
+        <h3>Contribution encadrée</h3>
+        <p>Un membre peut proposer, mais ne publie pas directement.</p>
+      </div>
+      <div class="card">
+        <h3>Modération traçable</h3>
+        <p>Un administrateur contrôle la validation avant diffusion.</p>
+      </div>
+    </div>
+    <div class="callout">
+      <span class="label">Décision structurante</span>
+      <p>Le choix de la modération structure les rôles, les données, les règles métier et les tests.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">03</span> Solution fonctionnelle</h2>
+    <p class="lead">Trois rôles pour une application lisible et contrôlée.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Rôle</th><th>Capacités</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Visiteur</strong></td><td>Consulte les messages validés et découvre le service.</td></tr>
+          <tr><td><strong>Utilisateur inscrit</strong></td><td>Crée un compte, propose un message, gère ses favoris et son profil.</td></tr>
+          <tr><td><strong>Administrateur</strong></td><td>Valide ou rejette les propositions avant leur publication.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">04</span> Expérience utilisateur</h2>
+    <p class="lead">Une interface simple, douce et responsive.</p>
+    <p class="note">
+      Navigation courte · hiérarchie visuelle claire · appels à l'action visibles ·
+      adaptation aux petits écrans. Les écrans rendent les actions principales immédiatement
+      identifiables.
+    </p>
+  </section>
+
+  <section>
+    <h2><span class="num">05</span> Parcours métier</h2>
+    <p class="lead">Du message proposé au message publié.</p>
+    <div class="demo">
+      <div class="demo-step"><span class="n">1</span><span class="body"><span class="t">Consulter</span><span class="d">Le visiteur lit les messages déjà validés.</span></span></div>
+      <div class="demo-step"><span class="n">2</span><span class="body"><span class="t">S'authentifier</span><span class="d">Le membre crée un compte puis ouvre sa session.</span></span></div>
+      <div class="demo-step"><span class="n">3</span><span class="body"><span class="t">Proposer</span><span class="d">La proposition est enregistrée avec le statut <code>pending</code>.</span></span></div>
+      <div class="demo-step"><span class="n">4</span><span class="body"><span class="t">Modérer</span><span class="d">L'administrateur approuve (<code>approved</code>) ou rejette (<code>rejected</code>).</span></span></div>
+      <div class="demo-step"><span class="n">5</span><span class="body"><span class="t">Publier</span><span class="d">Seuls les messages approuvés deviennent visibles.</span></span></div>
+    </div>
+    <p class="note">Le workflow rend visible la règle centrale : la modération avant publication.</p>
+  </section>
+
+  <section>
+    <h2><span class="num">06</span> Architecture technique</h2>
+    <p class="lead">Une application organisée en couches.</p>
+    <ul class="plain">
+      <li><strong>Front-end</strong> — HTML, CSS et JavaScript, sans framework.</li>
+      <li><strong>API</strong> — Node.js et Express, routes REST.</li>
+      <li><strong>Sécurité</strong> — middlewares d'authentification et de rôle.</li>
+      <li><strong>Données</strong> — SQLite en local, Turso via libSQL en production.</li>
+      <li><strong>Déploiement</strong> — publication sur Vercel.</li>
+    </ul>
+    <p class="note">La séparation des responsabilités simplifie la maintenance, la sécurité et les tests.</p>
+  </section>
+
+  <section>
+    <h2><span class="num">07</span> Données et persistance</h2>
+    <p class="lead">Un modèle relationnel réduit, mais structurant.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Table</th><th>Rôle</th></tr></thead>
+        <tbody>
+          <tr><td><code>users</code></td><td>Identité, email unique, mot de passe haché, rôle.</td></tr>
+          <tr><td><code>sessions</code></td><td>Maintien de la connexion et rattachement utilisateur.</td></tr>
+          <tr><td><code>messages</code></td><td>Contenu, auteur, statut de validation et date.</td></tr>
+          <tr><td><code>favoris</code></td><td>Lien entre un utilisateur et un message publié.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout">
+      <span class="label">Le point clé</span>
+      <p>
+        Le champ <code>status</code> prend trois valeurs contrôlées par une contrainte
+        <code>CHECK</code> : <code>pending</code>, <code>approved</code>, <code>rejected</code>.
+        Un booléen n'aurait pas permis de distinguer l'attente du rejet.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">08</span> Sécurité et conformité</h2>
+    <p class="lead">Protéger les comptes, les routes et les données.</p>
+    <ul class="plain">
+      <li>Mots de passe hachés avec bcrypt.</li>
+      <li>Session contrôlée avant accès aux routes protégées.</li>
+      <li>Restriction des routes d'administration au rôle admin.</li>
+      <li>Requêtes SQL paramétrées pour réduire le risque d'injection.</li>
+      <li>Suppression du compte et des données associées dans une logique RGPD.</li>
+    </ul>
+    <div class="callout">
+      <span class="label">Principe clé</span>
+      <p>Le serveur contrôle le droit réel de l'utilisateur, pas seulement l'interface.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">09</span> Pilotage du projet</h2>
+    <p class="lead">Prioriser pour livrer un périmètre cohérent.</p>
+    <p class="note">Kanban et MoSCoW rendent visible l'avancement et les arbitrages.</p>
+    <div class="callout">
+      <span class="label">Arbitrage assumé</span>
+      <p>
+        Sécuriser les fonctionnalités cœur, conserver un front-end vanilla et reporter les
+        évolutions non indispensables : notifications, recherche avancée et rôles complexes.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">10</span> Tests et qualité</h2>
+    <p class="lead">Des scénarios automatiques sur les parcours critiques.</p>
+
+    <div class="kpis">
+      <div class="kpi"><span class="v">15/15</span><span class="k">tests réussis</span><span class="s">0 échec</span></div>
+      <div class="kpi"><span class="v">8</span><span class="k">d'intégration</span><span class="s">vraies requêtes HTTP</span></div>
+      <div class="kpi"><span class="v">7</span><span class="k">unitaires</span><span class="s">hachage et token</span></div>
+      <div class="kpi"><span class="v">0</span><span class="k">erreur ESLint</span><span class="s">formatage conforme</span></div>
+    </div>
+
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Niveau</th><th>Scénarios couverts</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Intégration</strong> (8)</td>
+            <td>Message aléatoire, inscription puis connexion, refus d'un mauvais mot de passe,
+                401 sans authentification, 403 sur route admin, parcours proposition → approbation,
+                parcours de rejet, suppression de compte RGPD.</td>
+          </tr>
+          <tr>
+            <td><strong>Unitaire</strong> (7)</td>
+            <td>Hachage bcrypt (jamais de mot de passe en clair, sel aléatoire), vérification du
+                mot de passe, extraction du token Bearer.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="note">
+      Les tests automatisés apportent une preuve répétable que les cas critiques sont vérifiés.
+      La qualité du code est contrôlée par ESLint et Prettier, rejoués à chaque intégration.
+    </p>
+  </section>
+
+  <section>
+    <h2><span class="num">11</span> Déploiement</h2>
+    <p class="lead">Une mise en ligne pensée pour un contexte serverless.</p>
+    <div class="flow">
+      <div class="step"><span class="n">→</span><span class="t">Dépôt Git</span><span class="d">Versionnement et source</span></div>
+      <div class="step"><span class="n">→</span><span class="t">GitHub Actions</span><span class="d">Qualité et tests</span></div>
+      <div class="step"><span class="n">→</span><span class="t">Vercel</span><span class="d">Build et hébergement</span></div>
+      <div class="step"><span class="n">→</span><span class="t">Turso</span><span class="d">Persistance via libSQL</span></div>
+    </div>
+    <div class="callout attention">
+      <span class="label">Points de vigilance</span>
+      <p>
+        Séparer les paramètres locaux et les variables de production. Vérifier les routes, les
+        autorisations et la persistance après publication. Prévoir un environnement de
+        préproduction.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">12</span> Démonstration guidée</h2>
+    <p class="lead">Montrer le produit sans perdre le fil.</p>
+    <div class="demo">
+      <div class="demo-step"><span class="n">01</span><span class="body"><span class="t">Accueil public</span><span class="d">Afficher le message du jour et la consultation libre.</span></span></div>
+      <div class="demo-step"><span class="n">02</span><span class="body"><span class="t">Connexion</span><span class="d">Ouvrir une session avec un utilisateur de démonstration.</span></span></div>
+      <div class="demo-step"><span class="n">03</span><span class="body"><span class="t">Proposition</span><span class="d">Soumettre un message puis signaler son statut en attente.</span></span></div>
+      <div class="demo-step"><span class="n">04</span><span class="body"><span class="t">Administration</span><span class="d">Valider ou rejeter la proposition avec le rôle admin.</span></span></div>
+      <div class="demo-step"><span class="n">05</span><span class="body"><span class="t">Vérification</span><span class="d">Retourner sur l'accueil et vérifier la publication.</span></span></div>
+    </div>
+    <div class="callout attention">
+      <span class="label">Plan B</span>
+      <p>Prévoir captures d'écran et rapport de tests si la démonstration rencontre un problème.</p>
+    </div>
+    <p class="note">La démonstration valide les règles métier, elle ne remplace pas l'explication technique.</p>
+  </section>
+
+  <section>
+    <h2><span class="num">13</span> Résultats obtenus</h2>
+    <p class="lead">Un projet complet à l'échelle d'un produit de formation.</p>
+    <div class="kpis">
+      <div class="kpi"><span class="v">3</span><span class="k">rôles métiers</span><span class="s">Visiteur, utilisateur, administrateur</span></div>
+      <div class="kpi"><span class="v">15/15</span><span class="k">tests réussis</span><span class="s">Parcours critiques automatisés</span></div>
+      <div class="kpi"><span class="v">1</span><span class="k">application déployée</span><span class="s">Vercel + Turso</span></div>
+      <div class="kpi"><span class="v">5</span><span class="k">espaces principaux</span><span class="s">Accueil, connexion, favoris, profil, proposition</span></div>
+    </div>
+    <p class="note"><strong>Compétences CDA illustrées :</strong> développer une application sécurisée ;
+      concevoir une application en couches ; préparer le déploiement — tests, configuration,
+      publication et maintenabilité.</p>
+  </section>
+
+  <section>
+    <h2><span class="num">14</span> Bilan critique et perspectives</h2>
+    <p class="lead">Un socle fonctionnel, des évolutions identifiées.</p>
+    <div class="grid">
+      <div class="card">
+        <h3><span class="lvl">Acquis</span></h3>
+        <ul>
+          <li>Parcours utilisateur complet.</li>
+          <li>Modération avant publication.</li>
+          <li>Architecture lisible, sécurité appliquée.</li>
+          <li>15 tests automatisés et intégration continue.</li>
+          <li>Déploiement sur Vercel avec base Turso.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="lvl">Limites</span></h3>
+        <ul>
+          <li>Pas de notifications e-mail ou push.</li>
+          <li>Recherche avancée non implémentée.</li>
+          <li>Rôles limités à user et admin.</li>
+          <li>Pas d'audit d'accessibilité complet.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="lvl">Évolutions</span></h3>
+        <ul>
+          <li>Préproduction et supervision.</li>
+          <li>Verrouillage du déploiement sur CI verte.</li>
+          <li>Modération enrichie avec motifs de rejet.</li>
+          <li>Recherche, catégories et personnalisation.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout">
+      <span class="label">Choix assumé</span>
+      <p>Livrer un cœur de produit robuste avant d'élargir les fonctionnalités.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Conclusion</h2>
+    <p class="lead">Un projet conçu comme un produit complet.</p>
+    <p class="note">
+      Petit Rayon de Soleil m'a permis de mettre en œuvre un cycle complet de développement :
+      analyser le besoin, concevoir les parcours et les données, développer une application
+      sécurisée, la tester et la déployer.
+    </p>
+    <p><strong>Merci pour votre attention. Questions ?</strong></p>
+  </section>
+
+  <footer>
+    <div>Chiffres vérifiés par exécution de <code>npm test</code>, <code>npm run lint</code> et <code>npm run format:check</code>.</div>
+    <div>Références : dossier de projet, captures d'écran, diagrammes et rapport de tests — Petit Rayon de Soleil, 2026.</div>
+  </footer>
+
+</div>

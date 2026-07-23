@@ -150,12 +150,17 @@ choix de **ne pas dénormaliser** (FK `propose_par` + jointure).
 ## 4.10 Tests
 
 📌 Stratégie de tests + résultats.
-💻 `tests/api.test.js` (module natif `node:test`) : 7 tests — nominal, 401/403/404,
-parcours complet proposition→approbation, RGPD.
-🖼️ Capture du `npm test` au vert.
-📌 **Jeu d'essai de la fonctionnalité la plus représentative** (recommandé : proposition→approbation) :
-tableau **entrée / attendu / obtenu / écart** (💻 base : test lignes 96-127).
-⚠️ Idéal : ajouter un **test de sécurité** explicite (tentative d'injection rejetée).
+💻 **15 tests au total** (module natif `node:test`), répartis en deux niveaux :
+
+- `tests/api.test.js` — **8 tests d'intégration** : message aléatoire, inscription puis
+  connexion, refus d'un mauvais mot de passe, 401 sans authentification, 403 sur route admin,
+  parcours complet proposition→approbation, parcours de rejet, suppression RGPD.
+- `tests/auth.unit.test.js` — **7 tests unitaires** : hachage bcrypt (jamais de mot de passe
+  en clair, sel aléatoire), vérification du mot de passe, extraction du token Bearer.
+  🖼️ Capture du `npm test` au vert — annoncer **15 tests réussis sur 15**.
+  📌 **Jeu d'essai de la fonctionnalité la plus représentative** (recommandé : proposition→approbation) :
+  tableau **entrée / attendu / obtenu / écart** (💻 base : test lignes 96-127).
+  ⚠️ Idéal : ajouter un **test de sécurité** explicite (tentative d'injection rejetée).
 
 ## 4.11 Déploiement
 

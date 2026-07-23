@@ -480,7 +480,7 @@
     <p>Ces tests démarrent l'application Express réelle et envoient de vraies requêtes HTTP via <code>fetch</code>. Ils valident donc à la fois l'<strong>intégration</strong> des couches (route → métier → base), le fonctionnement <strong>système</strong> de l'application entière, et l'<strong>acceptation</strong> des exigences Must du cahier des charges. La colonne « Niveau » précise l'apport dominant de chaque test.</p>
     <div class="tbl-scroll">
       <table>
-        <caption>7 tests de bout en bout — niveau, entrée, résultat attendu, résultat obtenu (exécution du 13/07/2026).</caption>
+        <caption>8 tests de bout en bout — niveau, entrée, résultat attendu, résultat obtenu.</caption>
         <thead>
           <tr>
             <th>#</th>
@@ -542,6 +542,14 @@
           </tr>
           <tr>
             <td>7</td>
+            <td>Parcours de rejet d'une proposition</td>
+            <td><span class="badge-lvl sys">Système</span></td>
+            <td><span class="verb">POST</span> <span class="ep">/api/messages</span> → <span class="verb">DELETE</span> <span class="ep">/api/admin/reject/:id</span></td>
+            <td class="status-cell">200, quitte la file de modération et reste invisible au public</td>
+            <td><span class="ok">Conforme</span></td>
+          </tr>
+          <tr>
+            <td>8</td>
             <td>Suppression de compte (RGPD)</td>
             <td><span class="badge-lvl uat">Accept.</span></td>
             <td><span class="verb">DELETE</span> <span class="ep">/api/me</span></td>
